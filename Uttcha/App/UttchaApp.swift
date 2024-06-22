@@ -1,6 +1,6 @@
 //
-//  CalendarTestApp.swift
-//  CalendarTest
+//  UttchaApp.swift
+//  Uttcha
 //
 //  Created by KHJ on 2024/04/06.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct CalendarTestApp: App {
+struct UttchaApp: App {
     @StateObject private var coreDataStack = CoreDataStack.shared
     var body: some Scene {
         WindowGroup {
@@ -17,6 +17,8 @@ struct CalendarTestApp: App {
                 .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
                     coreDataStack.save()
                 }
+                .preferredColorScheme(.dark)
+                .tint(.white)
         }
     }
 }

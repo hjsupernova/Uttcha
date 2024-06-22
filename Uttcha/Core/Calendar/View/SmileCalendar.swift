@@ -48,10 +48,10 @@ struct SmileCalendar: View {
             dataDependency: nil,
             proxy: calendarViewProxy
         )
-
+        .backgroundColor(.systemGray6)
         // TODO: Margin 처리하기 !
         .horizontalDayMargin(0)
-        .verticalDayMargin(0)
+        .verticalDayMargin(12)
 
         .monthHeaders { month in
             let monthHeaderText = monthDateFormatter.string(from: calendar.date(from: month.components)!)
@@ -61,7 +61,6 @@ struct SmileCalendar: View {
                 HStack {
                     Text(monthHeaderText)
                         .font(.title2).bold()
-                        .foregroundStyle(.black)
 
                     Image(systemName: "arrowtriangle.down.fill")
                         .foregroundStyle(.gray)
@@ -73,26 +72,28 @@ struct SmileCalendar: View {
         .dayOfWeekHeaders { month, weekdayIndex in
             switch weekdayIndex {
             case 0:
-                Text("일")
-                    .foregroundStyle(.red)
+                Text("일").bold()
             case 1:
-                Text("월")
+                Text("월").bold()
             case 2:
-                Text("화")
+                Text("화").bold()
             case 3:
-                Text("수")
+                Text("수").bold()
             case 4:
-                Text("목")
+                Text("목").bold()
             case 5:
-                Text("금")
+                Text("금").bold()
             case 6:
-                Text("토")
-                    .foregroundStyle(.blue)
+                Text("토").bold()
             default:
                 Text("N/A")
             }
         }
         .days { day in
+            Text("\(day.day)")
+                .bold()
+        }
+        .dayBackgrounds({ day in
             let calendarDate = calendar.date(from: day.components)!
             let image = CoreDataStack.shared.imageList.filter {
                 calendar.isDate($0.date!, inSameDayAs: calendarDate)
@@ -104,14 +105,10 @@ struct SmileCalendar: View {
 
                 imageView
                     .resizable()
-                    .scaledToFill()
-            } else {
-                Text("\(day.day)")
-                    .font(.body)
-                    .foregroundStyle(.gray)
+                    .scaledToFit()
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
             }
-        }
-
+        })
         .onDaySelection { day in
             let calendarDate = calendar.date(from: day.components)!
 
@@ -147,6 +144,9 @@ struct SmileCalendar: View {
             MonthsAvailable(calendarViewProxy: calendarViewProxy, startDate: visibleDateRange.lowerBound)
                 .presentationDetents([.medium])
         }
+        .clipShape(
+            RoundedRectangle(cornerRadius: 16)
+        )
     }
 }
 
@@ -171,7 +171,6 @@ struct MonthsAvailable: View {
                 } label: {
                     Image(systemName: "xmark")
                         .font(.title)
-                        .foregroundStyle(.black)
                 }
             }
             .padding()
