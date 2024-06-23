@@ -15,12 +15,12 @@ struct Shutter: View {
 
             ZStack {
                 Circle()
-                    .foregroundStyle(.white)
                     .frame(height: 100)
 
                 Circle()
                     .stroke(lineWidth: 3.0)
-                    .frame(height: 75)
+                    .foregroundStyle(.black)
+                    .frame(height: 80)
 
             }
         }
@@ -29,10 +29,5 @@ struct Shutter: View {
 }
 
 #Preview {
-    ZStack {
-        Color.red
-
         Shutter()
-    }
-
 }

@@ -16,9 +16,12 @@ struct CameraOverlayView: View {
                 ZStack {
                     Rectangle()
                         .fill(Color.black)
-
-                    ProgressView("Keep Smile 😆", value: model.smileProgress, total: 100)
+                    
+                    ProgressView("웃어보세요! 😍", value: model.smileProgress, total: 100)
                         .foregroundStyle(.white)
+                        .font(.title2).bold()
+                        .padding(.horizontal)
+                        .padding(.top)
                 }
 
                 Spacer()
@@ -28,29 +31,30 @@ struct CameraOverlayView: View {
                     Rectangle()
                         .fill(Color.black)
 
-                    HStack(spacing: 20) {
+                    if model.smileProgress != 1000 {
+                        Shutter()
+                            .onTapGesture {
+                                model.perform(action: .takePhoto)
+                            }
+                            .padding(.bottom)
+                    }
+
+                    HStack {
                         Button {
                             model.perform(action: .dismissCamera)
                         } label: {
                             Text("취소")
                                 .foregroundStyle(.white)
+                                .font(.title2)
                         }
 
                         Spacer()
 
-                        if model.smileProgress == 100 {
-                            Shutter()
-                                .onTapGesture {
-                                    model.perform(action: .takePhoto)
-                                }
-                        }
-
-                        Spacer()
-
-                        EmptyView()
                     }
+                    .padding(.horizontal)
                 }
             }
+
         }
     }
 }
