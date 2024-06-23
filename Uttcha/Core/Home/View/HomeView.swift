@@ -15,73 +15,71 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color(hex: 0xF4EEF4)
-                    .ignoresSafeArea()
-
-                ScrollView {
-                    SmileCalendar(
-                        calendar: .autoupdatingCurrent,
-                        monthsLayout: .horizontal,
-                        isShowingCamera: $model.isShowingCameraView
+            ScrollView {
+                SmileCalendar(
+                    calendar: .autoupdatingCurrent,
+                    monthsLayout: .horizontal,
+                    isShowingCamera: $model.isShowingCameraView
+                )
+                .background(
+                    .pink,
+                    in: RoundedRectangle(
+                        cornerRadius: 20,
+                        style: .continuous
                     )
-                    .background(
-                        .pink,
-                        in: RoundedRectangle(
-                            cornerRadius: 20,
-                            style: .continuous
-                        )
-                    )
-                    .padding()
+                )
+                .padding()
 
-                    VStack {
-                        Stepper("같이 웃을 사람 \(model.neededFaceCount) 명") {
-                            model.perform(action: .faceCountIncrement)
-                        } onDecrement: {
-                            model.perform(action: .faceCountDecrement)
+                HStack {
+
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color(uiColor: .systemGray6))
+                            .frame(width: 150, height: 100)
+
+                        VStack {
+                            Text("함께 웃기: \(model.neededFaceCount) 명")
+                                .fontWeight(.bold)
+
+                            Stepper("") {
+                                model.perform(action: .faceCountIncrement)
+                            } onDecrement: {
+                                model.perform(action: .faceCountDecrement)
+                            }
+                            .labelsHidden()
                         }
-                        .padding(.horizontal)
                     }
-                    .background(.white)
-                    .clipShape(
-                        RoundedRectangle(
-                            cornerRadius: 8,
-                            style: .continuous
-                        )
-                    )
-                    .padding()
 
-                }
-                VStack {
                     Spacer()
 
-                    HStack {
-                        Spacer()
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color(uiColor: .systemGray6))
+                            .frame(width: 150, height: 100)
 
                         Button {
                             model.perform(action: .showCamera)
                         } label: {
                             ZStack {
                                 Circle()
-                                    .foregroundStyle(.blue)
                                     .frame(height: 50)
-
-                                Image(systemName: "smiley")
                                     .foregroundStyle(.white)
+
+                                Text("😁")
                             }
                         }
                     }
                 }
                 .padding()
             }
-            .navigationTitle("오늘도 ☺️")
-            .navigationBarLargeTitleItems(trailing: SettingButton())
-        }
-        .introspect(.navigationStack, on: .iOS(.v16, .v17)) {
-            let color = UIColor(red: 244/255, green: 238/255, blue: 244/255, alpha: 1.0)
-
-            $0.navigationBar.backgroundColor = color
-            print(type(of: $0)) // UINavigationController
+            .navigationTitle("오늘도 웃차 🤙🏻")
+            .toolbar {
+                NavigationLink {
+                    SettingsView()
+                } label: {
+                    Image(systemName: "bell.fill")
+                }
+            }
         }
         .fullScreenCover(isPresented: $model.isShowingCameraView) {
             CameraScreenView(model: model)
@@ -89,23 +87,6 @@ struct HomeView: View {
     }
 }
 
-struct SettingButton: View {
-    var body: some View {
-        NavigationLink {
-            SettingsView()
-        } label: {
-            Image(systemName: "bell.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .foregroundColor(.red)
-                .frame(width: 36, height: 36)
-                .padding([.trailing], 20)
-                .padding([.top], 5)
-        }
-
-    }
-}
-
 #Preview {
-    HomeView()
+    UttchaTapView()
 }

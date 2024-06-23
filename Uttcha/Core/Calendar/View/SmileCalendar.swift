@@ -19,6 +19,7 @@ struct SmileCalendar: View {
     private let monthsLayout: MonthsLayout
     private let visibleDateRange: ClosedRange<Date>
     private let monthDateFormatter: DateFormatter
+    private let dayNames = ["일", "월", "화", "수", "목", "금", "토"]
 
     @State private var selectedImage: Photo?
     @Binding var isShowingCamera: Bool
@@ -48,10 +49,10 @@ struct SmileCalendar: View {
             dataDependency: nil,
             proxy: calendarViewProxy
         )
-
+        .backgroundColor(.systemGray6)
         // TODO: Margin 처리하기 !
         .horizontalDayMargin(0)
-        .verticalDayMargin(0)
+        .verticalDayMargin(12)
 
         .monthHeaders { month in
             let monthHeaderText = monthDateFormatter.string(from: calendar.date(from: month.components)!)
@@ -61,7 +62,6 @@ struct SmileCalendar: View {
                 HStack {
                     Text(monthHeaderText)
                         .font(.title2).bold()
-                        .foregroundStyle(.black)
 
                     Image(systemName: "arrowtriangle.down.fill")
                         .foregroundStyle(.gray)
@@ -71,28 +71,13 @@ struct SmileCalendar: View {
             }
         }
         .dayOfWeekHeaders { month, weekdayIndex in
-            switch weekdayIndex {
-            case 0:
-                Text("일")
-                    .foregroundStyle(.red)
-            case 1:
-                Text("월")
-            case 2:
-                Text("화")
-            case 3:
-                Text("수")
-            case 4:
-                Text("목")
-            case 5:
-                Text("금")
-            case 6:
-                Text("토")
-                    .foregroundStyle(.blue)
-            default:
-                Text("N/A")
-            }
+            Text(dayNames[weekdayIndex]).bold()
         }
         .days { day in
+            Text("\(day.day)")
+                .bold()
+        }
+        .dayBackgrounds { day in
             let calendarDate = calendar.date(from: day.components)!
             let image = CoreDataStack.shared.imageList.filter {
                 calendar.isDate($0.date!, inSameDayAs: calendarDate)
@@ -104,14 +89,10 @@ struct SmileCalendar: View {
 
                 imageView
                     .resizable()
-                    .scaledToFill()
-            } else {
-                Text("\(day.day)")
-                    .font(.body)
-                    .foregroundStyle(.gray)
+                    .scaledToFit()
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
             }
         }
-
         .onDaySelection { day in
             let calendarDate = calendar.date(from: day.components)!
 
@@ -147,6 +128,9 @@ struct SmileCalendar: View {
             MonthsAvailable(calendarViewProxy: calendarViewProxy, startDate: visibleDateRange.lowerBound)
                 .presentationDetents([.medium])
         }
+        .clipShape(
+            RoundedRectangle(cornerRadius: 16)
+        )
     }
 }
 
@@ -171,7 +155,6 @@ struct MonthsAvailable: View {
                 } label: {
                     Image(systemName: "xmark")
                         .font(.title)
-                        .foregroundStyle(.black)
                 }
             }
             .padding()

@@ -156,7 +156,11 @@ final class CameraViewModel: ObservableObject {
     }
 
     private func neededFaceCountDecrement() {
-        neededFaceCount -= 1
+        if neededFaceCount <= 0 {
+            neededFaceCount = 0
+        } else {
+            neededFaceCount -= 1
+        }
     }
 
     private func updatePreviewPhoto(_ photo: UIImage) {
