@@ -19,6 +19,7 @@ struct SmileCalendar: View {
     private let monthsLayout: MonthsLayout
     private let visibleDateRange: ClosedRange<Date>
     private let monthDateFormatter: DateFormatter
+    private let dayNames = ["일", "월", "화", "수", "목", "금", "토"]
 
     @State private var selectedImage: Photo?
     @Binding var isShowingCamera: Bool
@@ -70,30 +71,13 @@ struct SmileCalendar: View {
             }
         }
         .dayOfWeekHeaders { month, weekdayIndex in
-            switch weekdayIndex {
-            case 0:
-                Text("일").bold()
-            case 1:
-                Text("월").bold()
-            case 2:
-                Text("화").bold()
-            case 3:
-                Text("수").bold()
-            case 4:
-                Text("목").bold()
-            case 5:
-                Text("금").bold()
-            case 6:
-                Text("토").bold()
-            default:
-                Text("N/A")
-            }
+            Text(dayNames[weekdayIndex]).bold()
         }
         .days { day in
             Text("\(day.day)")
                 .bold()
         }
-        .dayBackgrounds({ day in
+        .dayBackgrounds { day in
             let calendarDate = calendar.date(from: day.components)!
             let image = CoreDataStack.shared.imageList.filter {
                 calendar.isDate($0.date!, inSameDayAs: calendarDate)
@@ -108,7 +92,7 @@ struct SmileCalendar: View {
                     .scaledToFit()
                     .clipShape(RoundedRectangle(cornerRadius: 16))
             }
-        })
+        }
         .onDaySelection { day in
             let calendarDate = calendar.date(from: day.components)!
 
