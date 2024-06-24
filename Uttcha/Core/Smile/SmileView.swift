@@ -5,28 +5,130 @@
 //  Created by KHJ on 2024/04/10.
 //
 
+import ContactsUI
+
 import SwiftUI
 
-import SwiftUIIntrospect
-
 struct SmileView: View {
+    @State private var isShowingSheet = false
+
     var body: some View {
         NavigationStack {
-//            Color(hex: 0xFFFFFA )
-            ZStack {
-                Color.yellow
-                
-                Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-                    .navigationTitle("asdf")
+            ScrollView {
+                Text("친구에게 연락해보세요!")
+                    .font(.title2).bold()
+                ScrollView(.horizontal) {
+                    Button("Button") {
+                        isShowingSheet = true
+                    }
+                }
+
+                Text("소중한 추억")
+                    .font(.title2).bold()
+            }
+            .navigationTitle("Uttcha")
+            .sheet(isPresented: $isShowingSheet) {
+                ContactList()
             }
         }
-        .introspect(.navigationStack, on: .iOS(.v16, .v17)) {
-            $0.navigationBar.backgroundColor = .cyan
-            print(type(of: $0)) // UINavigationController
+    }
+}
+
+struct ContactList: View {
+    @State private var contacts = [CNContact]()
+
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        NavigationStack {
+            List(contacts, id: \.identifier) { contactDetail in
+                ContactRow(contactDetail: contactDetail)
+            }
+            .navigationTitle("연락처 추가")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItemGroup(placement: .topBarLeading) {
+                    Button("취소") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .onAppear(perform: getContactList)
+    }
+
+    private func getContactList() {
+        let CNStore = CNContactStore()
+
+        switch CNContactStore.authorizationStatus(for: .contacts) {
+        case .authorized:
+            DispatchQueue.global(qos: .background).async {
+                do {
+                    let keys = [
+                        CNContactGivenNameKey as CNKeyDescriptor,
+                        CNContactFamilyNameKey as CNKeyDescriptor,
+                        CNContactImageDataKey as CNKeyDescriptor, // Added image data key
+                        CNContactPhoneNumbersKey as CNKeyDescriptor // Added phone numbers key if you want to use it
+                    ]
+                    let request = CNContactFetchRequest(keysToFetch: keys)
+
+                    var fetchedContacts = [CNContact]()
+                    try CNStore.enumerateContacts(with: request) { contact, _ in
+                        DispatchQueue.main.async {
+                            contacts.append(contact)
+                        }
+                    }
+                } catch {
+                    print("Error while fetchiing : \(error)")
+                }
+            }
+
+        case .denied:
+            print("denied")
+
+        case .notDetermined:
+            print("not determined")
+            CNStore.requestAccess(for: .contacts) { granted, error in
+                if granted {
+                    getContactList()
+                } else if let error = error {
+                    print("error while requesting permission :\(error)")
+
+                }
+            }
+        case .restricted:
+            print("restred")
+        default:
+            print("deafult")
+        }
+    }
+}
+
+struct ContactRow: View {
+    let contactDetail: CNContact
+
+    var body: some View {
+        HStack {
+            if let imageData = contactDetail.imageData, let uiImage = UIImage(data: imageData) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .frame(width: 60, height: 60)
+                    .animation(.linear, value: 3)
+            } else {
+                Image(systemName: "person.circle.fill")
+                    .resizable()
+                    .frame(width: 60, height: 60)
+                    .animation(.linear, value: 3)
+            }
+
+            VStack(alignment: .leading, spacing: 10) {
+                Text("\(contactDetail.familyName)\(contactDetail.givenName)")
+                Text("\(contactDetail.phoneNumbers.first?.value.stringValue ?? "")")
+            }.multilineTextAlignment(.leading)
         }
     }
 }
 
 #Preview {
-    SmileView()
+    ContactRow(contactDetail: CNContact())
 }
