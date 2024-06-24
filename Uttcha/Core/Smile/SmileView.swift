@@ -11,28 +11,95 @@ import SwiftUI
 
 struct SmileView: View {
     @State private var isShowingSheet = false
+    @State private var contactList: [ContactModel] = []
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                Text("친구에게 연락해보세요!")
-                    .font(.title2).bold()
-                ScrollView(.horizontal) {
-                    Button("Button") {
-                        isShowingSheet = true
+                VStack(alignment: .leading) {
+                    Text("친구에게 연락해보세요!")
+                        .font(.title2)
+                        .bold()
+
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            if contactList.isEmpty {
+                                Button {
+                                    isShowingSheet = true
+                                } label: {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 16)
+                                            .strokeBorder(style: StrokeStyle(lineWidth: 4, dash: [10]))
+                                            .frame(width: 150, height: 200)
+
+                                        Image(systemName: "plus")
+                                            .font(.title).bold()
+                                    }
+                                    .foregroundStyle(.gray)
+                                }
+                            } else {
+                                ForEach(contactList) { contact in
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 16)
+                                            .frame(width: 150, height: 200)
+                                            .foregroundStyle(.gray)
+
+                                        VStack {
+                                            if let imageData = contact.imageData, let uiImage = UIImage(data: imageData) {
+                                                Image(uiImage: uiImage)
+                                                    .resizable()
+                                                    .frame(width: 50, height: 50)
+                                                    .clipShape(Circle())
+                                            } else {
+                                                Image(systemName: "person.circle.fill")
+                                                    .resizable()
+                                                    .frame(width: 50, height: 50)
+                                                    .clipShape(Circle())
+                                            }
+
+                                            Text(contact.familyName + contact.givenName)
+                                        }
+                                    }
+                                }
+
+                                Button {
+                                    isShowingSheet = true
+                                } label: {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 16)
+                                            .strokeBorder(style: StrokeStyle(lineWidth: 4, dash: [10]))
+                                            .frame(width: 150, height: 200)
+
+                                        Image(systemName: "plus")
+                                            .font(.title).bold()
+                                    }
+                                    .foregroundStyle(.gray)
+                                }
+                            }
+                        }
                     }
                 }
+                .padding(.horizontal)
 
-                Text("소중한 추억")
-                    .font(.title2).bold()
+                VStack(alignment: .leading) {
+                    Text("소중한 추억")
+                        .font(.title2).bold()
+                }
+                .padding(.horizontal)
+
             }
             .navigationTitle("Uttcha")
             .sheet(isPresented: $isShowingSheet) {
                 ContactList()
             }
+            .onAppear {
+                contactList = CoreDataStack.shared.getContactList()
+            }
         }
+
     }
 }
+
 
 struct ContactList: View {
     @State private var contacts = [ContactModel]()
@@ -102,7 +169,7 @@ struct ContactList: View {
                         if firstChar1 >= "가" && firstChar1 <= "힣" && firstChar2 >= "가" && firstChar2 <= "힣" {
                             return name1 < name2 // Korean sort
                         } else if (firstChar1 >= "a" && firstChar1 <= "z" || firstChar1 >= "A" && firstChar1 <= "Z") &&
-                                  (firstChar2 >= "a" && firstChar2 <= "z" || firstChar2 >= "A" && firstChar2 <= "Z") {
+                                    (firstChar2 >= "a" && firstChar2 <= "z" || firstChar2 >= "A" && firstChar2 <= "Z") {
                             return name1.localizedCaseInsensitiveCompare(name2) == .orderedAscending // English sort
                         } else {
                             // Korean comes before English
@@ -165,6 +232,10 @@ struct ContactRow: View {
             }.multilineTextAlignment(.leading)
         }
     }
+}
+
+#Preview {
+    SmileView()
 }
 
 #Preview {

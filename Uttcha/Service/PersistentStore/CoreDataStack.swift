@@ -79,8 +79,22 @@ extension CoreDataStack {
         save()
     }
 
-    func getContactList() {
+    func getContactList() -> [ContactModel] {
         let request = NSFetchRequest<Contact>(entityName: "Contact")
+        
+        do {
+            let coredataContacts = try persistentContainer.viewContext.fetch(request)
+            return coredataContacts.map {
+                ContactModel(
+                    familyName: $0.familyName ?? "",
+                    givenName: $0.givenName ?? "",
+                    phoneNumber: $0.phoneNumber,
+                    imageData: $0.imageData
+                )
+            }
+        } catch {
+            return []
+        }
     }
 }
 
