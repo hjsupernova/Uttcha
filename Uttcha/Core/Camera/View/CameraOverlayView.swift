@@ -31,7 +31,7 @@ struct CameraOverlayView: View {
                     Rectangle()
                         .fill(Color.black)
 
-                    if model.smileProgress != 1000 {
+                    if model.smileProgress == 100 {
                         Shutter()
                             .onTapGesture {
                                 model.perform(action: .takePhoto)
