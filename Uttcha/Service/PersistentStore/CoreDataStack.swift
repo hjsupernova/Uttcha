@@ -79,6 +79,7 @@ extension CoreDataStack {
         coreDataContact.givenName = contact.givenName
         coreDataContact.phoneNumber = contact.phoneNumber
         coreDataContact.imageData = contact.imageData
+        coreDataContact.date = Date()
 
         save()
     }
@@ -88,7 +89,7 @@ extension CoreDataStack {
 
         do {
             let coredataContacts = try persistentContainer.viewContext.fetch(request)
-            return coredataContacts.map {
+            return coredataContacts.sorted { $0.date! < $1.date! }.map {
                 ContactModel(
                     familyName: $0.familyName ?? "",
                     givenName: $0.givenName ?? "",
