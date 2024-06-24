@@ -38,25 +38,28 @@ struct SmileView: View {
                                 }
                             } else {
                                 ForEach(smileViewModel.contactSavedList) { contact in
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 16)
-                                            .frame(width: 150, height: 200)
-                                            .foregroundStyle(Color(uiColor: .systemGray6))
 
-                                        VStack {
-                                            if let imageData = contact.imageData, let uiImage = UIImage(data: imageData) {
-                                                Image(uiImage: uiImage)
-                                                    .resizable()
-                                                    .frame(width: 50, height: 50)
-                                                    .clipShape(Circle())
-                                            } else {
-                                                Image(systemName: "person.circle.fill")
-                                                    .resizable()
-                                                    .frame(width: 50, height: 50)
-                                                    .clipShape(Circle())
+                                    Link(destination: URL(string: "tel:\(contact.phoneNumber ?? "00000000000")")!) {
+                                        ZStack {
+                                            RoundedRectangle(cornerRadius: 16)
+                                                .frame(width: 150, height: 200)
+                                                .foregroundStyle(Color(uiColor: .systemGray6))
+
+                                            VStack {
+                                                if let imageData = contact.imageData, let uiImage = UIImage(data: imageData) {
+                                                    Image(uiImage: uiImage)
+                                                        .resizable()
+                                                        .frame(width: 50, height: 50)
+                                                        .clipShape(Circle())
+                                                } else {
+                                                    Image(systemName: "person.circle.fill")
+                                                        .resizable()
+                                                        .frame(width: 50, height: 50)
+                                                        .clipShape(Circle())
+                                                }
+
+                                                Text(contact.familyName + contact.givenName)
                                             }
-
-                                            Text(contact.familyName + contact.givenName)
                                         }
                                     }
                                 }
