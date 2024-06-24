@@ -112,23 +112,36 @@ struct ContactRow: View {
             if let imageData = contactDetail.imageData, let uiImage = UIImage(data: imageData) {
                 Image(uiImage: uiImage)
                     .resizable()
-                    .frame(width: 60, height: 60)
-                    .animation(.linear, value: 3)
+                    .frame(width: 50, height: 50)
+                    .clipShape(Circle())
             } else {
                 Image(systemName: "person.circle.fill")
                     .resizable()
-                    .frame(width: 60, height: 60)
-                    .animation(.linear, value: 3)
+                    .frame(width: 50, height: 50)
             }
 
-            VStack(alignment: .leading, spacing: 10) {
-                Text("\(contactDetail.familyName)\(contactDetail.givenName)")
+            VStack(alignment: .leading, spacing: 4) {
+                Text("\(contactDetail.familyName)\(contactDetail.givenName)").fontWeight(.semibold)
+
                 Text("\(contactDetail.phoneNumbers.first?.value.stringValue ?? "")")
+                    .font(.caption2 )
+                    .foregroundStyle(.gray)
             }.multilineTextAlignment(.leading)
         }
     }
 }
 
 #Preview {
-    ContactRow(contactDetail: CNContact())
+    let contact = CNMutableContact()
+
+    contact.givenName = "현진"
+    contact.familyName = "김"
+
+    contact.phoneNumbers = [ CNLabeledValue(
+        label: CNLabelPhoneNumberMain,
+        value: CNPhoneNumber(stringValue: "010-2181-2611")
+    )
+
+    ]
+    return ContactRow(contactDetail: contact)
 }
