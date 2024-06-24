@@ -11,7 +11,7 @@ import SwiftUI
 
 struct SmileView: View {
     @State private var isShowingSheet = false
-    @State private var contactList: [ContactModel] = []
+    @State private var contactSavedList: [ContactModel] = []
 
     var body: some View {
         NavigationStack {
@@ -23,7 +23,7 @@ struct SmileView: View {
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
-                            if contactList.isEmpty {
+                            if contactSavedList.isEmpty {
                                 Button {
                                     isShowingSheet = true
                                 } label: {
@@ -38,7 +38,7 @@ struct SmileView: View {
                                     .foregroundStyle(.gray)
                                 }
                             } else {
-                                ForEach(contactList) { contact in
+                                ForEach(contactSavedList) { contact in
                                     ZStack {
                                         RoundedRectangle(cornerRadius: 16)
                                             .frame(width: 150, height: 200)
@@ -90,19 +90,18 @@ struct SmileView: View {
             }
             .navigationTitle("Uttcha")
             .sheet(isPresented: $isShowingSheet) {
-                ContactList()
+                ContactListView(contactSavedList: contactSavedList)
             }
             .onAppear {
-                contactList = CoreDataStack.shared.getContactList()
+                contactSavedList = CoreDataStack.shared.getContactSavedList()
             }
         }
-
     }
 }
 
-
-struct ContactList: View {
+struct ContactListView: View {
     @State private var contacts = [ContactModel]()
+    let contactSavedList: [ContactModel]
 
     @Environment(\.dismiss) var dismiss
 
@@ -110,7 +109,9 @@ struct ContactList: View {
         NavigationStack {
             List(contacts, id: \.id) { contact in
                 Button {
-                    CoreDataStack.shared.saveContact(contact)
+                    CoreDataStack.shared.saveContact(contact, contactSavedList: contactSavedList)
+
+                    dismiss()
                 } label: {
                     ContactRow(contact: contact)
                 }
