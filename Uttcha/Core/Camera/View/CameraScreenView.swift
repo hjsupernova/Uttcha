@@ -33,7 +33,6 @@ struct CameraScreenView: View {
     }
 }
 
-
 #Preview {
     CameraScreenView(model: CameraViewModel())
 }
