@@ -35,14 +35,14 @@ struct SmileView: View {
 }
 
 struct ContactList: View {
-    @State private var contacts = [CNContact]()
+    @State private var contacts = [Contact]()
 
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
         NavigationStack {
-            List(contacts, id: \.identifier) { contactDetail in
-                ContactRow(contactDetail: contactDetail)
+            List(contacts, id: \.id) { contact in
+                ContactRow(contact: contact)
             }
             .navigationTitle("연락처 추가")
             .navigationBarTitleDisplayMode(.inline)
@@ -57,6 +57,7 @@ struct ContactList: View {
         .onAppear(perform: getContactList)
     }
 
+    // TODO: MVVM
     private func getContactList() {
         let CNStore = CNContactStore()
 
@@ -72,12 +73,41 @@ struct ContactList: View {
                     ]
                     let request = CNContactFetchRequest(keysToFetch: keys)
 
-                    var fetchedContacts = [CNContact]()
-                    try CNStore.enumerateContacts(with: request) { contact, _ in
-                        DispatchQueue.main.async {
-                            contacts.append(contact)
+                    var fetchedContacts = [Contact]()
+                    try CNStore.enumerateContacts(with: request) { cnContact, _ in
+                        let contact = Contact(context: CoreDataStack.shared.persistentContainer.viewContext)
+                        contact.familyName = cnContact.familyName
+                        contact.givenName = cnContact.givenName
+                        contact.phoneNumber = cnContact.phoneNumbers.first?.value.stringValue
+                        contact.imageData = cnContact.imageData
+
+                        fetchedContacts.append(contact)
+                    }
+
+                    fetchedContacts.sort { contact1, contact2 in
+                        let name1 = (contact1.familyName ?? "") + (contact1.givenName ?? "")
+                        let name2 = (contact2.familyName ?? "") + (contact2.givenName ?? "")
+
+                        guard let firstChar1 = name1.first, let firstChar2 = name2.first else {
+                            // If one or both names are empty, handle the comparison (e.g., empty names come first)
+                            return name1 < name2
+                        }
+
+                        if firstChar1 >= "가" && firstChar1 <= "힣" && firstChar2 >= "가" && firstChar2 <= "힣" {
+                            return name1 < name2 // Korean sort
+                        } else if (firstChar1 >= "a" && firstChar1 <= "z" || firstChar1 >= "A" && firstChar1 <= "Z") &&
+                                  (firstChar2 >= "a" && firstChar2 <= "z" || firstChar2 >= "A" && firstChar2 <= "Z") {
+                            return name1.localizedCaseInsensitiveCompare(name2) == .orderedAscending // English sort
+                        } else {
+                            // Korean comes before English
+                            return firstChar1 >= "가" && firstChar1 <= "힣"
                         }
                     }
+
+                    DispatchQueue.main.async {
+                        contacts = fetchedContacts
+                    }
+
                 } catch {
                     print("Error while fetchiing : \(error)")
                 }
@@ -105,11 +135,11 @@ struct ContactList: View {
 }
 
 struct ContactRow: View {
-    let contactDetail: CNContact
+    let contact: Contact
 
     var body: some View {
         HStack {
-            if let imageData = contactDetail.imageData, let uiImage = UIImage(data: imageData) {
+            if let imageData = contact.imageData, let uiImage = UIImage(data: imageData) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .frame(width: 50, height: 50)
@@ -121,9 +151,9 @@ struct ContactRow: View {
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("\(contactDetail.familyName)\(contactDetail.givenName)").fontWeight(.semibold)
+                Text("\(contact.familyName ?? "" )\(contact.givenName ?? "" )").fontWeight(.semibold)
 
-                Text("\(contactDetail.phoneNumbers.first?.value.stringValue ?? "")")
+                Text("\(contact.phoneNumber ?? "")")
                     .font(.caption2 )
                     .foregroundStyle(.gray)
             }.multilineTextAlignment(.leading)
@@ -132,16 +162,11 @@ struct ContactRow: View {
 }
 
 #Preview {
-    let contact = CNMutableContact()
+    let contact = Contact(context: CoreDataStack.shared.persistentContainer.viewContext)
 
     contact.givenName = "현진"
     contact.familyName = "김"
+    contact.phoneNumber = "010-0000-0000"
 
-    contact.phoneNumbers = [ CNLabeledValue(
-        label: CNLabelPhoneNumberMain,
-        value: CNPhoneNumber(stringValue: "010-2181-2611")
-    )
-
-    ]
-    return ContactRow(contactDetail: contact)
+    return ContactRow(contact: contact)
 }
