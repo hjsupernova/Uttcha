@@ -35,14 +35,14 @@ struct SmileView: View {
                                         Image(systemName: "plus")
                                             .font(.title).bold()
                                     }
-                                    .foregroundStyle(.gray)
+                                    .foregroundStyle(Color(uiColor: .systemGray6))
                                 }
                             } else {
                                 ForEach(contactSavedList) { contact in
                                     ZStack {
                                         RoundedRectangle(cornerRadius: 16)
                                             .frame(width: 150, height: 200)
-                                            .foregroundStyle(.gray)
+                                            .foregroundStyle(Color(uiColor: .systemGray6))
 
                                         VStack {
                                             if let imageData = contact.imageData, let uiImage = UIImage(data: imageData) {
@@ -73,7 +73,7 @@ struct SmileView: View {
                                         Image(systemName: "plus")
                                             .font(.title).bold()
                                     }
-                                    .foregroundStyle(.gray)
+                                    .foregroundStyle(Color(uiColor: .systemGray6))
                                 }
                             }
                         }
@@ -90,7 +90,7 @@ struct SmileView: View {
             }
             .navigationTitle("Uttcha")
             .sheet(isPresented: $isShowingSheet) {
-                ContactListView(contactSavedList: contactSavedList)
+                ContactListView(contactSavedList: $contactSavedList)
             }
             .onAppear {
                 contactSavedList = CoreDataStack.shared.getContactSavedList()
@@ -101,7 +101,7 @@ struct SmileView: View {
 
 struct ContactListView: View {
     @State private var contacts = [ContactModel]()
-    let contactSavedList: [ContactModel]
+    @Binding var contactSavedList: [ContactModel]
 
     @Environment(\.dismiss) var dismiss
 
@@ -110,6 +110,8 @@ struct ContactListView: View {
             List(contacts, id: \.id) { contact in
                 Button {
                     CoreDataStack.shared.saveContact(contact, contactSavedList: contactSavedList)
+
+                    contactSavedList = CoreDataStack.shared.getContactSavedList()
 
                     dismiss()
                 } label: {
