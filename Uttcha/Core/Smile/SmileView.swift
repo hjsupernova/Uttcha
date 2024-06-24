@@ -35,14 +35,18 @@ struct SmileView: View {
 }
 
 struct ContactList: View {
-    @State private var contacts = [Contact]()
+    @State private var contacts = [ContactModel]()
 
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
         NavigationStack {
             List(contacts, id: \.id) { contact in
-                ContactRow(contact: contact)
+                Button {
+                    CoreDataStack.shared.saveContact(contact)
+                } label: {
+                    ContactRow(contact: contact)
+                }
             }
             .navigationTitle("연락처 추가")
             .navigationBarTitleDisplayMode(.inline)
@@ -73,13 +77,15 @@ struct ContactList: View {
                     ]
                     let request = CNContactFetchRequest(keysToFetch: keys)
 
-                    var fetchedContacts = [Contact]()
+                    var fetchedContacts = [ContactModel]()
+
                     try CNStore.enumerateContacts(with: request) { cnContact, _ in
-                        let contact = Contact(context: CoreDataStack.shared.persistentContainer.viewContext)
-                        contact.familyName = cnContact.familyName
-                        contact.givenName = cnContact.givenName
-                        contact.phoneNumber = cnContact.phoneNumbers.first?.value.stringValue
-                        contact.imageData = cnContact.imageData
+                        let contact = ContactModel(
+                            familyName: cnContact.familyName,
+                            givenName: cnContact.givenName,
+                            phoneNumber: cnContact.phoneNumbers.first?.value.stringValue,
+                            imageData: cnContact.imageData
+                        )
 
                         fetchedContacts.append(contact)
                     }
@@ -135,7 +141,7 @@ struct ContactList: View {
 }
 
 struct ContactRow: View {
-    let contact: Contact
+    let contact: ContactModel
 
     var body: some View {
         HStack {
@@ -162,11 +168,11 @@ struct ContactRow: View {
 }
 
 #Preview {
-    let contact = Contact(context: CoreDataStack.shared.persistentContainer.viewContext)
-
-    contact.givenName = "현진"
-    contact.familyName = "김"
-    contact.phoneNumber = "010-0000-0000"
-
+    let contact = ContactModel(
+        familyName: "현진",
+        givenName: "김",
+        phoneNumber: "010-0000-0000",
+        imageData: nil
+    )
     return ContactRow(contact: contact)
 }

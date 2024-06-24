@@ -66,6 +66,24 @@ extension CoreDataStack {
     }
 }
 
+// MARK: - Contact
+
+extension CoreDataStack {
+    func saveContact(_ contact: ContactModel) {
+        var coreDataContact = Contact(context: persistentContainer.viewContext)
+        coreDataContact.familyName = contact.familyName
+        coreDataContact.givenName = contact.givenName
+        coreDataContact.phoneNumber = contact.phoneNumber
+        coreDataContact.imageData = contact.imageData
+
+        save()
+    }
+
+    func getContactList() {
+        let request = NSFetchRequest<Contact>(entityName: "Contact")
+    }
+}
+
 // MARK: - UIImage
 
 extension UIImage {
