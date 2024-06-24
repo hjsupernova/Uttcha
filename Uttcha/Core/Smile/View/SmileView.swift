@@ -10,8 +10,7 @@ import ContactsUI
 import SwiftUI
 
 struct SmileView: View {
-    @State private var isShowingSheet = false
-    @State private var contactSavedList: [ContactModel] = []
+    @StateObject private var smileViewModel = SmileViewModel()
 
     var body: some View {
         NavigationStack {
@@ -23,9 +22,9 @@ struct SmileView: View {
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
-                            if contactSavedList.isEmpty {
+                            if smileViewModel.contactSavedList.isEmpty {
                                 Button {
-                                    isShowingSheet = true
+                                    smileViewModel.perform(action: .contactAddButtonTapped)
                                 } label: {
                                     ZStack {
                                         RoundedRectangle(cornerRadius: 16)
@@ -38,7 +37,7 @@ struct SmileView: View {
                                     .foregroundStyle(Color(uiColor: .systemGray6))
                                 }
                             } else {
-                                ForEach(contactSavedList) { contact in
+                                ForEach(smileViewModel.contactSavedList) { contact in
                                     ZStack {
                                         RoundedRectangle(cornerRadius: 16)
                                             .frame(width: 150, height: 200)
@@ -63,7 +62,7 @@ struct SmileView: View {
                                 }
 
                                 Button {
-                                    isShowingSheet = true
+                                    smileViewModel.perform(action: .contactAddButtonTapped)
                                 } label: {
                                     ZStack {
                                         RoundedRectangle(cornerRadius: 16)
@@ -89,29 +88,23 @@ struct SmileView: View {
 
             }
             .navigationTitle("Uttcha")
-            .sheet(isPresented: $isShowingSheet) {
-                ContactListView(contactSavedList: $contactSavedList)
-            }
-            .onAppear {
-                contactSavedList = CoreDataStack.shared.getContactSavedList()
+            .sheet(isPresented: $smileViewModel.isShowingContactSheet) {
+                ContactListView(smileViewModel: smileViewModel)
             }
         }
     }
 }
 
 struct ContactListView: View {
-    @State private var contacts = [ContactModel]()
-    @Binding var contactSavedList: [ContactModel]
+    @ObservedObject var smileViewModel: SmileViewModel
 
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
         NavigationStack {
-            List(contacts, id: \.id) { contact in
+            List(smileViewModel.contacts, id: \.id) { contact in
                 Button {
-                    CoreDataStack.shared.saveContact(contact, contactSavedList: contactSavedList)
-
-                    contactSavedList = CoreDataStack.shared.getContactSavedList()
+                    smileViewModel.perform(action: .contactListRowTapped(contact))
 
                     dismiss()
                 } label: {
@@ -128,85 +121,10 @@ struct ContactListView: View {
                 }
             }
         }
-        .onAppear(perform: getContactList)
-    }
-
-    // TODO: MVVM
-    private func getContactList() {
-        let CNStore = CNContactStore()
-
-        switch CNContactStore.authorizationStatus(for: .contacts) {
-        case .authorized:
-            DispatchQueue.global(qos: .background).async {
-                do {
-                    let keys = [
-                        CNContactGivenNameKey as CNKeyDescriptor,
-                        CNContactFamilyNameKey as CNKeyDescriptor,
-                        CNContactImageDataKey as CNKeyDescriptor, // Added image data key
-                        CNContactPhoneNumbersKey as CNKeyDescriptor // Added phone numbers key if you want to use it
-                    ]
-                    let request = CNContactFetchRequest(keysToFetch: keys)
-
-                    var fetchedContacts = [ContactModel]()
-
-                    try CNStore.enumerateContacts(with: request) { cnContact, _ in
-                        let contact = ContactModel(
-                            familyName: cnContact.familyName,
-                            givenName: cnContact.givenName,
-                            phoneNumber: cnContact.phoneNumbers.first?.value.stringValue,
-                            imageData: cnContact.imageData
-                        )
-
-                        fetchedContacts.append(contact)
-                    }
-
-                    fetchedContacts.sort { contact1, contact2 in
-                        let name1 = (contact1.familyName ?? "") + (contact1.givenName ?? "")
-                        let name2 = (contact2.familyName ?? "") + (contact2.givenName ?? "")
-
-                        guard let firstChar1 = name1.first, let firstChar2 = name2.first else {
-                            // If one or both names are empty, handle the comparison (e.g., empty names come first)
-                            return name1 < name2
-                        }
-
-                        if firstChar1 >= "가" && firstChar1 <= "힣" && firstChar2 >= "가" && firstChar2 <= "힣" {
-                            return name1 < name2 // Korean sort
-                        } else if (firstChar1 >= "a" && firstChar1 <= "z" || firstChar1 >= "A" && firstChar1 <= "Z") &&
-                                    (firstChar2 >= "a" && firstChar2 <= "z" || firstChar2 >= "A" && firstChar2 <= "Z") {
-                            return name1.localizedCaseInsensitiveCompare(name2) == .orderedAscending // English sort
-                        } else {
-                            // Korean comes before English
-                            return firstChar1 >= "가" && firstChar1 <= "힣"
-                        }
-                    }
-
-                    DispatchQueue.main.async {
-                        contacts = fetchedContacts
-                    }
-
-                } catch {
-                    print("Error while fetchiing : \(error)")
-                }
-            }
-
-        case .denied:
-            print("denied")
-
-        case .notDetermined:
-            print("not determined")
-            CNStore.requestAccess(for: .contacts) { granted, error in
-                if granted {
-                    getContactList()
-                } else if let error = error {
-                    print("error while requesting permission :\(error)")
-
-                }
-            }
-        case .restricted:
-            print("restred")
-        default:
-            print("deafult")
+        .onAppear {
+            smileViewModel.perform(action: .contactListViewAppeared)
         }
+
     }
 }
 
