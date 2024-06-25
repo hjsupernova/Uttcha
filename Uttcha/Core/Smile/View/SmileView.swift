@@ -16,87 +16,28 @@ struct SmileView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading) {
-                    Text("친구에게 연락해보세요!")
-                        .font(.title2)
-                        .bold()
+                    HeaderView(label: "친구에게 연락해보세요!")
 
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack {
-                            if smileViewModel.contactSavedList.isEmpty {
-                                Button {
-                                    smileViewModel.perform(action: .contactAddButtonTapped)
-                                } label: {
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 16)
-                                            .strokeBorder(style: StrokeStyle(lineWidth: 4, dash: [10]))
-                                            .frame(width: 150, height: 200)
-
-                                        Image(systemName: "plus")
-                                            .font(.title).bold()
-                                    }
-                                    .foregroundStyle(Color(uiColor: .systemGray6))
-                                }
-                            } else {
-                                ForEach(smileViewModel.contactSavedList) { contact in
-
-                                    Link(destination: URL(string: "tel:\(contact.phoneNumber ?? "00000000000")")!) {
-                                        ZStack {
-                                            RoundedRectangle(cornerRadius: 16)
-                                                .frame(width: 150, height: 200)
-                                                .foregroundStyle(Color(uiColor: .systemGray6))
-
-                                            VStack {
-                                                if let imageData = contact.imageData, let uiImage = UIImage(data: imageData) {
-                                                    Image(uiImage: uiImage)
-                                                        .resizable()
-                                                        .frame(width: 50, height: 50)
-                                                        .clipShape(Circle())
-                                                } else {
-                                                    Image(systemName: "person.circle.fill")
-                                                        .resizable()
-                                                        .frame(width: 50, height: 50)
-                                                        .clipShape(Circle())
-                                                }
-
-                                                Text(contact.familyName + contact.givenName)
-                                            }
-                                        }
-
-                                    }
-                                    .supportsLongPress {
-                                        smileViewModel.perform(action: .contactLongTapped(contact))
-                                    }
-                                }
-
-                                Button {
-                                    smileViewModel.perform(action: .contactAddButtonTapped)
-                                } label: {
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 16)
-                                            .strokeBorder(style: StrokeStyle(lineWidth: 4, dash: [10]))
-                                            .frame(width: 150, height: 200)
-
-                                        Image(systemName: "plus")
-                                            .font(.title).bold()
-                                    }
-                                    .foregroundStyle(Color(uiColor: .systemGray6))
-                                }
-                            }
+                    ContactListView(
+                        contacts: smileViewModel.contactSavedList,
+                        addContactAction: {
+                            smileViewModel.perform(action: .contactAddButtonTapped)
+                        },
+                        longPressAction: { contact in
+                            smileViewModel.perform(action: .contactLongTapped(contact))
                         }
-                    }
+                    )
                 }
                 .padding(.horizontal)
 
                 VStack(alignment: .leading) {
-                    Text("소중한 추억")
-                        .font(.title2).bold()
+                    HeaderView(label: "소중한 추억!")
                 }
                 .padding(.horizontal)
-
             }
             .navigationTitle("Uttcha")
             .sheet(isPresented: $smileViewModel.isShowingContactSheet) {
-                ContactListView(smileViewModel: smileViewModel)
+                ContactListSheet(smileViewModel: smileViewModel)
             }
             .confirmationDialog("삭제하기", isPresented: $smileViewModel.isShowingContactRemoveConfirmationDialog) {
                 Button("연락처 삭제", role: .destructive) {
@@ -107,7 +48,87 @@ struct SmileView: View {
     }
 }
 
+// MARK: - Contacts
+
 struct ContactListView: View {
+    let contacts: [ContactModel]
+    let addContactAction: () -> Void
+    let longPressAction: (ContactModel) -> Void
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack {
+                if contacts.isEmpty {
+                    AddContactButton(action: addContactAction)
+                } else {
+                    ForEach(contacts) { contact in
+                        ContactButton(
+                            contact: contact,
+                            longPressAction: longPressAction
+                        )
+                    }
+
+                    AddContactButton(action: addContactAction)
+                }
+            }
+        }
+    }
+}
+
+struct AddContactButton: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 16)
+                    .strokeBorder(style: StrokeStyle(lineWidth: 4, dash: [10]))
+                    .frame(width: 150, height: 200)
+
+                Image(systemName: "plus")
+                    .font(.title).bold()
+            }
+            .foregroundStyle(Color(uiColor: .systemGray6))
+        }
+    }
+}
+
+struct ContactButton: View {
+    let contact: ContactModel
+    let longPressAction: (ContactModel) -> Void
+
+    var body: some View {
+        Link(destination: URL(string: "tel:\(contact.phoneNumber ?? "00000000000")")!) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 16)
+                    .frame(width: 150, height: 200)
+                    .foregroundStyle(Color(uiColor: .systemGray6))
+
+                VStack {
+                    if let imageData = contact.imageData, let uiImage = UIImage(data: imageData) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                            .clipShape(Circle())
+                    } else {
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                            .clipShape(Circle())
+                    }
+
+                    Text(contact.familyName + contact.givenName)
+                }
+            }
+
+        }
+        .supportsLongPress {
+            longPressAction(contact)
+        }
+    }
+}
+
+struct ContactListSheet: View {
     @ObservedObject var smileViewModel: SmileViewModel
 
     @Environment(\.dismiss) var dismiss
@@ -164,6 +185,16 @@ struct ContactRow: View {
                     .foregroundStyle(.gray)
             }.multilineTextAlignment(.leading)
         }
+    }
+}
+
+struct HeaderView: View {
+    let label: String
+
+    var body: some View {
+        Text(label)
+            .font(.title2)
+            .bold()
     }
 }
 
