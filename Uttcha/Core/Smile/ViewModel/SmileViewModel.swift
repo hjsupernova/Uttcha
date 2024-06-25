@@ -12,6 +12,8 @@ enum SmileViewModelAction {
     case contactAddButtonTapped
     case contactListRowTapped(ContactModel)
     case contactListViewAppeared
+    case contactLongTapped(ContactModel)
+    case contactRemoveButtonTapped
 }
 
 class SmileViewModel: ObservableObject {
@@ -19,6 +21,8 @@ class SmileViewModel: ObservableObject {
     @Published var isShowingContactSheet: Bool = false
     @Published var contactSavedList: [ContactModel] = []
     @Published var contacts: [ContactModel] = []
+    @Published var isShowingContactRemoveConfirmationDialog: Bool = false
+    var longTappedContact: ContactModel?
 
     init() {
         getContactSavedList()
@@ -32,6 +36,10 @@ class SmileViewModel: ObservableObject {
             saveTappedContact(contact)
         case .contactListViewAppeared:
             getContactList()
+        case .contactLongTapped(let contact):
+            showContactRemoveActionSheet(contact)
+        case .contactRemoveButtonTapped:
+            removeLongTappedContact()
         }
     }
 
@@ -115,6 +123,20 @@ class SmileViewModel: ObservableObject {
             print("denied")
         default:
             print("default")
+        }
+    }
+
+    private func showContactRemoveActionSheet(_ contact: ContactModel) {
+        longTappedContact = contact
+        isShowingContactRemoveConfirmationDialog = true
+
+    }
+
+    private func removeLongTappedContact() {
+        if let longTappedContact = longTappedContact {
+            CoreDataStack.shared.removeContact(longTappedContact)
+
+            getContactSavedList()
         }
     }
 }

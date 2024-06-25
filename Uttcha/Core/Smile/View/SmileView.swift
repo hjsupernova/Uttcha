@@ -61,6 +61,10 @@ struct SmileView: View {
                                                 Text(contact.familyName + contact.givenName)
                                             }
                                         }
+
+                                    }
+                                    .supportsLongPress {
+                                        smileViewModel.perform(action: .contactLongTapped(contact))
                                     }
                                 }
 
@@ -93,6 +97,11 @@ struct SmileView: View {
             .navigationTitle("Uttcha")
             .sheet(isPresented: $smileViewModel.isShowingContactSheet) {
                 ContactListView(smileViewModel: smileViewModel)
+            }
+            .confirmationDialog("삭제하기", isPresented: $smileViewModel.isShowingContactRemoveConfirmationDialog) {
+                Button("연락처 삭제", role: .destructive) {
+                    smileViewModel.perform(action: .contactRemoveButtonTapped)
+                }
             }
         }
     }

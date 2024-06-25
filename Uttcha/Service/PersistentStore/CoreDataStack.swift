@@ -101,6 +101,22 @@ extension CoreDataStack {
             return []
         }
     }
+
+    func removeContact(_ contact: ContactModel) {
+        let request = NSFetchRequest<Contact>(entityName: "Contact")
+        request.predicate = NSPredicate(format: "familyName == %@ AND givenName == %@", contact.familyName, contact.givenName)
+
+        do {
+            let coreDataContacts = try persistentContainer.viewContext.fetch(request)
+            for coreDataContact in coreDataContacts {
+                persistentContainer.viewContext.delete(coreDataContact)
+            }
+
+            save()
+        } catch {
+            print("Failed to fetch contact to remove : \(error)")
+        }
+    }
 }
 
 // MARK: - UIImage
