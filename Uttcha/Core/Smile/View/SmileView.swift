@@ -5,8 +5,6 @@
 //  Created by KHJ on 2024/04/10.
 //
 
-import ContactsUI
-
 import SwiftUI
 
 struct SmileView: View {
@@ -32,6 +30,16 @@ struct SmileView: View {
 
                 VStack(alignment: .leading) {
                     HeaderView(label: "소중한 추억!")
+
+                    ImageListView(
+                        memories: smileViewModel.memoryList,
+                        addImageButtonAction: {
+                            smileViewModel.perform(action: .imageAddButtonTapped)
+                        },
+                        longPressAction: { memory in
+                            smileViewModel.perform(action: .imageLongPressed(memory))
+                        }
+                    )
                 }
                 .padding(.horizontal)
             }
@@ -44,8 +52,125 @@ struct SmileView: View {
                     smileViewModel.perform(action: .contactRemoveButtonTapped)
                 }
             }
+            .sheet(isPresented: $smileViewModel.isShowingUIImagePicker) {
+                UIImagePicker(memoryList: $smileViewModel.memoryList)
+            }
+            .confirmationDialog("삭제하기", isPresented: $smileViewModel.isShowingMemoryRemoveConfirmationDialog) {
+                Button("이미지 삭제", role: .destructive) {
+                    smileViewModel.perform(action: .imageRemoveButtonTapped)
+                }
+            }
         }
     }
+}
+
+// MARK: - Memories
+
+struct AddImageButton: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 16)
+                    .strokeBorder(style: StrokeStyle(lineWidth: 4, dash: [10]))
+                    .frame(width: 150, height: 200)
+
+                Image(systemName: "plus")
+                    .font(.title).bold()
+            }
+            .foregroundStyle(Color(uiColor: .systemGray6))
+        }
+    }
+}
+
+struct ImageListView: View {
+    let memories: [MemoryModel]
+    let addImageButtonAction: () -> Void
+    let longPressAction: (MemoryModel) -> Void
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack {
+                if memories.isEmpty {
+                    AddImageButton(action: addImageButtonAction)
+                } else {
+                    ForEach(memories) { memory in
+                        MemoryButton(memory: memory, longPressAction: longPressAction)
+                    }
+                    
+                    AddImageButton(action: addImageButtonAction)
+                }
+
+            }
+        }
+    }
+}
+
+struct MemoryButton: View {
+    let memory: MemoryModel
+    let longPressAction: (MemoryModel) -> Void
+
+    var body: some View {
+        Button {
+            // Details
+        } label: {
+            if let uiImage = UIImage(data: memory.image) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .frame(width: 150, height: 200)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+            } else {
+                RoundedRectangle(cornerRadius: 16)
+                    .frame(width: 150, height: 200)
+                    .foregroundStyle(Color(uiColor: .systemGray6))
+
+            }
+        }
+        .supportsLongPress {
+            longPressAction(memory)
+        }
+    }
+}
+
+struct UIImagePicker: UIViewControllerRepresentable {
+    @Binding var memoryList: [MemoryModel]
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let imagePicker = UIImagePickerController()
+        imagePicker.allowsEditing = false
+        imagePicker.sourceType = .photoLibrary
+        imagePicker.delegate = context.coordinator
+
+        return imagePicker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) { }
+
+    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        var parent: UIImagePicker
+
+        init(_ parent: UIImagePicker) {
+            self.parent = parent
+        }
+
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            picker.dismiss(animated: true) {
+
+                if let uiImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage{
+                    CoreDataStack.shared.saveMemory(uiImage)
+                    self.parent.memoryList = CoreDataStack.shared.getSavedMemoryList()
+                }
+            }
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    typealias UIViewControllerType = UIImagePickerController
+
 }
 
 // MARK: - Contacts

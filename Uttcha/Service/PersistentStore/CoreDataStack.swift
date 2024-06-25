@@ -119,23 +119,64 @@ extension CoreDataStack {
     }
 }
 
+// MARK: - Memory
+
+extension CoreDataStack {
+    func saveMemory(_ uiImage: UIImage) {
+        let image = Memory(context: persistentContainer.viewContext)
+
+        image.blob = uiImage.toData()
+        image.date = Date()
+        image.memoryId = UUID()
+
+        save()
+    }
+
+    func getSavedMemoryList() -> [MemoryModel] {
+        let request = NSFetchRequest<Memory>(entityName: "Memory")
+
+        do {
+            let coredataMemoryList = try persistentContainer.viewContext.fetch(request)
+            return coredataMemoryList.sorted { $0.date! < $1.date! }.map {
+                MemoryModel(
+                    id: $0.memoryId!,
+                    image: $0.blob!,
+                    date: $0.date!
+                )
+            }
+        } catch {
+            return []
+        }
+    }
+
+    func removeMemory(_ memory: MemoryModel) {
+        let request = NSFetchRequest<Memory>(entityName: "Memory")
+        request.predicate = NSPredicate(format: "memoryId == %@", memory.id! as CVarArg)
+
+        do {
+            let coredataMemoryList = try persistentContainer.viewContext.fetch(request)
+
+            for coreDataMemory in coredataMemoryList {
+                persistentContainer.viewContext.delete(coreDataMemory)
+
+            }
+            save()
+        } catch {
+            print("Failed to fetch contact to remove : \(error)")
+        }
+    }
+}
+
+struct MemoryModel: Identifiable {
+    let id: UUID?
+    let image: Data
+    let date: Date
+}
 // MARK: - UIImage
 
 extension UIImage {
 
     func toData() -> Data? {
         return pngData()
-    }
-
-    var sizeInBytes: Int {
-        if let data = toData() {
-            return data.count
-        } else {
-            return 0
-        }
-    }
-
-    var sizeInMB: Double {
-        return Double(sizeInBytes) / 1_000_000
     }
 }
