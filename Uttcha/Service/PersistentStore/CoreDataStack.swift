@@ -66,6 +66,59 @@ extension CoreDataStack {
     }
 }
 
+// MARK: - Contact
+
+extension CoreDataStack {
+    func saveContact(_ contact: ContactModel, contactSavedList: [ContactModel]) {
+        if contactSavedList.contains(where: { $0.familyName == contact.familyName && $0.givenName == contact.givenName }) {
+            return
+        }
+
+        var coreDataContact = Contact(context: persistentContainer.viewContext)
+        coreDataContact.familyName = contact.familyName
+        coreDataContact.givenName = contact.givenName
+        coreDataContact.phoneNumber = contact.phoneNumber
+        coreDataContact.imageData = contact.imageData
+        coreDataContact.date = Date()
+
+        save()
+    }
+
+    func getContactSavedList() -> [ContactModel] {
+        let request = NSFetchRequest<Contact>(entityName: "Contact")
+
+        do {
+            let coredataContacts = try persistentContainer.viewContext.fetch(request)
+            return coredataContacts.sorted { $0.date! < $1.date! }.map {
+                ContactModel(
+                    familyName: $0.familyName ?? "",
+                    givenName: $0.givenName ?? "",
+                    phoneNumber: $0.phoneNumber,
+                    imageData: $0.imageData
+                )
+            }
+        } catch {
+            return []
+        }
+    }
+
+    func removeContact(_ contact: ContactModel) {
+        let request = NSFetchRequest<Contact>(entityName: "Contact")
+        request.predicate = NSPredicate(format: "familyName == %@ AND givenName == %@", contact.familyName, contact.givenName)
+
+        do {
+            let coreDataContacts = try persistentContainer.viewContext.fetch(request)
+            for coreDataContact in coreDataContacts {
+                persistentContainer.viewContext.delete(coreDataContact)
+            }
+
+            save()
+        } catch {
+            print("Failed to fetch contact to remove : \(error)")
+        }
+    }
+}
+
 // MARK: - UIImage
 
 extension UIImage {

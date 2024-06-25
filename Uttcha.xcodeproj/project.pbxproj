@@ -38,6 +38,8 @@
 		CEDEDA082BCD3BEF00707EA1 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = CEDEDA072BCD3BEF00707EA1 /* Lottie */; };
 		CEDEDA0A2BCD3C0000707EA1 /* LottieSmile.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEDA092BCD3C0000707EA1 /* LottieSmile.swift */; };
 		CEDEDA0C2BCD3EED00707EA1 /* smile.json in Resources */ = {isa = PBXBuildFile; fileRef = CEDEDA0B2BCD3EED00707EA1 /* smile.json */; };
+		CEF239AC2C292EAF00739EAC /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF239AB2C292EAF00739EAC /* Contact.swift */; };
+		CEF239B02C2952E200739EAC /* SmileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF239AF2C2952E200739EAC /* SmileViewModel.swift */; };
 		CEF6C09F2BDCFBF3003489B0 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF6C09E2BDCFBF3003489B0 /* HomeViewModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -71,6 +73,8 @@
 		CEC27FAB2BC9499400B455D8 /* DebugText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugText.swift; sourceTree = "<group>"; };
 		CEDEDA092BCD3C0000707EA1 /* LottieSmile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieSmile.swift; sourceTree = "<group>"; };
 		CEDEDA0B2BCD3EED00707EA1 /* smile.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = smile.json; sourceTree = "<group>"; };
+		CEF239AB2C292EAF00739EAC /* Contact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
+		CEF239AF2C2952E200739EAC /* SmileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmileViewModel.swift; sourceTree = "<group>"; };
 		CEF6C09E2BDCFBF3003489B0 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -211,7 +215,8 @@
 		CEAEB4582BE8B5CD00C522C1 /* Smile */ = {
 			isa = PBXGroup;
 			children = (
-				CEB940892BC660BE003D9F7F /* SmileView.swift */,
+				CEF239AD2C2952D300739EAC /* View */,
+				CEF239AE2C2952D600739EAC /* ViewModel */,
 			);
 			path = Smile;
 			sourceTree = "<group>";
@@ -304,8 +309,25 @@
 			isa = PBXGroup;
 			children = (
 				CEB940812BC552B6003D9F7F /* Model.xcdatamodeld */,
+				CEF239AB2C292EAF00739EAC /* Contact.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		CEF239AD2C2952D300739EAC /* View */ = {
+			isa = PBXGroup;
+			children = (
+				CEB940892BC660BE003D9F7F /* SmileView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		CEF239AE2C2952D600739EAC /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				CEF239AF2C2952E200739EAC /* SmileViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		CEF6C0A02BDD07B9003489B0 /* Camera */ = {
@@ -420,11 +442,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEF239AC2C292EAF00739EAC /* Contact.swift in Sources */,
 				CEA239812BE8C91D00F157A7 /* Date.swift in Sources */,
 				CE7C987E2BC134CD00FA9646 /* HomeView.swift in Sources */,
 				CEB9409F2BC77DCE003D9F7F /* SmileCalendar.swift in Sources */,
 				CEDEDA0A2BCD3C0000707EA1 /* LottieSmile.swift in Sources */,
 				CEA2397F2BE8C4B100F157A7 /* ImageDetailView.swift in Sources */,
+				CEF239B02C2952E200739EAC /* SmileViewModel.swift in Sources */,
 				CE7C986A2BC12B1C00FA9646 /* UttchaApp.swift in Sources */,
 				CEA148D42BE9AF7D00457F18 /* NotificationManager.swift in Sources */,
 				CEA239792BE8BDE200F157A7 /* CameraOverlayView.swift in Sources */,
@@ -581,7 +605,10 @@
 				DEVELOPMENT_TEAM = C9D4D98Z8R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Uttcha/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "To take a photo";
+				INFOPLIST_KEY_NSContactsUsageDescription = "연락처를 불러오기 위한 권한이 필요합니다.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "To save a photo";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -612,7 +639,10 @@
 				DEVELOPMENT_TEAM = C9D4D98Z8R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Uttcha/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "To take a photo";
+				INFOPLIST_KEY_NSContactsUsageDescription = "연락처를 불러오기 위한 권한이 필요합니다.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "To save a photo";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
