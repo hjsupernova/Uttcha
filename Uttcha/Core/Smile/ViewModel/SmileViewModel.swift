@@ -19,6 +19,8 @@ enum SmileViewModelAction {
 
     // Images
     case imageAddButtonTapped
+    case imageLongPressed(MemoryModel)
+    case imageRemoveButtonTapped
 }
 
 class SmileViewModel: ObservableObject {
@@ -29,12 +31,15 @@ class SmileViewModel: ObservableObject {
     @Published var isShowingContactRemoveConfirmationDialog: Bool = false
     @Published var isShowingUIImagePicker: Bool = false
     @Published var memoryList: [MemoryModel] = []
+    @Published var isShowingMemoryRemoveConfirmationDialog: Bool = false
 
     // MARK: - Public properties
     var longTappedContact: ContactModel?
+    var longPressedMemory: MemoryModel? 
 
     init() {
         getContactSavedList()
+        getMemorySavedList()
     }
     // MARK: - Actions
     func perform(action: SmileViewModelAction) {
@@ -54,6 +59,10 @@ class SmileViewModel: ObservableObject {
         // images
         case .imageAddButtonTapped:
             showUIImagePicker()
+        case .imageLongPressed(let memory):
+            showMemoryRemoveActionSheet(memory)
+        case .imageRemoveButtonTapped:
+            removeLongPressedMemory()
         }
     }
 
@@ -157,6 +166,19 @@ class SmileViewModel: ObservableObject {
     private func showUIImagePicker() {
         isShowingUIImagePicker = true
     }
+
+    private func showMemoryRemoveActionSheet(_ memory: MemoryModel) {
+        longPressedMemory = memory
+        isShowingMemoryRemoveConfirmationDialog = true
+    }
+
+    private func removeLongPressedMemory() {
+        if let longPressedMemory = longPressedMemory {
+            CoreDataStack.shared.removeMemory(longPressedMemory)
+
+            getMemorySavedList()
+        }
+    }
 }
 
 // MARK: - Private instance methods
@@ -164,5 +186,9 @@ class SmileViewModel: ObservableObject {
 extension SmileViewModel {
     private func getContactSavedList() {
         contactSavedList = CoreDataStack.shared.getContactSavedList()
+    }
+
+    private func getMemorySavedList() {
+        memoryList = CoreDataStack.shared.getSavedMemoryList()
     }
 }

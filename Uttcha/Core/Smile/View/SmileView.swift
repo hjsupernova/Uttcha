@@ -37,7 +37,7 @@ struct SmileView: View {
                             smileViewModel.perform(action: .imageAddButtonTapped)
                         },
                         longPressAction: { memory in
-
+                            smileViewModel.perform(action: .imageLongPressed(memory))
                         }
                     )
                 }
@@ -54,6 +54,11 @@ struct SmileView: View {
             }
             .sheet(isPresented: $smileViewModel.isShowingUIImagePicker) {
                 UIImagePicker(memoryList: $smileViewModel.memoryList)
+            }
+            .confirmationDialog("삭제하기", isPresented: $smileViewModel.isShowingMemoryRemoveConfirmationDialog) {
+                Button("이미지 삭제", role: .destructive) {
+                    smileViewModel.perform(action: .imageRemoveButtonTapped)
+                }
             }
         }
     }
@@ -123,7 +128,7 @@ struct MemoryButton: View {
             }
         }
         .supportsLongPress {
-            // Delete Action Sheet
+            longPressAction(memory)
         }
     }
 }
