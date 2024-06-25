@@ -5,15 +5,20 @@
 //  Created by KHJ on 6/24/24.
 //
 
-import Foundation
 import Contacts
+import Foundation
 
 enum SmileViewModelAction {
+
+    // Contacts
     case contactAddButtonTapped
     case contactListRowTapped(ContactModel)
     case contactListViewAppeared
     case contactLongTapped(ContactModel)
     case contactRemoveButtonTapped
+
+    // Images
+    case imageAddButtonTapped
 }
 
 class SmileViewModel: ObservableObject {
@@ -22,6 +27,10 @@ class SmileViewModel: ObservableObject {
     @Published var contactSavedList: [ContactModel] = []
     @Published var contacts: [ContactModel] = []
     @Published var isShowingContactRemoveConfirmationDialog: Bool = false
+    @Published var isShowingUIImagePicker: Bool = false
+    @Published var memoryList: [MemoryModel] = []
+
+    // MARK: - Public properties
     var longTappedContact: ContactModel?
 
     init() {
@@ -30,6 +39,7 @@ class SmileViewModel: ObservableObject {
     // MARK: - Actions
     func perform(action: SmileViewModelAction) {
         switch action {
+        // contacts
         case .contactAddButtonTapped:
             showContactSheet()
         case .contactListRowTapped(let contact):
@@ -40,6 +50,10 @@ class SmileViewModel: ObservableObject {
             showContactRemoveActionSheet(contact)
         case .contactRemoveButtonTapped:
             removeLongTappedContact()
+
+        // images
+        case .imageAddButtonTapped:
+            showUIImagePicker()
         }
     }
 
@@ -138,6 +152,10 @@ class SmileViewModel: ObservableObject {
 
             getContactSavedList()
         }
+    }
+
+    private func showUIImagePicker() {
+        isShowingUIImagePicker = true
     }
 }
 
