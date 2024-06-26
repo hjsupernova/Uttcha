@@ -92,7 +92,8 @@ struct NotificaitonOptionsSheet: View {
                         .font(.title)
                 }
             }
-            .padding()
+
+            Spacer()
 
             Picker("", selection: $selectedTiemOption) {
                 ForEach(NotificationTimeOption.allCases, id: \.self) { option in
@@ -111,6 +112,8 @@ struct NotificaitonOptionsSheet: View {
             .labelsHidden()
             .pickerStyle(.wheel)
 
+            Spacer()
+
             Button {
                 scheduleNotificaiton()
                 dismiss()
@@ -121,6 +124,8 @@ struct NotificaitonOptionsSheet: View {
             }
             .buttonStyle(.borderedProminent)
         }
+        .padding()
+        .interactiveDismissDisabled()
         .onAppear {
             NotificationManager.requestNotificationAuthorization()
         }
