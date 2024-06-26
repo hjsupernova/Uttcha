@@ -13,110 +13,147 @@ enum NotificationTimeOption: String, CaseIterable {
     case afternoon = "오후"
     case night = "저녁"
 }
+
 struct SettingsView: View {
-    @AppStorage("isScheduled") var isScheduled = false
-    @AppStorage("notificationTimeString") var notificationTimeString = ""
-    @State private var selectedTiemOption = NotificationTimeOption.day
+    @AppStorage("isNotificationOn") var isNotificationOn = false
+    @AppStorage("isShowingNotificationOptionsSheet") var isShowingNotificationOptionsSheet = false
+    @AppStorage("selectedTimeOption") var selectedTimeOption = NotificationTimeOption.day
 
     var body: some View {
-        List {
-            Section {
-                Toggle("알림 허용", isOn: $isScheduled)
-                    .tint(.indigo)
-                    .onChange(of: isScheduled) {
-                        handleIsScheduledChange(isScheduled: isScheduled)
-                    }
-            }
+        ScrollView {
+            VStack(alignment: .leading) {
+                NotificationSettingsSection(
+                    isNotificationOn: $isNotificationOn,
+                    isShowingNotificationOptionsSheet: $isShowingNotificationOptionsSheet,
+                    selectedTimeOption: $selectedTimeOption
+                )
 
-            if isScheduled {
-                Section {
-                    Picker("시간대", selection: $selectedTiemOption) {
-                        ForEach(NotificationTimeOption.allCases, id: \.self) { option in
-                            Text(option.rawValue)
-                        }
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                } header: {
-                    Text("시간대")
-                }
-                .onChange(of: selectedTiemOption) { oldValue, newValue in
-                    let randomTime = randomTime(for: selectedTiemOption)
-                    notificationTimeString = DateHelper.dateFormatter.string(from: randomTime)
-                    handleNotificationTimeChange()
-                    print(notificationTimeString)
-                }
+                AppInfoSection()
             }
         }
+        .padding()
         .navigationTitle("설정")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $isShowingNotificationOptionsSheet) {
+            NotificaitonOptionsSheet(selectedTimeOption: $selectedTimeOption, isNotificationOn: $isNotificationOn)
+                .presentationDetents([.medium])
+        }
     }
 }
 
-private extension SettingsView {
-    private func handleIsScheduledChange(isScheduled: Bool) {
-        if isScheduled {
-            NotificaitonManager.requestNotificationAuthorization()
-            NotificaitonManager.scheduleNotification(notificationTimeString: notificationTimeString)
+struct NotificationSettingsSection: View {
+    @Binding var isNotificationOn: Bool
+    @Binding var isShowingNotificationOptionsSheet: Bool
+    @Binding var selectedTimeOption: NotificationTimeOption
 
-        } else {
-            NotificaitonManager.cancelNotification()
+    var body: some View {
+        Text("설정")
+
+        GroupBox {
+            Toggle("알림 \(isNotificationOn ? "ON" : "OFF")", isOn: $isNotificationOn)
+                .onChange(of: isNotificationOn) {
+                    if isNotificationOn {
+                        isShowingNotificationOptionsSheet = true
+                    } else {
+                        selectedTimeOption = .day
+                        NotificationManager.cancelAllNotifications()
+                    }
+                }
+                .tint(.green)
+
+            HStack {
+                if isNotificationOn {
+                    Text("\(selectedTimeOption.rawValue)중 알림을 무작위로 보내드릴게요!")
+                } else {
+                    Text("알림 시간대를 설정할 수 있어요")
+                }
+
+                Spacer()
+            }
+        }
+    }
+}
+
+struct NotificaitonOptionsSheet: View {
+    @Binding var selectedTimeOption: NotificationTimeOption
+    @Binding var isNotificationOn: Bool
+
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        VStack {
+            HStack {
+                Text("알림 설정하기")
+                    .font(.title).bold()
+
+                Spacer()
+
+                Button {
+                    dismiss()
+                    isNotificationOn = false
+                } label: {
+                    Image(systemName: "xmark")
+                        .font(.title)
+                }
+            }
+
+            Spacer()
+
+            Picker("", selection: $selectedTimeOption) {
+                ForEach(NotificationTimeOption.allCases, id: \.self) { option in
+                    switch option {
+                    case .day:
+                        Text(option.rawValue + " (08:00 ~ 22:00)")
+                    case .morning:
+                        Text(option.rawValue + " (08:00 ~ 12:00)")
+                    case .afternoon:
+                        Text(option.rawValue + " (12:00 ~ 18:00)")
+                    case .night:
+                        Text(option.rawValue + " (18:00 ~ 22:00)")
+                    }
+                }
+            }
+            .labelsHidden()
+            .pickerStyle(.wheel)
+
+            Spacer()
+
+            Button {
+                scheduleNotificaiton()
+                dismiss()
+            } label: {
+                Text("저장")
+                    .frame(maxWidth: .infinity)
+                    .font(.title2)
+            }
+            .buttonStyle(.bordered)
+        }
+        .padding()
+        .interactiveDismissDisabled()
+        .onAppear {
+            NotificationManager.requestNotificationAuthorization()
         }
     }
 
-    private func handleNotificationTimeChange() {
-        NotificaitonManager.cancelNotification()
-        NotificaitonManager.requestNotificationAuthorization()
-        NotificaitonManager.scheduleNotification(
-            notificationTimeString: notificationTimeString
-        )
+    private func scheduleNotificaiton() {
+        NotificationManager.scheduleNotifications(notificationTimeOption: selectedTimeOption)
+        isNotificationOn = true
     }
+}
 
-    private func randomTime(for option: NotificationTimeOption) -> Date {
-        let calendar = Calendar.current
+struct AppInfoSection: View {
+    var body: some View {
+        Text("앱 정보")
 
-        var startHour = 0
-        var endHour = 0
-        switch option {
-        case .day:
-            startHour = 8
-            endHour = 22
-        case .morning:
-            startHour = 8
-            endHour = 12
+        GroupBox {
+            HStack {
+                Text("웃차에 대해서")
 
-        case .afternoon:
-            startHour = 12
-            endHour = 18
-
-        case .night:
-            startHour = 18
-            endHour = 22
-
+                Spacer()
+            }
         }
-
-        let randomHour = Int.random(in: startHour..<endHour)
-
-        let randomMinute = Int.random(in: 0..<60)
-        let randomSecond = Int.random(in: 0..<60)
-
-        var dateComponents = DateComponents()
-        dateComponents.hour = randomHour
-        dateComponents.minute = randomMinute
-        dateComponents.second = randomSecond
-
-        return calendar.date(from: dateComponents)!
     }
 }
-
-// MARK: - 이것도 extension으로 대체
-struct DateHelper {
-    static let dateFormatter: DateFormatter =  {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return formatter
-    }()
-}
-
 #Preview {
     NavigationStack {
         SettingsView()
