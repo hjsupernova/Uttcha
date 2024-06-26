@@ -17,8 +17,7 @@ enum NotificationTimeOption: String, CaseIterable {
 struct SettingsView: View {
     @AppStorage("isNotificationOn") var isNotificationOn = false
     @AppStorage("isShowingNotificaitonOptionsSheet") var isShowingNotificaitonOptionsSheet = false
-
-    @State private var selectedTiemOption = NotificationTimeOption.day
+    @AppStorage("selectedTimeOption") var selectedTimeOption = NotificationTimeOption.day
 
     var body: some View {
         ScrollView {
@@ -31,13 +30,18 @@ struct SettingsView: View {
                             if isNotificationOn {
                                 isShowingNotificaitonOptionsSheet = true
                             } else {
-                                NotificationManager.cancelNotification()
+                                selectedTimeOption = .day
+                                NotificationManager.cancelAllNotifications()
                             }
                         }
                         .tint(.green)
 
                     HStack {
-                        Text("\(selectedTiemOption.rawValue)중 알림을 무작위로 보내드릴게요!")
+                        if isNotificationOn {
+                            Text("\(selectedTimeOption.rawValue)중 알림을 무작위로 보내드릴게요!")
+                        } else {
+                            Text("알림 시간대를 설정할 수 있어요")
+                        }
 
                         Spacer()
                     }
@@ -60,7 +64,7 @@ struct SettingsView: View {
         .navigationTitle("설정")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $isShowingNotificaitonOptionsSheet) {
-            NotificaitonOptionsSheet(selectedTiemOption: $selectedTiemOption, isNotificationOn: $isNotificationOn)
+            NotificaitonOptionsSheet(selectedTiemOption: $selectedTimeOption, isNotificationOn: $isNotificationOn)
                 .presentationDetents([.medium])
         }
     }
@@ -92,7 +96,16 @@ struct NotificaitonOptionsSheet: View {
 
             Picker("", selection: $selectedTiemOption) {
                 ForEach(NotificationTimeOption.allCases, id: \.self) { option in
-                    Text(option.rawValue)
+                    switch option {
+                    case .day:
+                        Text(option.rawValue + " (08:00 ~ 22:00)")
+                    case .morning:
+                        Text(option.rawValue + " (08:00 ~ 12:00)")
+                    case .afternoon:
+                        Text(option.rawValue + " (12:00 ~ 18:00)")
+                    case .night:
+                        Text(option.rawValue + " (18:00 ~ 22:00)")
+                    }
                 }
             }
             .labelsHidden()
@@ -114,7 +127,7 @@ struct NotificaitonOptionsSheet: View {
     }
 
     private func scheduleNotificaiton() {
-        NotificationManager.scheduleNotification(notificationTimeOption: selectedTiemOption)
+        NotificationManager.scheduleNotifications(notificationTimeOption: selectedTiemOption)
         isNotificationOn = true
     }
 }
