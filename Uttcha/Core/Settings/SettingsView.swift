@@ -122,7 +122,7 @@ struct NotificaitonOptionsSheet: View {
                     .frame(maxWidth: .infinity)
                     .font(.title2)
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.bordered)
         }
         .padding()
         .interactiveDismissDisabled()
@@ -150,4 +150,5 @@ struct DateHelper {
     NavigationStack {
         SettingsView()
     }
+    .tint(.white)
 }
