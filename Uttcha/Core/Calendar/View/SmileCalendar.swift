@@ -50,7 +50,7 @@ struct SmileCalendar: View {
             proxy: calendarViewProxy
         )
         .backgroundColor(.systemGray6)
-        // TODO: Margin 처리하기 !
+
         .horizontalDayMargin(0)
         .verticalDayMargin(12)
 

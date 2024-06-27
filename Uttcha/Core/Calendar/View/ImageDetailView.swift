@@ -26,10 +26,19 @@ struct ImageDetailView: View {
                                     .clipShape(RoundedRectangle(cornerRadius: 4))
                                     .padding(4)
 
-                            TextEditor(text: $text).id(0)
-                                .focused($inFocus, equals: 0)
-                                .frame(height: 300)
-                                .background(.yellow)
+                            ZStack(alignment: .topLeading) {
+                                TextEditor(text: $text).id(0)
+                                    .focused($inFocus, equals: 0)
+                                    .frame(height: 300)
+                                    .background(.yellow)
+
+                                if text.isEmpty {
+                                    Text("오늘 하루를 기록해보세요.")
+                                        .foregroundColor(Color(UIColor.placeholderText))
+                                        .padding(.horizontal, 4)
+                                        .padding(.vertical, 8)
+                                }
+                            }
                         }
                         .onChange(of: inFocus) { id in
                             withAnimation {
@@ -81,7 +90,7 @@ struct ImageDetailView: View {
 
     // Set up sample data
     samplePhoto.date = Date()
-    samplePhoto.memo = "Sample memo text"
+    samplePhoto.memo = ""
 
     // Create a sample image and convert it to Data
     if let sampleImage = UIImage(systemName: "photo"),
