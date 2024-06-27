@@ -60,6 +60,8 @@ struct ImageDetailView: View {
                         Button(role: .destructive) {
                             if let selectedImage = selectedImage {
                                 CoreDataStack.shared.removePhoto(selectedImage)
+
+                                CoreDataStack.shared.getImageList()
                             }
 
                             dismiss()

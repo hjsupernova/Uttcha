@@ -76,8 +76,6 @@ extension CoreDataStack {
             }
 
             save()
-
-            getImageList()
         } catch {
             print("Failed to fetch contact to remove : \(error)")
         }
