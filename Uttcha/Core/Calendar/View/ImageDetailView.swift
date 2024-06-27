@@ -47,14 +47,22 @@ struct ImageDetailView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        if let image = selectedImage {
-                            image.memo = text
-                            CoreDataStack.shared.save()
+                    Menu {
+                        Button(role: .destructive) {
+                            if let selectedImage = selectedImage {
+                                CoreDataStack.shared.removePhoto(selectedImage)
+                            }
+
+                            dismiss()
+                        } label: {
+                            HStack {
+                                Text("삭제")
+                                Spacer()
+                                Image(systemName: "trash")
+                            }
                         }
-                        dismiss()
                     } label: {
-                        Text("저장")
+                        Image(systemName: "ellipsis")
                     }
                 }
 
@@ -65,4 +73,22 @@ struct ImageDetailView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
     }
+}
+
+#Preview {
+    let context = CoreDataStack.shared.persistentContainer.viewContext
+    let samplePhoto = Photo(context: context)
+
+    // Set up sample data
+    samplePhoto.date = Date()
+    samplePhoto.memo = "Sample memo text"
+
+    // Create a sample image and convert it to Data
+    if let sampleImage = UIImage(systemName: "photo"),
+       let imageData = sampleImage.pngData() {
+        samplePhoto.blob = imageData
+    }
+
+    return ImageDetailView(selectedImage: samplePhoto)
+        .environment(\.managedObjectContext, context)
 }
