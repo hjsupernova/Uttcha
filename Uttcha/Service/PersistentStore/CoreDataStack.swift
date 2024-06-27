@@ -64,6 +64,22 @@ extension CoreDataStack {
             // TODO: throw error
         }
     }
+
+    func removePhoto(_ photo: Photo) {
+        let request = NSFetchRequest<Photo>(entityName: "Photo")
+        request.predicate = NSPredicate(format: "date == %@", photo.date! as CVarArg)
+
+        do {
+            let photos = try persistentContainer.viewContext.fetch(request)
+            for photo in photos {
+                persistentContainer.viewContext.delete(photo)
+            }
+
+            save()
+        } catch {
+            print("Failed to fetch contact to remove : \(error)")
+        }
+    }
 }
 
 // MARK: - Contact
