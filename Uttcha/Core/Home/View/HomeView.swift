@@ -30,7 +30,6 @@ struct HomeView: View {
                 .padding()
 
                 HStack {
-
                     ZStack {
                         RoundedRectangle(cornerRadius: 16)
                             .fill(Color(uiColor: .systemGray6))
@@ -56,16 +55,19 @@ struct HomeView: View {
                             .fill(Color(uiColor: .systemGray6))
                             .frame(width: 150, height: 100)
 
-                        Button {
-                            model.perform(action: .showCamera)
-                        } label: {
-                            ZStack {
-                                Circle()
-                                    .frame(height: 50)
-                                    .foregroundStyle(.white)
+                        VStack {
+                            Button {
+                                model.perform(action: .showCamera)
+                            } label: {
+                                VStack {
+                                    Text(homeViewModel.isCameraButtonDisabled ? "내일 봐요!" : "웃어 봐요!")
+                                        .fontWeight(.bold)
 
-                                Text("😁")
+                                    Text(homeViewModel.isCameraButtonDisabled ? "😘" : "🥲")
+                                        .font(.largeTitle)
+                                }
                             }
+                            .disabled(homeViewModel.isCameraButtonDisabled)
                         }
                     }
                 }

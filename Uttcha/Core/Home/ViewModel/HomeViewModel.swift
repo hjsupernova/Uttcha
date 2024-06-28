@@ -20,7 +20,16 @@ final class HomeViewModel: ObservableObject {
     @Published var isShowingCameraView: Bool = false
     @Published var isShowingMonthsSheet = false
     @Published var isShowingDetailView = false
-    @Published var photos: [Photo] = []
+    @Published var photos: [Photo] = [] {
+        didSet {
+             calculateButtonAvailabilty()
+        }
+    }
+    @Published var isCameraButtonDisabled: Bool = false {
+        didSet {
+            print("isCameraButtonDisabled: \(isCameraButtonDisabled)")
+        }
+    }
 
     init() {
         getImageList()
@@ -62,5 +71,26 @@ final class HomeViewModel: ObservableObject {
 
     private func getImageList() {
         photos = CoreDataStack.shared.getImageList()
+    }
+}
+
+// MARK: - Private instance methods
+
+extension HomeViewModel {
+    func calculateButtonAvailabilty() {
+        print("Calcualte start")
+        print("Photo count: \(photos.count)")
+        if photos.isEmpty {
+            isCameraButtonDisabled = false
+        } else {
+            for photo in photos {
+                if let date = photo.date {
+                    isCameraButtonDisabled = Calendar.current.isDateInToday(date)
+                    return
+                }
+
+                isCameraButtonDisabled = false
+            }
+        }
     }
 }
