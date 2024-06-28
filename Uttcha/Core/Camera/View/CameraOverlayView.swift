@@ -17,13 +17,14 @@ struct CameraOverlayView: View {
             return "\(model.neededFaceCount - model.detectedFaceCount) 명이 부족해요! 😭"
         }
     }
+    
     var body: some View {
         GeometryReader { geo in
             VStack {
                 ZStack {
                     Rectangle()
                         .fill(Color.black)
-                    
+
                     ProgressView(smileInformation, value: model.smileProgress, total: 100)
                         .foregroundStyle(.white)
                         .font(.title2).bold()

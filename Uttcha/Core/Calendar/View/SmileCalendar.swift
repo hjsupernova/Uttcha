@@ -12,7 +12,7 @@ import UIKit
 import HorizonCalendar
 
 struct SmileCalendar: View {
-    @StateObject private var smileCalendarViewModel = SmileCalendarViewModel()
+    @ObservedObject private var homeViewModel: HomeViewModel
     @StateObject private var calendarViewProxy = CalendarViewProxy()
 
     private let calendar: Calendar
@@ -24,7 +24,8 @@ struct SmileCalendar: View {
     @State private var selectedImage: Photo?
     @Binding var isShowingCamera: Bool
 
-    init(calendar: Calendar, monthsLayout: MonthsLayout, isShowingCamera: Binding<Bool>) {
+    init(homeViewModel: HomeViewModel, calendar: Calendar, monthsLayout: MonthsLayout, isShowingCamera: Binding<Bool>) {
+        self.homeViewModel = homeViewModel
         self.calendar = calendar
         self.monthsLayout = monthsLayout
         let today = Date()
@@ -46,7 +47,7 @@ struct SmileCalendar: View {
             calendar: calendar,
             visibleDateRange: visibleDateRange,
             monthsLayout: monthsLayout,
-            dataDependency: nil,
+            dataDependency: homeViewModel.photos,
             proxy: calendarViewProxy
         )
         .backgroundColor(.systemGray6)
@@ -57,7 +58,7 @@ struct SmileCalendar: View {
         .monthHeaders { month in
             let monthHeaderText = monthDateFormatter.string(from: calendar.date(from: month.components)!)
             Button {
-                smileCalendarViewModel.perform(action: .showMonthsSheet)
+                homeViewModel.perform(action: .showMonthsSheet)
             } label: {
                 HStack {
                     Text(monthHeaderText)
@@ -79,7 +80,7 @@ struct SmileCalendar: View {
         }
         .dayBackgrounds { day in
             let calendarDate = calendar.date(from: day.components)!
-            let image = CoreDataStack.shared.imageList.filter {
+            let image = homeViewModel.photos.filter {
                 calendar.isDate($0.date!, inSameDayAs: calendarDate)
             }.first
 
@@ -96,14 +97,14 @@ struct SmileCalendar: View {
         .onDaySelection { day in
             let calendarDate = calendar.date(from: day.components)!
 
-            let image = CoreDataStack.shared.imageList.filter {
+            let image = homeViewModel.photos.filter {
                 calendar.isDate($0.date!, inSameDayAs: calendarDate)
             }.first
 
             if let image = image {
                 selectedImage = image
                 // TODO: action에 유저 액션? 아니면 행해야하는 액션?
-                smileCalendarViewModel.perform(action: .photoTapped)
+                homeViewModel.perform(action: .photoTapped)
             } else if calendar.isDateInToday(calendarDate) {
                 isShowingCamera = true
             }
@@ -119,12 +120,13 @@ struct SmileCalendar: View {
             )
         }
 
-        .sheet(isPresented: $smileCalendarViewModel.isShowingDetailView) {
+        .sheet(isPresented: $homeViewModel.isShowingDetailView) {
             ImageDetailView(
-                selectedImage: selectedImage
+                homeViewModel: homeViewModel,
+                selectedImage: $selectedImage
             )
         }
-        .sheet(isPresented: $smileCalendarViewModel.isShowingMonthsSheet) {
+        .sheet(isPresented: $homeViewModel.isShowingMonthsSheet) {
             MonthsAvailable(calendarViewProxy: calendarViewProxy, startDate: visibleDateRange.lowerBound)
                 .presentationDetents([.medium])
         }
@@ -140,7 +142,6 @@ struct MonthsAvailable: View {
     let startDate: Date
 
     @Environment(\.dismiss) var dismiss
-
 
     var body: some View {
         VStack {
@@ -203,5 +204,10 @@ struct MonthsAvailable: View {
 }
 
 #Preview {
-    SmileCalendar(calendar: Calendar.current, monthsLayout: .horizontal(options: .init()), isShowingCamera: .constant(false))
+    SmileCalendar(
+        homeViewModel: HomeViewModel(),
+        calendar: Calendar.current,
+        monthsLayout: .horizontal(options: .init()),
+        isShowingCamera: .constant(false)
+    )
 }

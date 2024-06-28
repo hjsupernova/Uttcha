@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUIIntrospect
-
 struct HomeView: View {
     @StateObject private var model = CameraViewModel()
     @StateObject private var homeViewModel = HomeViewModel()
@@ -17,6 +15,7 @@ struct HomeView: View {
         NavigationStack {
             ScrollView {
                 SmileCalendar(
+                    homeViewModel: homeViewModel,
                     calendar: .autoupdatingCurrent,
                     monthsLayout: .horizontal,
                     isShowingCamera: $model.isShowingCameraView
@@ -84,6 +83,7 @@ struct HomeView: View {
         .fullScreenCover(isPresented: $model.isShowingCameraView) {
             CameraScreenView(model: model)
         }
+        .environmentObject(homeViewModel)
     }
 }
 

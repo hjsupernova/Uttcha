@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct UttchaApp: App {
-    @StateObject private var coreDataStack = CoreDataStack.shared
+    private var coreDataStack = CoreDataStack.shared
     @AppStorage("isNotificationOn") var isNotificationOn = false
     @AppStorage("selectedTimeOption") var selectedTimeOption = NotificationTimeOption.day
 

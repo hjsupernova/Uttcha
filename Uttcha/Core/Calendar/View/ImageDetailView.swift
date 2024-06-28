@@ -8,16 +8,19 @@
 import SwiftUI
 
 struct ImageDetailView: View {
-    let selectedImage: Photo?
+    @ObservedObject var homeViewModel: HomeViewModel
 
-    @State private var text: String = ""
+    @Binding var selectedImage: Photo?
     @Environment(\.dismiss) var dismiss
     @FocusState var inFocus: Int?
+    @State private var text: String = ""
 
     var body: some View {
         NavigationStack {
             Group {
-                if let image = selectedImage, let uiImage = UIImage(data: image.blob!) {
+                if let image = selectedImage,
+                   let blob = image.blob,
+                   let uiImage = UIImage(data: blob) {
                     ScrollViewReader { sp in
                         ScrollView {
                                 Image(uiImage: uiImage)
@@ -58,13 +61,12 @@ struct ImageDetailView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
                         Button(role: .destructive) {
-                            if let selectedImage = selectedImage {
-                                CoreDataStack.shared.removePhoto(selectedImage)
+                            dismiss()
 
-                                CoreDataStack.shared.getImageList()
+                            if let selectedImage = selectedImage {
+                                homeViewModel.perform(action: .photoRemoveButtonTapped(selectedImage))
                             }
 
-                            dismiss()
                         } label: {
                             HStack {
                                 Text("삭제")
@@ -88,18 +90,20 @@ struct ImageDetailView: View {
 
 #Preview {
     let context = CoreDataStack.shared.persistentContainer.viewContext
-    let samplePhoto = Photo(context: context)
+    @State var samplePhoto: Photo? = {
+          let photo = Photo(context: context)
+          photo.date = Date()
+          photo.memo = ""
 
-    // Set up sample data
-    samplePhoto.date = Date()
-    samplePhoto.memo = ""
+          // Create a sample image and convert it to Data
+          if let sampleImage = UIImage(systemName: "photo"),
+             let imageData = sampleImage.pngData() {
+              photo.blob = imageData
+          }
 
-    // Create a sample image and convert it to Data
-    if let sampleImage = UIImage(systemName: "photo"),
-       let imageData = sampleImage.pngData() {
-        samplePhoto.blob = imageData
-    }
+          return photo
+      }()
 
-    return ImageDetailView(selectedImage: samplePhoto)
+    return ImageDetailView(homeViewModel: HomeViewModel(), selectedImage: $samplePhoto)
         .environment(\.managedObjectContext, context)
 }

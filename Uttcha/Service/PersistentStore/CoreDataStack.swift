@@ -9,9 +9,7 @@ import Foundation
 import CoreData
 import UIKit
 
-class CoreDataStack: ObservableObject {
-    @Published var imageList: [Photo] = []
-
+class CoreDataStack {
     static let shared = CoreDataStack()
 
     lazy var persistentContainer: NSPersistentContainer = {
@@ -54,14 +52,14 @@ extension CoreDataStack {
         save()
     }
 
-    func getImageList() {
+    func getImageList() -> [Photo] {
         let request = NSFetchRequest<Photo>(entityName: "Photo")
         request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: true)]
 
         do {
-            imageList = try persistentContainer.viewContext.fetch(request)
+            return try persistentContainer.viewContext.fetch(request)
         } catch {
-            // TODO: throw error
+            return []
         }
     }
 
