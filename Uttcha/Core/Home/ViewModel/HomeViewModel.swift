@@ -48,6 +48,7 @@ final class HomeViewModel: ObservableObject {
             removePhoto(photo)
         case .saveButtonTapped:
             getImageList()
+            NotificationManager.cancelNotificationFor(Date.now)
         }
     }
 

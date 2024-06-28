@@ -10,7 +10,7 @@ import SwiftUI
 struct PhotoPreviewView: View {
     @ObservedObject var model: CameraViewModel
     @EnvironmentObject var homeViewModel: HomeViewModel
-    
+
     let image: UIImage
 
     @Environment(\.dismiss) var dismiss
