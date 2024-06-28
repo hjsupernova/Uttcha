@@ -20,56 +20,14 @@ struct HomeView: View {
                     monthsLayout: .horizontal,
                     isShowingCamera: $model.isShowingCameraView
                 )
-                .background(
-                    .pink,
-                    in: RoundedRectangle(
-                        cornerRadius: 20,
-                        style: .continuous
-                    )
-                )
                 .padding()
 
                 HStack {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(Color(uiColor: .systemGray6))
-                            .frame(width: 150, height: 100)
-
-                        VStack {
-                            Text("함께 웃기: \(model.neededFaceCount) 명")
-                                .fontWeight(.bold)
-
-                            Stepper("") {
-                                model.perform(action: .faceCountIncrement)
-                            } onDecrement: {
-                                model.perform(action: .faceCountDecrement)
-                            }
-                            .labelsHidden()
-                        }
-                    }
+                    FaceCounter(model: model)
 
                     Spacer()
 
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(Color(uiColor: .systemGray6))
-                            .frame(width: 150, height: 100)
-
-                        VStack {
-                            Button {
-                                model.perform(action: .showCamera)
-                            } label: {
-                                VStack {
-                                    Text(homeViewModel.isCameraButtonDisabled ? "내일 봐요!" : "웃어 봐요!")
-                                        .fontWeight(.bold)
-
-                                    Text(homeViewModel.isCameraButtonDisabled ? "😘" : "🥲")
-                                        .font(.largeTitle)
-                                }
-                            }
-                            .disabled(homeViewModel.isCameraButtonDisabled)
-                        }
-                    }
+                    CameraButton(model: model, homeViewModel: homeViewModel)
                 }
                 .padding()
             }
@@ -86,6 +44,58 @@ struct HomeView: View {
             CameraScreenView(model: model)
         }
         .environmentObject(homeViewModel)
+    }
+}
+
+struct FaceCounter: View {
+    @ObservedObject var model: CameraViewModel
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(uiColor: .systemGray6))
+                .frame(width: 150, height: 100)
+
+            VStack {
+                Text("함께 웃기: \(model.neededFaceCount) 명")
+                    .fontWeight(.bold)
+
+                Stepper("") {
+                    model.perform(action: .faceCountIncrement)
+                } onDecrement: {
+                    model.perform(action: .faceCountDecrement)
+                }
+                .labelsHidden()
+            }
+        }
+    }
+}
+
+struct CameraButton: View {
+    @ObservedObject var model: CameraViewModel
+    @ObservedObject var homeViewModel: HomeViewModel
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(uiColor: .systemGray6))
+                .frame(width: 150, height: 100)
+
+            VStack {
+                Button {
+                    model.perform(action: .showCamera)
+                } label: {
+                    VStack {
+                        Text(homeViewModel.isCameraButtonDisabled ? "내일 봐요!" : "웃어 봐요!")
+                            .fontWeight(.bold)
+
+                        Text(homeViewModel.isCameraButtonDisabled ? "😘" : "🥲")
+                            .font(.largeTitle)
+                    }
+                }
+                .disabled(homeViewModel.isCameraButtonDisabled)
+            }
+        }
     }
 }
 
