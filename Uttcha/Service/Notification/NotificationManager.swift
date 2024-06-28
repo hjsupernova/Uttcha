@@ -78,6 +78,28 @@ struct NotificationManager {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
     }
 
+    static func cancelNotificationFor(_ date: Date) {
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            for request in requests {
+                if let calendarTrigger = request.trigger as? UNCalendarNotificationTrigger,
+                   let triggerDate = Calendar.current.date(from: calendarTrigger.dateComponents) {
+
+                    if Calendar.current.isDate(triggerDate, inSameDayAs: date) {
+                        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [request.identifier])
+                    }
+                }
+            }
+        }
+    }
+
+//    static func printAllNotifications() {
+//        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+//            for request in requests {
+//                print(request.identifier)
+//            }
+//        }
+//    }
+
     static func generateRandomTime(for option: NotificationTimeOption, dayOffset: Int) -> DateComponents {
         let calendar = Calendar.current
         var startHour = 0

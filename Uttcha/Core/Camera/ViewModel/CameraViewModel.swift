@@ -69,6 +69,7 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var hasSmile: Bool
 
     @Published var facePhoto: UIImage?
+    @Published private(set) var smileInformation: String = "웃어보세요! 😍"
     // MARK: - Publishers of Vision Data directly
     @Published private(set) var faceDetectedState: FaceDetectedState
     @Published private(set) var faceSmileState: FaceObservation<FaceSmileModel> {
@@ -203,11 +204,20 @@ extension CameraViewModel {
     func calculateDetectedFaceEnoughness() {
         hasDetectedEnoughFaces =
             neededFaceCount == detectedFaceCount
+        updateSmileInformation()
     }
 
     func calculateDetectedEnoughSmileFaces() {
         hasDetectedSmileFaces =
             hasDetectedEnoughFaces && hasSmile
+    }
+
+    func updateSmileInformation() {
+        if hasDetectedEnoughFaces {
+            smileInformation = "웃어보세요! 😍"
+        } else {
+            smileInformation = "\(neededFaceCount - detectedFaceCount) 명이 부족해요! 😭"
+        }
     }
 }
 

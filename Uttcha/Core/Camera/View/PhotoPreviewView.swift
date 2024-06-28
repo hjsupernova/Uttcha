@@ -9,12 +9,11 @@ import SwiftUI
 
 struct PhotoPreviewView: View {
     @ObservedObject var model: CameraViewModel
+    @EnvironmentObject var homeViewModel: HomeViewModel
 
     let image: UIImage
-    
+
     @Environment(\.dismiss) var dismiss
-
-
 
     var body: some View {
         VStack {
@@ -28,6 +27,7 @@ struct PhotoPreviewView: View {
                         Button {
                             dismiss()
                             model.perform(action: .savePhoto(image))
+                            homeViewModel.perform(action: .saveButtonTapped)
                         } label: {
                             Text("저장 하기")
                         }
