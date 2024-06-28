@@ -9,14 +9,6 @@ import SwiftUI
 
 struct CameraOverlayView: View {
     @ObservedObject var model: CameraViewModel
-
-    var smileInformation: String {
-        if model.hasDetectedEnoughFaces {
-            return "웃어보세요! 😍"
-        } else {
-            return "\(model.neededFaceCount - model.detectedFaceCount) 명이 부족해요! 😭"
-        }
-    }
     
     var body: some View {
         GeometryReader { geo in
@@ -25,7 +17,7 @@ struct CameraOverlayView: View {
                     Rectangle()
                         .fill(Color.black)
 
-                    ProgressView(smileInformation, value: model.smileProgress, total: 100)
+                    ProgressView(model.smileInformation, value: model.smileProgress, total: 100)
                         .foregroundStyle(.white)
                         .font(.title2).bold()
                         .padding(.horizontal)
