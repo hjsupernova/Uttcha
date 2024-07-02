@@ -35,7 +35,6 @@ enum FaceDetectedState {
 final class CameraViewModel: ObservableObject {
     // MARK: - Published Properties
     @Published var neededFaceCount: Int = 1
-    @Published private(set) var detectedFaceCount: Int = 0
     @Published private(set) var hasDetectedEnoughFaces: Bool = false
     @Published private(set) var smileProgress = 0.0
     @Published var isShowingCameraView = false
@@ -44,7 +43,6 @@ final class CameraViewModel: ObservableObject {
     @Published var facePhoto: UIImage?
     @Published private(set) var cameraInstructionText: String = "웃어보세요! 😍"
     @Published private(set) var faceDetectedState: FaceDetectedState
-
 
     // MARK: - Pirvate Properties
     private var timer: AnyCancellable?
@@ -98,10 +96,8 @@ final class CameraViewModel: ObservableObject {
 
     private func handleFaceDetected(_ faceCount: Int, _ allSmiling: Bool) {
         DispatchQueue.main.async { [self] in
-            faceDetectedState = .faceDetected(allSmiling)
-            detectedFaceCount = faceCount
+            updateFaceDetectionState(faceCount: faceCount, allSmiling: allSmiling)
             processFaceDetectionResult()
-            updateCameraInstructionText()
         }
     }
 
@@ -144,27 +140,24 @@ final class CameraViewModel: ObservableObject {
 // MARK: - Private instance methods
 
 extension CameraViewModel {
+    private func updateFaceDetectionState(faceCount: Int, allSmiling: Bool) {
+        hasDetectedEnoughFaces = faceCount >= neededFaceCount
+        faceDetectedState = .faceDetected(allSmiling)
+        cameraInstructionText = hasDetectedEnoughFaces ? "웃어보세요! 😍" : "\(neededFaceCount - faceCount) 명이 부족해요! 😭"
+    }
+
     private func processFaceDetectionResult() {
         switch faceDetectedState {
         case .noFaceDetected, .faceDetectionErrored:
             stopSmileTimer()
             resetSmileProgress()
         case .faceDetected(let allSmiling):
-            hasDetectedEnoughFaces = neededFaceCount == detectedFaceCount
             if hasDetectedEnoughFaces && allSmiling {
                 startSmileTimer()
             } else {
                 stopSmileTimer()
                 resetSmileProgress()
             }
-        }
-    }
-
-    private func updateCameraInstructionText() {
-        if hasDetectedEnoughFaces {
-            cameraInstructionText = "웃어보세요! 😍"
-        } else {
-            cameraInstructionText = "\(neededFaceCount - detectedFaceCount) 명이 부족해요! 😭"
         }
     }
 
@@ -176,7 +169,7 @@ extension CameraViewModel {
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 if self.smileProgress < 100 {
-                    self.smileProgress += 5
+                    self.smileProgress += 10
                 }
             }
     }

@@ -114,7 +114,6 @@ extension FaceDetector {
             model.perform(action: .noFaceDetected)
             return
         }
-        #warning("여기서 faceDtected이랑 smileFace를 나눠서 넣지말고 인풋 값 두개 박아서 한번에 넘기면되네..!!")
 
         let faceCount = faceFeatures.count
         let allSmiling = faceFeatures.allSatisfy { $0.hasSmile }
