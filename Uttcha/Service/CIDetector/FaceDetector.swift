@@ -110,21 +110,13 @@ extension FaceDetector {
 
     private func processFaceFeatures(from sourceImage: CIImage) {
         guard let model = model else { return }
-        if let faceFeatures = faceDector?.features(in: sourceImage, options: options) as? [CIFaceFeature] {
-            let faceCount = faceFeatures.count
-            model.perform(action: .faceObservationDetected(faceCount))
-
-            if faceCount == model.neededFaceCount {
-                if faceFeatures.map({ $0.hasSmile }).contains(false) {
-                    model.perform(action: .faceSmileObservationDetected(FaceSmileModel(hasSmile: false)))
-                } else {
-                    model.perform(action: .faceSmileObservationDetected(FaceSmileModel(hasSmile: true)))
-                }
-            } else {
-                model.perform(action: .noFaceDetected)
-            }
-        } else {
+        guard let faceFeatures = faceDector?.features(in: sourceImage, options: options) as? [CIFaceFeature] else {
             model.perform(action: .noFaceDetected)
+            return
         }
+
+        let faceCount = faceFeatures.count
+        let allSmiling = faceFeatures.allSatisfy { $0.hasSmile }
+        model.perform(action: .faceDetected(faceCount, allSmiling))
     }
 }

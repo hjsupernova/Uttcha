@@ -61,9 +61,9 @@ struct FaceCounter: View {
                     .fontWeight(.bold)
 
                 Stepper("") {
-                    model.perform(action: .faceCountIncrement)
+                    model.perform(action: .incrementNeededFaceCount)
                 } onDecrement: {
-                    model.perform(action: .faceCountDecrement)
+                    model.perform(action: .decrementNeededFaceCount)
                 }
                 .labelsHidden()
             }
