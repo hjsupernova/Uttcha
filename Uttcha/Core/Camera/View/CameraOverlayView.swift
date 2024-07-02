@@ -17,11 +17,13 @@ struct CameraOverlayView: View {
                     Rectangle()
                         .fill(Color.black)
 
-                    ProgressView(model.smileInformation, value: model.smileProgress, total: 100)
+                    ProgressView(model.cameraInstructionText, value: model.smileProgress, total: 100)
                         .foregroundStyle(.white)
                         .font(.title2).bold()
                         .padding(.horizontal)
                         .padding(.top)
+                        .animation(.linear, value: model.smileProgress)
+
                 }
 
                 Spacer()

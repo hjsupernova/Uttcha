@@ -12,8 +12,7 @@ enum CameraViewModelAction {
 
     // Face detection actions 
     case noFaceDetected
-    case faceDetected(Int)
-    case smileFaceDetected(FaceSmileModel)
+    case faceDetected(Int, Bool)
 
     // faceCount
     case incrementNeededFaceCount
@@ -28,19 +27,9 @@ enum CameraViewModelAction {
 }
 
 enum FaceDetectedState {
-    case faceDetected
+    case faceDetected(Bool)
     case noFaceDetected
     case faceDetectionErrored
-}
-
-enum FaceObservation<T> {
-    case faceFound(T)
-    case faceNotFound
-    case erorred(Error)
-}
-
-struct FaceSmileModel {
-    let hasSmile: Bool
 }
 
 final class CameraViewModel: ObservableObject {
@@ -50,16 +39,12 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var hasDetectedEnoughFaces: Bool = false
     @Published private(set) var smileProgress = 0.0
     @Published var isShowingCameraView = false
-    @Published private(set) var hasDetectedSmileFaces: Bool
+    @Published private(set) var hasDetectedEnoughSmileFaces: Bool
     @Published private(set) var hasSmile: Bool
     @Published var facePhoto: UIImage?
-    @Published private(set) var smileInformation: String = "웃어보세요! 😍"
+    @Published private(set) var cameraInstructionText: String = "웃어보세요! 😍"
     @Published private(set) var faceDetectedState: FaceDetectedState
-    @Published private(set) var faceSmileState: FaceObservation<FaceSmileModel> {
-        didSet {
-            processUpdatedSmile()
-        }
-    }
+
 
     // MARK: - Pirvate Properties
     private var timer: AnyCancellable?
@@ -71,8 +56,7 @@ final class CameraViewModel: ObservableObject {
     // MARK: - Initializaiton
     init() {
         faceDetectedState = .noFaceDetected
-        faceSmileState = .faceNotFound
-        hasDetectedSmileFaces = false
+        hasDetectedEnoughSmileFaces = false
         hasDetectedEnoughFaces = false
         hasSmile = false
     }
@@ -82,10 +66,8 @@ final class CameraViewModel: ObservableObject {
         switch action {
         case .noFaceDetected:
             handleNoFaceDetected()
-        case .faceDetected(let faceCount):
-            handleFaceDetected(faceCount)
-        case .smileFaceDetected(let faceSmileObservation):
-            handleSmileFaceDetected(faceSmileObservation)
+        case .faceDetected(let faceCount, let allSmiling):
+            handleFaceDetected(faceCount, allSmiling)
 
         case .incrementNeededFaceCount:
             incrementNeededFaceCount()
@@ -110,33 +92,27 @@ final class CameraViewModel: ObservableObject {
     private func handleNoFaceDetected() {
         DispatchQueue.main.async { [self] in
             faceDetectedState = .noFaceDetected
-            faceSmileState = .faceNotFound
+            processFaceDetectionResult()
         }
     }
 
-    private func handleFaceDetected(_ faceCount: Int) {
+    private func handleFaceDetected(_ faceCount: Int, _ allSmiling: Bool) {
         DispatchQueue.main.async { [self] in
-            faceDetectedState = .faceDetected
+            faceDetectedState = .faceDetected(allSmiling)
             detectedFaceCount = faceCount
-            updateFaceDetectionState()
-        }
-    }
-
-    private func handleSmileFaceDetected(_ faceSmileModel: FaceSmileModel) {
-        DispatchQueue.main.async { [self] in
-            faceDetectedState = .faceDetected
-            faceSmileState = .faceFound(faceSmileModel)
+            processFaceDetectionResult()
+            updateCameraInstructionText()
         }
     }
 
     private func incrementNeededFaceCount() {
         neededFaceCount += 1
-        updateFaceDetectionState()
+        processFaceDetectionResult()
     }
 
     private func decrementNeededFaceCount() {
-        neededFaceCount = max(0, neededFaceCount - 1)
-        updateFaceDetectionState()
+        neededFaceCount = max(1, neededFaceCount - 1)
+        processFaceDetectionResult()
     }
 
     private func takePhoto() {
@@ -168,40 +144,28 @@ final class CameraViewModel: ObservableObject {
 // MARK: - Private instance methods
 
 extension CameraViewModel {
-    private func updateFaceDetectionState() {
-        hasDetectedEnoughFaces = neededFaceCount == detectedFaceCount
-        updateSmileInformation()
-        updateSmileFaceDetectionState()
-    }
-
-    private func updateSmileFaceDetectionState() {
-        hasDetectedSmileFaces = hasDetectedEnoughFaces && hasSmile
-    }
-
-    private func updateSmileInformation() {
-        if hasDetectedEnoughFaces {
-            smileInformation = "웃어보세요! 😍"
-        } else {
-            smileInformation = "\(neededFaceCount - detectedFaceCount) 명이 부족해요! 😭"
-        }
-    }
-
-    private func processUpdatedSmile() {
-        switch faceSmileState {
-        case .faceNotFound, .erorred:
-            hasSmile = false
+    private func processFaceDetectionResult() {
+        switch faceDetectedState {
+        case .noFaceDetected, .faceDetectionErrored:
             stopSmileTimer()
             resetSmileProgress()
-        case .faceFound(let faceSmileModel):
-            hasSmile = faceSmileModel.hasSmile
-            if hasSmile {
+        case .faceDetected(let allSmiling):
+            hasDetectedEnoughFaces = neededFaceCount == detectedFaceCount
+            if hasDetectedEnoughFaces && allSmiling {
                 startSmileTimer()
             } else {
                 stopSmileTimer()
                 resetSmileProgress()
             }
         }
-        updateSmileFaceDetectionState()
+    }
+
+    private func updateCameraInstructionText() {
+        if hasDetectedEnoughFaces {
+            cameraInstructionText = "웃어보세요! 😍"
+        } else {
+            cameraInstructionText = "\(neededFaceCount - detectedFaceCount) 명이 부족해요! 😭"
+        }
     }
 
     private func startSmileTimer() {
