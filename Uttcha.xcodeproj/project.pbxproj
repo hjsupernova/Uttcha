@@ -10,6 +10,7 @@
 		CE2E04F32BE5F443002EC16F /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2E04F22BE5F443002EC16F /* Color.swift */; };
 		CE2E04F62BE62FA2002EC16F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2E04F52BE62FA2002EC16F /* SettingsView.swift */; };
 		CE2F317B2C26C18D00260D7B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE2F317A2C26C18D00260D7B /* Preview Assets.xcassets */; };
+		CE4FFE6A2C338D4F00198F8E /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FFE692C338D4F00198F8E /* HapticManager.swift */; };
 		CE52C0F42BC185760039C1E1 /* FaceDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE52C0F32BC185760039C1E1 /* FaceDetector.swift */; };
 		CE52C0F62BC188D70039C1E1 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE52C0F52BC188D70039C1E1 /* CameraViewController.swift */; };
 		CE7C986A2BC12B1C00FA9646 /* UttchaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7C98692BC12B1C00FA9646 /* UttchaApp.swift */; };
@@ -47,6 +48,7 @@
 		CE2E04F22BE5F443002EC16F /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		CE2E04F52BE62FA2002EC16F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		CE2F317A2C26C18D00260D7B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		CE4FFE692C338D4F00198F8E /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		CE52C0F32BC185760039C1E1 /* FaceDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetector.swift; sourceTree = "<group>"; };
 		CE52C0F52BC188D70039C1E1 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		CE7C98662BC12B1C00FA9646 /* Uttcha.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Uttcha.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -110,6 +112,14 @@
 			name = "Preview Content";
 			path = "Uttcha/Preview Content";
 			sourceTree = SOURCE_ROOT;
+		};
+		CE4FFE682C338D3D00198F8E /* Haptic */ = {
+			isa = PBXGroup;
+			children = (
+				CE4FFE692C338D4F00198F8E /* HapticManager.swift */,
+			);
+			path = Haptic;
+			sourceTree = "<group>";
 		};
 		CE7C985D2BC12B1C00FA9646 = {
 			isa = PBXGroup;
@@ -298,6 +308,7 @@
 		CEB940402BC4131C003D9F7F /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				CE4FFE682C338D3D00198F8E /* Haptic */,
 				CEA148D22BE9AF6000457F18 /* Notification */,
 				CEAEB45C2BE8B6AC00C522C1 /* CIDetector */,
 				CEAEB45D2BE8B6B100C522C1 /* PersistentStore */,
@@ -444,6 +455,7 @@
 			files = (
 				CEF239AC2C292EAF00739EAC /* Contact.swift in Sources */,
 				CEA239812BE8C91D00F157A7 /* Date.swift in Sources */,
+				CE4FFE6A2C338D4F00198F8E /* HapticManager.swift in Sources */,
 				CE7C987E2BC134CD00FA9646 /* HomeView.swift in Sources */,
 				CEB9409F2BC77DCE003D9F7F /* SmileCalendar.swift in Sources */,
 				CEDEDA0A2BCD3C0000707EA1 /* LottieSmile.swift in Sources */,
