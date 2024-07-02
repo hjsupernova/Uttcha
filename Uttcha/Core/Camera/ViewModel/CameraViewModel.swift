@@ -12,19 +12,19 @@ enum CameraViewModelAction {
 
     // Face detection actions 
     case noFaceDetected
-    case faceObservationDetected(Int)
-    case faceSmileObservationDetected(FaceSmileModel)
+    case faceDetected(Int)
+    case smileFaceDetected(FaceSmileModel)
 
-    // Other
+    // faceCount
+    case incrementNeededFaceCount
+    case decrementNeededFaceCount
+
+    // Camera
     case takePhoto
     case updatePreviewPhoto(UIImage)
     case savePhoto(UIImage)
     case showCamera
     case dismissCamera
-
-    // faceCount
-    case faceCountIncrement
-    case faceCountDecrement
 }
 
 enum FaceDetectedState {
@@ -44,33 +44,16 @@ struct FaceSmileModel {
 }
 
 final class CameraViewModel: ObservableObject {
-    // MARK: - Publihsers
-    @Published var neededFaceCount: Int = 1 {
-        didSet {
-            calculateDetectedFaceEnoughness()
-        }
-    }
-    @Published private(set) var detectedFaceCount: Int = 0 {
-        didSet {
-            calculateDetectedFaceEnoughness()
-        }
-    }
-
-    @Published private(set) var hasDetectedEnoughFaces: Bool {
-        didSet {
-            calculateDetectedEnoughSmileFaces()
-        }
-    }
-
+    // MARK: - Published Properties
+    @Published var neededFaceCount: Int = 1
+    @Published private(set) var detectedFaceCount: Int = 0
+    @Published private(set) var hasDetectedEnoughFaces: Bool = false
     @Published private(set) var smileProgress = 0.0
     @Published var isShowingCameraView = false
-    // MARK: - Publihser of derived state
     @Published private(set) var hasDetectedSmileFaces: Bool
     @Published private(set) var hasSmile: Bool
-
     @Published var facePhoto: UIImage?
     @Published private(set) var smileInformation: String = "웃어보세요! 😍"
-    // MARK: - Publishers of Vision Data directly
     @Published private(set) var faceDetectedState: FaceDetectedState
     @Published private(set) var faceSmileState: FaceObservation<FaceSmileModel> {
         didSet {
@@ -78,11 +61,14 @@ final class CameraViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Public properties
-    let shutterReleased = PassthroughSubject<Void, Never>()
+    // MARK: - Pirvate Properties
     private var timer: AnyCancellable?
     private var isTimerRunning: Bool = false
 
+    // MARK: - Public Properties
+    let shutterReleased = PassthroughSubject<Void, Never>()
+
+    // MARK: - Initializaiton
     init() {
         faceDetectedState = .noFaceDetected
         faceSmileState = .faceNotFound
@@ -95,19 +81,21 @@ final class CameraViewModel: ObservableObject {
     func perform(action: CameraViewModelAction) {
         switch action {
         case .noFaceDetected:
-            publishNoFaceObserved()
-        case .faceObservationDetected(let faceCount):
-            publishFaceObservation(faceCount)
-        case .faceSmileObservationDetected(let faceSmileObservation):
-            publishFaceSmileObservation(faceSmileObservation)
+            handleNoFaceDetected()
+        case .faceDetected(let faceCount):
+            handleFaceDetected(faceCount)
+        case .smileFaceDetected(let faceSmileObservation):
+            handleSmileFaceDetected(faceSmileObservation)
+
+        case .incrementNeededFaceCount:
+            incrementNeededFaceCount()
+        case .decrementNeededFaceCount:
+            decrementNeededFaceCount()
+
         case .takePhoto:
             takePhoto()
         case .savePhoto(let image):
             savePhotoPersistentStore(image)
-        case .faceCountIncrement:
-            neededFaceCountIncrement()
-        case .faceCountDecrement:
-            neededFaceCountDecrement()
         case .updatePreviewPhoto(let image):
             updatePreviewPhoto(image)
         case .showCamera:
@@ -119,25 +107,36 @@ final class CameraViewModel: ObservableObject {
 
     // MARK: - Action Handlers
 
-    private func publishNoFaceObserved() {
+    private func handleNoFaceDetected() {
         DispatchQueue.main.async { [self] in
             faceDetectedState = .noFaceDetected
             faceSmileState = .faceNotFound
         }
     }
 
-    private func publishFaceObservation(_ faceCount: Int) {
+    private func handleFaceDetected(_ faceCount: Int) {
         DispatchQueue.main.async { [self] in
             faceDetectedState = .faceDetected
             detectedFaceCount = faceCount
+            updateFaceDetectionState()
         }
     }
 
-    private func publishFaceSmileObservation(_ faceSmileModel: FaceSmileModel) {
+    private func handleSmileFaceDetected(_ faceSmileModel: FaceSmileModel) {
         DispatchQueue.main.async { [self] in
             faceDetectedState = .faceDetected
             faceSmileState = .faceFound(faceSmileModel)
         }
+    }
+
+    private func incrementNeededFaceCount() {
+        neededFaceCount += 1
+        updateFaceDetectionState()
+    }
+
+    private func decrementNeededFaceCount() {
+        neededFaceCount = max(0, neededFaceCount - 1)
+        updateFaceDetectionState()
     }
 
     private func takePhoto() {
@@ -146,22 +145,9 @@ final class CameraViewModel: ObservableObject {
 
     private func savePhotoPersistentStore(_ photo: UIImage) {
         CoreDataStack.shared.saveImage(photo)
-        CoreDataStack.shared.getImageList()
 
         facePhoto = nil
         dismissCamera()
-    }
-
-    private func neededFaceCountIncrement() {
-        neededFaceCount += 1
-    }
-
-    private func neededFaceCountDecrement() {
-        if neededFaceCount <= 0 {
-            neededFaceCount = 0
-        } else {
-            neededFaceCount -= 1
-        }
     }
 
     private func updatePreviewPhoto(_ photo: UIImage) {
@@ -182,14 +168,30 @@ final class CameraViewModel: ObservableObject {
 // MARK: - Private instance methods
 
 extension CameraViewModel {
-    func processUpdatedSmile() {
-        switch faceSmileState {
-        case .faceNotFound:
-            hasSmile = false
+    private func updateFaceDetectionState() {
+        hasDetectedEnoughFaces = neededFaceCount == detectedFaceCount
+        updateSmileInformation()
+        updateSmileFaceDetectionState()
+    }
 
-        case .erorred(let error ):
-            print(error.localizedDescription)
+    private func updateSmileFaceDetectionState() {
+        hasDetectedSmileFaces = hasDetectedEnoughFaces && hasSmile
+    }
+
+    private func updateSmileInformation() {
+        if hasDetectedEnoughFaces {
+            smileInformation = "웃어보세요! 😍"
+        } else {
+            smileInformation = "\(neededFaceCount - detectedFaceCount) 명이 부족해요! 😭"
+        }
+    }
+
+    private func processUpdatedSmile() {
+        switch faceSmileState {
+        case .faceNotFound, .erorred:
             hasSmile = false
+            stopSmileTimer()
+            resetSmileProgress()
         case .faceFound(let faceSmileModel):
             hasSmile = faceSmileModel.hasSmile
             if hasSmile {
@@ -199,44 +201,20 @@ extension CameraViewModel {
                 resetSmileProgress()
             }
         }
+        updateSmileFaceDetectionState()
     }
-
-    func calculateDetectedFaceEnoughness() {
-        hasDetectedEnoughFaces =
-            neededFaceCount == detectedFaceCount
-        updateSmileInformation()
-    }
-
-    func calculateDetectedEnoughSmileFaces() {
-        hasDetectedSmileFaces =
-            hasDetectedEnoughFaces && hasSmile
-    }
-
-    func updateSmileInformation() {
-        if hasDetectedEnoughFaces {
-            smileInformation = "웃어보세요! 😍"
-        } else {
-            smileInformation = "\(neededFaceCount - detectedFaceCount) 명이 부족해요! 😭"
-        }
-    }
-}
-
-extension CameraViewModel {
 
     private func startSmileTimer() {
-        if isTimerRunning == false {
-
-            isTimerRunning = true
-
-            timer = Timer.publish(every: 0.1, on: .main, in: .common)
-                .autoconnect()
-                .sink { [weak self] _ in
-                    guard let self = self else { return }
-                    if self.smileProgress < 100 {
-                        self.smileProgress += 5
-                    }
+        guard !isTimerRunning else { return }
+        isTimerRunning = true
+        timer = Timer.publish(every: 0.1, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                if self.smileProgress < 100 {
+                    self.smileProgress += 5
                 }
-        }
+            }
     }
 
     private func stopSmileTimer() {
