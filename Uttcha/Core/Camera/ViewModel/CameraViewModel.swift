@@ -48,6 +48,10 @@ final class CameraViewModel: ObservableObject {
     private var timer: AnyCancellable?
     private var isTimerRunning: Bool = false
 
+    private var hasTriggeredStartSmileHaptic = false
+    private var hasTriggeredCompleteSmileHaptic = false
+    private var debounceWorkItem: DispatchWorkItem?
+
     // MARK: - Public Properties
     let shutterReleased = PassthroughSubject<Void, Never>()
 
@@ -164,12 +168,28 @@ extension CameraViewModel {
     private func startSmileTimer() {
         guard !isTimerRunning else { return }
         isTimerRunning = true
+
+        debounceWorkItem?.cancel()
+        debounceWorkItem = DispatchWorkItem { [weak self] in
+            guard let self = self else { return }
+            HapticManager.impact(style: .medium)
+            self.hasTriggeredStartSmileHaptic = true
+        }
+        if let workItem = debounceWorkItem {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: workItem)
+        }
+
         timer = Timer.publish(every: 0.1, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 if self.smileProgress < 100 {
                     self.smileProgress += 10
+                } else if self.smileProgress >= 100 {
+                    if !hasTriggeredCompleteSmileHaptic {
+                        HapticManager.impact(style: .medium)
+                        hasTriggeredCompleteSmileHaptic = true
+                    }
                 }
             }
     }
@@ -178,6 +198,12 @@ extension CameraViewModel {
         timer?.cancel()
         timer = nil
         isTimerRunning = false
+        
+        // reset flags
+        hasTriggeredStartSmileHaptic = false
+        hasTriggeredCompleteSmileHaptic = false
+        debounceWorkItem?.cancel()
+        debounceWorkItem = nil
     }
 
     private func resetSmileProgress() {
