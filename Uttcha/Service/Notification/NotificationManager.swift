@@ -11,12 +11,14 @@ import UserNotifications
 struct NotificationManager {
     static let smileIdentifier = "SmileIdentifier"
 
-    static func requestNotificationAuthorization() {
+    static func requestNotificationAuthorization(completion: @escaping ((Bool) -> Void)) {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { success, error in
+            print("request start")
             if success {
+                completion(true)
                 print("Notification authorization granted.")
-            } else if let error = error {
-                print("Notification authorization failed: \(error.localizedDescription)")
+            } else {
+                completion(false)
             }
         }
     }

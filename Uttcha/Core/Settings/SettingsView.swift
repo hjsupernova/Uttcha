@@ -77,6 +77,7 @@ struct NotificationSettingsSection: View {
 struct NotificaitonOptionsSheet: View {
     @Binding var selectedTimeOption: NotificationTimeOption
     @Binding var isNotificationOn: Bool
+    @State private var isShowNotificationAuthorizationSettingAlert = false
 
     @Environment(\.dismiss) var dismiss
 
@@ -131,13 +132,36 @@ struct NotificaitonOptionsSheet: View {
         .padding()
         .interactiveDismissDisabled()
         .onAppear {
-            NotificationManager.requestNotificationAuthorization()
+            print("Onappear")
+
+            NotificationManager.requestNotificationAuthorization { success in
+                print(success)
+                if !success {
+                    showNotificationAuthorizationSettingAlert()
+                }
+            }
         }
+        .alert("Uttcha", isPresented: $isShowNotificationAuthorizationSettingAlert) {
+            Button("취소", role: .cancel) { }
+            Button("설정으로 이동") {
+                UIApplication.shared.open(
+                    URL(string: UIApplication.openSettingsURLString)!,
+                    options: [:],
+                    completionHandler: nil)
+            }
+        } message: {
+            Text("앱에 알림 권한이 없습니다. 설정을 변경해주세요.")
+        }
+
     }
 
     private func scheduleNotificaiton() {
         NotificationManager.scheduleNotifications(notificationTimeOption: selectedTimeOption)
         isNotificationOn = true
+    }
+
+    private func showNotificationAuthorizationSettingAlert() {
+        isShowNotificationAuthorizationSettingAlert = true
     }
 }
 
