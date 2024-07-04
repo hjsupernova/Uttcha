@@ -619,7 +619,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Uttcha/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
-				INFOPLIST_KEY_NSCameraUsageDescription = "To take a photo";
+				INFOPLIST_KEY_NSCameraUsageDescription = "카메라를 사용하기 위해서 권한이 필요합니다.";
 				INFOPLIST_KEY_NSContactsUsageDescription = "연락처를 불러오기 위한 권한이 필요합니다.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "To save a photo";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -653,7 +653,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Uttcha/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
-				INFOPLIST_KEY_NSCameraUsageDescription = "To take a photo";
+				INFOPLIST_KEY_NSCameraUsageDescription = "카메라를 사용하기 위해서 권한이 필요합니다.";
 				INFOPLIST_KEY_NSContactsUsageDescription = "연락처를 불러오기 위한 권한이 필요합니다.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "To save a photo";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
