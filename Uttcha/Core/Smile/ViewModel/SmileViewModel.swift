@@ -32,6 +32,7 @@ class SmileViewModel: ObservableObject {
     @Published var isShowingUIImagePicker: Bool = false
     @Published var memoryList: [MemoryModel] = []
     @Published var isShowingMemoryRemoveConfirmationDialog: Bool = false
+    @Published var isShowingContactAuthorizationAlert: Bool = false
 
     // MARK: - Public properties
     var longTappedContact: ContactModel?
@@ -106,8 +107,8 @@ class SmileViewModel: ObservableObject {
                     }
                     
                     fetchedContacts.sort { contact1, contact2 in
-                        let name1 = (contact1.familyName ?? "") + (contact1.givenName ?? "")
-                        let name2 = (contact2.familyName ?? "") + (contact2.givenName ?? "")
+                        let name1 = (contact1.familyName) + (contact1.givenName)
+                        let name2 = (contact2.familyName) + (contact2.givenName)
 
                         guard let firstChar1 = name1.first, let firstChar2 = name2.first else {
                             // If one or both names are empty, handle the comparison (e.g., empty names come first)
@@ -143,7 +144,7 @@ class SmileViewModel: ObservableObject {
         case .restricted:
             print("restred")
         case .denied:
-            print("denied")
+            showContactAuthorizationAlert()
         default:
             print("default")
         }
@@ -190,5 +191,9 @@ extension SmileViewModel {
 
     private func getMemorySavedList() {
         memoryList = CoreDataStack.shared.getSavedMemoryList()
+    }
+
+    private func showContactAuthorizationAlert() {
+        isShowingContactAuthorizationAlert = true
     }
 }
