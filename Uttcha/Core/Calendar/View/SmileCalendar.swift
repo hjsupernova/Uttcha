@@ -29,10 +29,10 @@ struct SmileCalendar: View {
         self.homeViewModel = homeViewModel
         self.calendar = calendar
         self.monthsLayout = monthsLayout
-        let today = Date()
 
-        let startDate = calendar.date(byAdding: .year, value: -10, to: today)!
-        let endDate = calendar.date(byAdding: .year, value: 10, to: today)!
+        let firstLaunchDate = UserDefaults.standard.object(forKey: "FirstLaunchDate") as? Date ?? Date()
+        let startDate = calendar.date(byAdding: .year, value: -2, to: firstLaunchDate)!
+        let endDate = Date()
         visibleDateRange = startDate...endDate
 
         monthDateFormatter = DateFormatter()
