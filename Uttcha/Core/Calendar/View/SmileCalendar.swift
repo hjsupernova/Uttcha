@@ -10,6 +10,7 @@ import SwiftUI
 import UIKit
 
 import HorizonCalendar
+import Kingfisher
 
 struct SmileCalendar: View {
     @ObservedObject private var homeViewModel: HomeViewModel
@@ -85,10 +86,8 @@ struct SmileCalendar: View {
             }.first
 
             if let image = image {
-                let uiImage = UIImage(data: image.blob!)!
-                let imageView = Image(uiImage: uiImage)
-
-                imageView
+                KFImage
+                    .data(image.blob!, cacheKey: image.date!.description)
                     .resizable()
                     .scaledToFit()
                     .clipShape(RoundedRectangle(cornerRadius: 16))

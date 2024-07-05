@@ -10,6 +10,7 @@
 		CE2E04F32BE5F443002EC16F /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2E04F22BE5F443002EC16F /* Color.swift */; };
 		CE2E04F62BE62FA2002EC16F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2E04F52BE62FA2002EC16F /* SettingsView.swift */; };
 		CE2F317B2C26C18D00260D7B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE2F317A2C26C18D00260D7B /* Preview Assets.xcassets */; };
+		CE4560D62C3690F700AA4CDD /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = CE4560D52C3690F700AA4CDD /* Kingfisher */; };
 		CE4FFE6A2C338D4F00198F8E /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FFE692C338D4F00198F8E /* HapticManager.swift */; };
 		CE52C0F42BC185760039C1E1 /* FaceDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE52C0F32BC185760039C1E1 /* FaceDetector.swift */; };
 		CE52C0F62BC188D70039C1E1 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE52C0F52BC188D70039C1E1 /* CameraViewController.swift */; };
@@ -85,6 +86,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE4560D62C3690F700AA4CDD /* Kingfisher in Frameworks */,
 				CEA148E32BEA3BB000457F18 /* SwiftUIIntrospect in Frameworks */,
 				CEB9409D2BC77DBA003D9F7F /* HorizonCalendar in Frameworks */,
 				CEDEDA082BCD3BEF00707EA1 /* Lottie in Frameworks */,
@@ -371,6 +373,7 @@
 				CEB9409C2BC77DBA003D9F7F /* HorizonCalendar */,
 				CEDEDA072BCD3BEF00707EA1 /* Lottie */,
 				CEA148E22BEA3BB000457F18 /* SwiftUIIntrospect */,
+				CE4560D52C3690F700AA4CDD /* Kingfisher */,
 			);
 			productName = CalendarTest;
 			productReference = CE7C98662BC12B1C00FA9646 /* Uttcha.app */;
@@ -404,6 +407,7 @@
 				CEB9409B2BC77DBA003D9F7F /* XCRemoteSwiftPackageReference "HorizonCalendar" */,
 				CEDEDA062BCD3BEF00707EA1 /* XCRemoteSwiftPackageReference "lottie-spm" */,
 				CEA148E12BEA3BB000457F18 /* XCRemoteSwiftPackageReference "swiftui-introspect" */,
+				CE4560D42C3690F700AA4CDD /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = CE7C98672BC12B1C00FA9646 /* Products */;
 			projectDirPath = "";
@@ -698,6 +702,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		CE4560D42C3690F700AA4CDD /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.12.0;
+			};
+		};
 		CEA148E12BEA3BB000457F18 /* XCRemoteSwiftPackageReference "swiftui-introspect" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/siteline/swiftui-introspect";
@@ -725,6 +737,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		CE4560D52C3690F700AA4CDD /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE4560D42C3690F700AA4CDD /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
 		CEA148E22BEA3BB000457F18 /* SwiftUIIntrospect */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CEA148E12BEA3BB000457F18 /* XCRemoteSwiftPackageReference "swiftui-introspect" */;
