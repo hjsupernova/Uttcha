@@ -22,7 +22,11 @@ final class HomeViewModel: ObservableObject {
     @Published var isShowingCameraView: Bool = false
     @Published var isShowingMonthsSheet = false
     @Published var isShowingDetailView = false
-    @Published var photos: Set<Photo> = []
+    @Published var photos: Set<Photo> = [] {
+        didSet {
+            calculateButtonAvailabilty()
+        }
+    }
     @Published var isCameraButtonDisabled: Bool = false
 
     private var visualizedMonths: Set<DateComponents> = []
