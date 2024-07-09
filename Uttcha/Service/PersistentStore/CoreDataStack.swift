@@ -44,21 +44,45 @@ extension CoreDataStack {
 
 extension CoreDataStack {
     func saveImage(_ bitmap: UIImage) {
-        let image = Photo(context: persistentContainer.viewContext)
+//        let image = Photo(context: persistentContainer.viewContext)
+//
+//        image.blob = bitmap.toData()
+//        image.date = Date()
 
-        image.blob = bitmap.toData()
-        image.date = Date()
+        let mockDates = createMockDates()
+
+        for date in mockDates {
+            let photo = Photo(context: persistentContainer.viewContext)
+            photo.blob = bitmap.toData()
+            photo.date = date
+            // You might want to set other properties here if needed
+        }
 
         save()
     }
 
-    func getImageList() -> [Photo] {
+    func getImageList(for monthComponents: DateComponents) -> [Photo] {
         let request = NSFetchRequest<Photo>(entityName: "Photo")
         request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: true)]
+
+        let calendar = Calendar.current
+
+        // Create start and end dates for the month
+        guard let startOfMonth = calendar.date(from: monthComponents),
+              let startOfNextMonth = calendar.date(byAdding: DateComponents(month: 1), to: startOfMonth) else {
+            print("Error: Could not create date range")
+            return []
+        }
+
+        // Create the predicate
+        request.predicate = NSPredicate(format: "date >= %@ AND date < %@",
+                                        startOfMonth as NSDate,
+                                        startOfNextMonth as NSDate)
 
         do {
             return try persistentContainer.viewContext.fetch(request)
         } catch {
+            print("Error fetching photos: \(error)")
             return []
         }
     }
@@ -193,4 +217,41 @@ extension UIImage {
     func toData() -> Data? {
         return pngData()
     }
+}
+
+// MARK: - Mock Data
+
+func createMockDates() -> [Date] {
+    let calendar = Calendar.current
+    var mockDates: [Date] = []
+
+    // Get the current date
+    let now = Date()
+
+    // Create dates for the current month
+    mockDates.append(contentsOf: createRandomDates(for: now, count: 10))
+
+    // Create dates for the past 4 months
+    for i in 1...4 {
+        guard let pastDate = calendar.date(byAdding: .month, value: -i, to: now) else { continue }
+        mockDates.append(contentsOf: createRandomDates(for: pastDate, count: 10))
+    }
+
+    return mockDates
+}
+
+private func createRandomDates(for baseDate: Date, count: Int) -> [Date] {
+    let calendar = Calendar.current
+    let range = calendar.range(of: .day, in: .month, for: baseDate)!
+
+    var dates: [Date] = []
+
+    for _ in 0..<count {
+        let randomDay = Int.random(in: range)
+        if let date = calendar.date(bySetting: .day, value: randomDay, of: baseDate) {
+            dates.append(date)
+        }
+    }
+
+    return dates
 }

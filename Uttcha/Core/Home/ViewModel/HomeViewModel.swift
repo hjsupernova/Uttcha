@@ -13,6 +13,8 @@ enum HomeViewModelAction {
     case photoTapped
     case photoRemoveButtonTapped(Photo)
     case saveButtonTapped
+    case userScroll(DateComponents, DateComponents)
+    case monthRowTapped(Date)
 }
 
 final class HomeViewModel: ObservableObject {
@@ -20,19 +22,13 @@ final class HomeViewModel: ObservableObject {
     @Published var isShowingCameraView: Bool = false
     @Published var isShowingMonthsSheet = false
     @Published var isShowingDetailView = false
-    @Published var photos: [Photo] = [] {
-        didSet {
-             calculateButtonAvailabilty()
-        }
-    }
-    @Published var isCameraButtonDisabled: Bool = false {
-        didSet {
-            print("isCameraButtonDisabled: \(isCameraButtonDisabled)")
-        }
-    }
+    @Published var photos: Set<Photo> = []
+    @Published var isCameraButtonDisabled: Bool = false
+
+    private var visualizedMonths: Set<DateComponents> = []
 
     init() {
-        getImageList()
+        getImageList(in: yearMonthComponents(from: Date()))
     }
 
     // MARK: - Actions
@@ -47,8 +43,13 @@ final class HomeViewModel: ObservableObject {
         case .photoRemoveButtonTapped(let photo):
             removePhoto(photo)
         case .saveButtonTapped:
-            getImageList()
+            getImageList(in: yearMonthComponents(from: Date()))
             NotificationManager.cancelNotificationFor(Date.now)
+        case .userScroll(let lowerBound, let upperBound):
+            getImageListOnScrollIfNeeded(lowerBound: yearMonthComponents(from: lowerBound),
+                                         upperBound: yearMonthComponents(from: upperBound))
+        case .monthRowTapped(let selectedMonth):
+            getImageList(in: yearMonthComponents(from: selectedMonth))
         }
     }
 
@@ -67,20 +68,33 @@ final class HomeViewModel: ObservableObject {
 
     private func removePhoto(_ photo: Photo) {
         CoreDataStack.shared.removePhoto(photo)
-        getImageList()
+        photos.remove(photo)
     }
 
-    private func getImageList() {
-        photos = CoreDataStack.shared.getImageList()
+    private func getImageList(in month: DateComponents) {
+        let newImageList = CoreDataStack.shared.getImageList(for: month)
+        photos.formUnion(newImageList)
+        visualizedMonths.insert(month)
+    }
+
+    private func getImageListOnScrollIfNeeded(lowerBound: DateComponents, upperBound: DateComponents) {
+
+        if !visualizedMonths.contains(lowerBound) {
+            let newImages = CoreDataStack.shared.getImageList(for: lowerBound)
+            photos.formUnion(newImages)
+            visualizedMonths.insert(lowerBound)
+        } else if !visualizedMonths.contains(upperBound) {
+            let newImages = CoreDataStack.shared.getImageList(for: upperBound)
+            photos.formUnion(newImages)
+            visualizedMonths.insert(upperBound)
+        }
     }
 }
 
 // MARK: - Private instance methods
 
 extension HomeViewModel {
-    func calculateButtonAvailabilty() {
-        print("Calcualte start")
-        print("Photo count: \(photos.count)")
+    private func calculateButtonAvailabilty() {
         if photos.isEmpty {
             isCameraButtonDisabled = false
         } else {
@@ -93,5 +107,20 @@ extension HomeViewModel {
                 isCameraButtonDisabled = false
             }
         }
+    }
+
+    private func yearMonthComponents(from components: DateComponents) -> DateComponents {
+        var yearMonth = DateComponents()
+        yearMonth.year = components.year
+        yearMonth.month = components.month
+        return yearMonth
+    }
+
+    private func yearMonthComponents(from date: Date) -> DateComponents {
+        let calendar = Calendar.current
+        var yearMonth = calendar.dateComponents([.year, .month], from: date)
+        yearMonth.era = nil
+        yearMonth.isLeapMonth = nil
+        return yearMonth
     }
 }

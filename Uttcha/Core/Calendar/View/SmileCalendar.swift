@@ -43,7 +43,6 @@ struct SmileCalendar: View {
     }
 
     var body: some View {
-        // TODO: dataEpendency에 사진을 넣어야하나..? 확인 
         CalendarViewRepresentable(
             calendar: calendar,
             visibleDateRange: visibleDateRange,
@@ -111,6 +110,11 @@ struct SmileCalendar: View {
             print(day.day)
         }
 
+        .onScroll { visibleDayRange, _ in
+            homeViewModel.perform(action: .userScroll(visibleDayRange.lowerBound.components,
+                                                      visibleDayRange.upperBound.components))
+        }
+
         .onAppear {
             calendarViewProxy.scrollToMonth(
                 containing: .now,
@@ -126,7 +130,9 @@ struct SmileCalendar: View {
             )
         }
         .sheet(isPresented: $homeViewModel.isShowingMonthsSheet) {
-            MonthsAvailable(calendarViewProxy: calendarViewProxy, startDate: visibleDateRange.lowerBound)
+            MonthsAvailable(calendarViewProxy: calendarViewProxy,
+                            homeViewModel: homeViewModel,
+                            startDate: visibleDateRange.lowerBound)
                 .presentationDetents([.medium])
         }
         .clipShape(
@@ -137,6 +143,7 @@ struct SmileCalendar: View {
 
 struct MonthsAvailable: View {
     @ObservedObject var calendarViewProxy: CalendarViewProxy
+    @ObservedObject var homeViewModel: HomeViewModel
 
     let startDate: Date
 
@@ -169,6 +176,7 @@ struct MonthsAvailable: View {
                                     scrollPosition: .lastFullyVisiblePosition,
                                     animated: false
                                 )
+                                homeViewModel.perform(action: .monthRowTapped(date))
 
                                 dismiss()
                             }
