@@ -98,7 +98,7 @@ struct ImageListView: View {
                     ForEach(memories) { memory in
                         MemoryButton(memory: memory, longPressAction: longPressAction)
                     }
-                    
+
                     AddImageButton(action: addImageButtonAction)
                 }
 
@@ -118,6 +118,7 @@ struct MemoryButton: View {
             if let uiImage = UIImage(data: memory.image) {
                 Image(uiImage: uiImage)
                     .resizable()
+                    .scaledToFill()
                     .frame(width: 150, height: 200)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
             } else {
