@@ -44,19 +44,10 @@ extension CoreDataStack {
 
 extension CoreDataStack {
     func saveImage(_ bitmap: UIImage) {
-//        let image = Photo(context: persistentContainer.viewContext)
-//
-//        image.blob = bitmap.toData()
-//        image.date = Date()
+        let image = Photo(context: persistentContainer.viewContext)
 
-        let mockDates = createMockDates()
-
-        for date in mockDates {
-            let photo = Photo(context: persistentContainer.viewContext)
-            photo.blob = bitmap.toData()
-            photo.date = date
-            // You might want to set other properties here if needed
-        }
+        image.blob = bitmap.toData()
+        image.date = Date()
 
         save()
     }
