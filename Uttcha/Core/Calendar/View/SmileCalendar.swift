@@ -10,6 +10,7 @@ import SwiftUI
 import UIKit
 
 import HorizonCalendar
+import Kingfisher
 
 struct SmileCalendar: View {
     @ObservedObject private var homeViewModel: HomeViewModel
@@ -28,10 +29,10 @@ struct SmileCalendar: View {
         self.homeViewModel = homeViewModel
         self.calendar = calendar
         self.monthsLayout = monthsLayout
-        let today = Date()
 
-        let startDate = calendar.date(byAdding: .year, value: -10, to: today)!
-        let endDate = calendar.date(byAdding: .year, value: 10, to: today)!
+        let firstLaunchDate = UserDefaults.standard.object(forKey: "FirstLaunchDate") as? Date ?? Date()
+        let startDate = calendar.date(byAdding: .year, value: -2, to: firstLaunchDate)!
+        let endDate = Date()
         visibleDateRange = startDate...endDate
 
         monthDateFormatter = DateFormatter()
@@ -42,7 +43,6 @@ struct SmileCalendar: View {
     }
 
     var body: some View {
-        // TODO: dataEpendency에 사진을 넣어야하나..? 확인 
         CalendarViewRepresentable(
             calendar: calendar,
             visibleDateRange: visibleDateRange,
@@ -85,10 +85,8 @@ struct SmileCalendar: View {
             }.first
 
             if let image = image {
-                let uiImage = UIImage(data: image.blob!)!
-                let imageView = Image(uiImage: uiImage)
-
-                imageView
+                KFImage
+                    .data(image.blob!, cacheKey: image.date!.description)
                     .resizable()
                     .scaledToFit()
                     .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -112,6 +110,11 @@ struct SmileCalendar: View {
             print(day.day)
         }
 
+        .onScroll { visibleDayRange, _ in
+            homeViewModel.perform(action: .userScroll(visibleDayRange.lowerBound.components,
+                                                      visibleDayRange.upperBound.components))
+        }
+
         .onAppear {
             calendarViewProxy.scrollToMonth(
                 containing: .now,
@@ -127,7 +130,9 @@ struct SmileCalendar: View {
             )
         }
         .sheet(isPresented: $homeViewModel.isShowingMonthsSheet) {
-            MonthsAvailable(calendarViewProxy: calendarViewProxy, startDate: visibleDateRange.lowerBound)
+            MonthsAvailable(calendarViewProxy: calendarViewProxy,
+                            homeViewModel: homeViewModel,
+                            startDate: visibleDateRange.lowerBound)
                 .presentationDetents([.medium])
         }
         .clipShape(
@@ -138,6 +143,7 @@ struct SmileCalendar: View {
 
 struct MonthsAvailable: View {
     @ObservedObject var calendarViewProxy: CalendarViewProxy
+    @ObservedObject var homeViewModel: HomeViewModel
 
     let startDate: Date
 
@@ -170,6 +176,7 @@ struct MonthsAvailable: View {
                                     scrollPosition: .lastFullyVisiblePosition,
                                     animated: false
                                 )
+                                homeViewModel.perform(action: .monthRowTapped(date))
 
                                 dismiss()
                             }

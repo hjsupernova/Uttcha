@@ -24,6 +24,11 @@ struct UttchaApp: App {
                     if isNotificationOn {
                         NotificationManager.scheduleNotificationsIfNeeded(notificationTimeOption: selectedTimeOption)
                     }
+
+                    if UserDefaults.standard.object(forKey: "FirstLaunchDate") == nil {
+                        UserDefaults.standard.set(Date(), forKey: "FirstLaunchDate")
+                    }
+
                 }
                 .preferredColorScheme(.dark)
                 .tint(.white)
