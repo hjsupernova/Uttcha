@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+import Kingfisher
+
 struct SmileView: View {
     @StateObject private var smileViewModel = SmileViewModel()
 
@@ -32,6 +34,7 @@ struct SmileView: View {
                     HeaderView(label: "소중한 추억!")
 
                     ImageListView(
+                        smileViewModel: smileViewModel,
                         memories: smileViewModel.memoryList,
                         addImageButtonAction: {
                             smileViewModel.perform(action: .imageAddButtonTapped)
@@ -85,6 +88,8 @@ struct AddImageButton: View {
 }
 
 struct ImageListView: View {
+    @ObservedObject var smileViewModel: SmileViewModel
+
     let memories: [MemoryModel]
     let addImageButtonAction: () -> Void
     let longPressAction: (MemoryModel) -> Void
@@ -96,7 +101,7 @@ struct ImageListView: View {
                     AddImageButton(action: addImageButtonAction)
                 } else {
                     ForEach(memories) { memory in
-                        MemoryButton(memory: memory, longPressAction: longPressAction)
+                        MemoryButton(smileViewModel: smileViewModel, memory: memory, longPressAction: longPressAction)
                     }
 
                     AddImageButton(action: addImageButtonAction)
@@ -108,15 +113,17 @@ struct ImageListView: View {
 }
 
 struct MemoryButton: View {
+    @ObservedObject var smileViewModel: SmileViewModel
+
     let memory: MemoryModel
     let longPressAction: (MemoryModel) -> Void
 
     var body: some View {
         Button {
-            // Details
+            smileViewModel.perform(action: .imageTapped(memory))
         } label: {
             if let uiImage = UIImage(data: memory.image) {
-                Image(uiImage: uiImage)
+                KFImage(source: .provider(RawImageDataProvider(data: memory.image, cacheKey: memory.date.description)))
                     .resizable()
                     .scaledToFill()
                     .frame(width: 150, height: 200)
@@ -130,6 +137,63 @@ struct MemoryButton: View {
         }
         .supportsLongPress {
             longPressAction(memory)
+        }
+        .fullScreenCover(item: $smileViewModel.tappedMemory) { memory in
+            MemoryImageFullScreenView(memory: memory)
+        }
+    }
+}
+
+struct MemoryImageFullScreenView: View {
+    let memory: MemoryModel
+
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        NavigationStack {
+            if let uiImage = UIImage(data: memory.image) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFit()
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button {
+                                dismiss()
+                            } label: {
+                                Image(systemName: "xmark")
+                            }
+                        }
+                    }
+                    .modifier(SwipeToDismissModifier(onDismiss: {
+                        dismiss()
+                    }))
+            }
+        }
+    }
+
+    struct SwipeToDismissModifier: ViewModifier {
+        var onDismiss: () -> Void
+        @State private var offset: CGSize = .zero
+
+        func body(content: Content) -> some View {
+            content
+                .offset(y: offset.height)
+                .animation(.interactiveSpring(), value: offset)
+                .simultaneousGesture(
+                    DragGesture()
+                        .onChanged { gesture in
+                            if gesture.translation.width < 50 {
+                                offset = gesture.translation
+                            }
+                        }
+                        .onEnded { _ in
+                            if abs(offset.height) > 100 {
+                                onDismiss()
+                            } else {
+                                offset = .zero
+                            }
+                        }
+                )
         }
     }
 }

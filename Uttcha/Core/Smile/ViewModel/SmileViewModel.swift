@@ -7,6 +7,7 @@
 
 import Contacts
 import Foundation
+import UIKit
 
 enum SmileViewModelAction {
 
@@ -21,6 +22,7 @@ enum SmileViewModelAction {
     case imageAddButtonTapped
     case imageLongPressed(MemoryModel)
     case imageRemoveButtonTapped
+    case imageTapped(MemoryModel)
 }
 
 class SmileViewModel: ObservableObject {
@@ -33,6 +35,7 @@ class SmileViewModel: ObservableObject {
     @Published var memoryList: [MemoryModel] = []
     @Published var isShowingMemoryRemoveConfirmationDialog: Bool = false
     @Published var isShowingContactAuthorizationAlert: Bool = false
+    @Published var tappedMemory: MemoryModel?
 
     // MARK: - Public properties
     var longTappedContact: ContactModel?
@@ -64,6 +67,8 @@ class SmileViewModel: ObservableObject {
             showMemoryRemoveActionSheet(memory)
         case .imageRemoveButtonTapped:
             removeLongPressedMemory()
+        case .imageTapped(let memory):
+            showMemoryDetailView(memory)
         }
     }
 
@@ -179,6 +184,10 @@ class SmileViewModel: ObservableObject {
 
             getMemorySavedList()
         }
+    }
+
+    private func showMemoryDetailView(_ memory: MemoryModel) {
+        tappedMemory = memory
     }
 }
 
