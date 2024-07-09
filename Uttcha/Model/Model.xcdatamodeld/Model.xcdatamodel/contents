@@ -4,7 +4,7 @@
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="familyName" optional="YES" attributeType="String"/>
         <attribute name="givenName" optional="YES" attributeType="String"/>
-        <attribute name="imageData" optional="YES" attributeType="Binary"/>
+        <attribute name="imageData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="phoneNumber" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Memory" representedClassName="Memory" syncable="YES" codeGenerationType="class">
