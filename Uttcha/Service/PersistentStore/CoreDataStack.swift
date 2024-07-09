@@ -46,7 +46,7 @@ extension CoreDataStack {
     func saveImage(_ bitmap: UIImage) {
         let image = Photo(context: persistentContainer.viewContext)
 
-        image.blob = bitmap.toData()
+        image.blob = bitmap.pngData()
         image.date = Date()
 
         save()
@@ -154,7 +154,11 @@ extension CoreDataStack {
     func saveMemory(_ uiImage: UIImage) {
         let image = Memory(context: persistentContainer.viewContext)
 
-        image.blob = uiImage.toData()
+        if let jpegData = uiImage.jpegData(compressionQuality: 0.5) {
+            image.blob = jpegData
+            print("jpeg: \(jpegData.count)")
+        }
+
         image.date = Date()
         image.memoryId = UUID()
 
@@ -200,14 +204,6 @@ struct MemoryModel: Identifiable {
     let id: UUID?
     let image: Data
     let date: Date
-}
-// MARK: - UIImage
-
-extension UIImage {
-
-    func toData() -> Data? {
-        return pngData()
-    }
 }
 
 // MARK: - Mock Data
