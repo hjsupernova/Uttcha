@@ -52,6 +52,17 @@ struct CameraOverlayView: View {
 
                         Spacer()
 
+                        Menu {
+                            Picker("함께 웃기", selection: $model.neededFaceCount) {
+                                ForEach(1..<6) {
+                                    Text("함께 웃기: \($0) 명").tag($0)
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "person.2.fill")
+                                .font(.title2)
+
+                        }
                     }
                     .padding(.horizontal)
                 }
