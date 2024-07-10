@@ -14,10 +14,6 @@ enum CameraViewModelAction {
     case noFaceDetected
     case faceDetected(Int, Bool)
 
-    // faceCount
-    case incrementNeededFaceCount
-    case decrementNeededFaceCount
-
     // Camera
     case takePhoto
     case updatePreviewPhoto(UIImage)
@@ -71,11 +67,6 @@ final class CameraViewModel: ObservableObject {
         case .faceDetected(let faceCount, let allSmiling):
             handleFaceDetected(faceCount, allSmiling)
 
-        case .incrementNeededFaceCount:
-            incrementNeededFaceCount()
-        case .decrementNeededFaceCount:
-            decrementNeededFaceCount()
-
         case .takePhoto:
             takePhoto()
         case .savePhoto(let image):
@@ -103,16 +94,6 @@ final class CameraViewModel: ObservableObject {
             updateFaceDetectionState(faceCount: faceCount, allSmiling: allSmiling)
             processFaceDetectionResult()
         }
-    }
-
-    private func incrementNeededFaceCount() {
-        neededFaceCount += 1
-        processFaceDetectionResult()
-    }
-
-    private func decrementNeededFaceCount() {
-        neededFaceCount = max(1, neededFaceCount - 1)
-        processFaceDetectionResult()
     }
 
     private func takePhoto() {

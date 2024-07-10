@@ -22,14 +22,7 @@ struct HomeView: View {
                 )
                 .padding()
 
-                HStack {
-                    FaceCounter(model: model)
-
-                    Spacer()
-
-                    CameraButton(model: model, homeViewModel: homeViewModel)
-                }
-                .padding()
+                CameraButton(model: model, homeViewModel: homeViewModel)
             }
             .navigationTitle("오늘도 웃차 🤙🏻")
             .toolbar {
@@ -44,30 +37,6 @@ struct HomeView: View {
             CameraScreenView(model: model)
         }
         .environmentObject(homeViewModel)
-    }
-}
-
-struct FaceCounter: View {
-    @ObservedObject var model: CameraViewModel
-
-    var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(uiColor: .systemGray6))
-                .frame(width: 150, height: 100)
-
-            VStack {
-                Text("함께 웃기: \(model.neededFaceCount) 명")
-                    .fontWeight(.bold)
-
-                Stepper("") {
-                    model.perform(action: .incrementNeededFaceCount)
-                } onDecrement: {
-                    model.perform(action: .decrementNeededFaceCount)
-                }
-                .labelsHidden()
-            }
-        }
     }
 }
 
