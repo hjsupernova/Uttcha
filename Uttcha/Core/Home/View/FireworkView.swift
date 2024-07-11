@@ -27,22 +27,15 @@ struct FireworkConfig {
     let launchAnimDuration: Double
 
     init(pieceCount: Int = 20,
-         pieceType: [FireworkType] = [.text("😆"), .text("😁"), .text("🤣")],
+         pieceType: [FireworkType] = [.text("😆"), .text("😁"), .text("😄")],
          colors: [Color] = [
-            Color(hex: "f88f22"),
-            Color(hex: "9c1d08"),
-            Color(hex: "ce7117"),
-            Color(hex: "f24d24"),
-            Color(hex: "113bc6"),
-            Color(hex: "c54a85"),
-            Color(hex: "92af96"),
-            Color(hex: "d23508")
+            Color.yellow
          ],
          pieceSize: CGFloat = 50,
          radius: CGFloat = 100,
          repetitions: Int = 4,
-         repetitionInterval: Double = 1.0,
-         explosionAnimDuration: Double = 1.2,
+         repetitionInterval: Double = 0.5,
+         explosionAnimDuration: Double = 3,
          launchAnimDuration: Double = 1.5) {
         self.pieceCount = pieceCount
         self.pieceType = pieceType
