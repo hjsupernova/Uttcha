@@ -22,7 +22,7 @@ struct SmileCalendar: View {
     private let monthDateFormatter: DateFormatter
     private let dayNames = ["일", "월", "화", "수", "목", "금", "토"]
 
-    @State private var selectedImage: Photo?
+    @State private var selectedPhoto: Photo?
     @Binding var isShowingCamera: Bool
 
     init(homeViewModel: HomeViewModel, calendar: Calendar, monthsLayout: MonthsLayout, isShowingCamera: Binding<Bool>) {
@@ -80,13 +80,13 @@ struct SmileCalendar: View {
         }
         .dayBackgrounds { day in
             let calendarDate = calendar.date(from: day.components)!
-            let image = homeViewModel.photos.filter {
+            let photo = homeViewModel.photos.filter {
                 calendar.isDate($0.date!, inSameDayAs: calendarDate)
             }.first
 
-            if let image = image {
+            if let photo = photo {
                 KFImage
-                    .data(image.blob!, cacheKey: image.date!.description)
+                    .data(photo.blob!, cacheKey: photo.date!.description)
                     .resizable()
                     .scaledToFit()
                     .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -95,12 +95,12 @@ struct SmileCalendar: View {
         .onDaySelection { day in
             let calendarDate = calendar.date(from: day.components)!
 
-            let image = homeViewModel.photos.filter {
+            let photo = homeViewModel.photos.filter {
                 calendar.isDate($0.date!, inSameDayAs: calendarDate)
             }.first
 
-            if let image = image {
-                selectedImage = image
+            if let photo = photo {
+                selectedPhoto = photo
                 // TODO: action에 유저 액션? 아니면 행해야하는 액션?
                 homeViewModel.perform(action: .photoTapped)
             } else if calendar.isDateInToday(calendarDate) {
@@ -124,9 +124,9 @@ struct SmileCalendar: View {
         }
 
         .sheet(isPresented: $homeViewModel.isShowingDetailView) {
-            ImageDetailView(
+            PhotoDetailView(
                 homeViewModel: homeViewModel,
-                selectedImage: $selectedImage
+                selectedPhoto: $selectedPhoto
             )
         }
         .sheet(isPresented: $homeViewModel.isShowingMonthsSheet) {

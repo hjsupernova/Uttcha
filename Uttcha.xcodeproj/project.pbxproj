@@ -24,7 +24,7 @@
 		CEA239792BE8BDE200F157A7 /* CameraOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA239782BE8BDE200F157A7 /* CameraOverlayView.swift */; };
 		CEA2397B2BE8BDFE00F157A7 /* CameraScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA2397A2BE8BDFE00F157A7 /* CameraScreenView.swift */; };
 		CEA2397D2BE8BE5600F157A7 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA2397C2BE8BE5600F157A7 /* CameraView.swift */; };
-		CEA2397F2BE8C4B100F157A7 /* ImageDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA2397E2BE8C4B100F157A7 /* ImageDetailView.swift */; };
+		CEA2397F2BE8C4B100F157A7 /* PhotoDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA2397E2BE8C4B100F157A7 /* PhotoDetailView.swift */; };
 		CEA239812BE8C91D00F157A7 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA239802BE8C91D00F157A7 /* Date.swift */; };
 		CEAEB4512BE8A5F300C522C1 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = CEAEB4502BE8A5F300C522C1 /* .swiftlint.yml */; };
 		CEAEB4612BE8B93E00C522C1 /* SmileCalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAEB4602BE8B93E00C522C1 /* SmileCalendarViewModel.swift */; };
@@ -62,7 +62,7 @@
 		CEA239782BE8BDE200F157A7 /* CameraOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraOverlayView.swift; sourceTree = "<group>"; };
 		CEA2397A2BE8BDFE00F157A7 /* CameraScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraScreenView.swift; sourceTree = "<group>"; };
 		CEA2397C2BE8BE5600F157A7 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
-		CEA2397E2BE8C4B100F157A7 /* ImageDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetailView.swift; sourceTree = "<group>"; };
+		CEA2397E2BE8C4B100F157A7 /* PhotoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailView.swift; sourceTree = "<group>"; };
 		CEA239802BE8C91D00F157A7 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		CEAEB4502BE8A5F300C522C1 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		CEAEB4602BE8B93E00C522C1 /* SmileCalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmileCalendarViewModel.swift; sourceTree = "<group>"; };
@@ -208,7 +208,7 @@
 			isa = PBXGroup;
 			children = (
 				CEB9409E2BC77DCE003D9F7F /* SmileCalendar.swift */,
-				CEA2397E2BE8C4B100F157A7 /* ImageDetailView.swift */,
+				CEA2397E2BE8C4B100F157A7 /* PhotoDetailView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -459,7 +459,7 @@
 				CE7C987E2BC134CD00FA9646 /* HomeView.swift in Sources */,
 				CEB9409F2BC77DCE003D9F7F /* SmileCalendar.swift in Sources */,
 				CEDEDA0A2BCD3C0000707EA1 /* LottieSmile.swift in Sources */,
-				CEA2397F2BE8C4B100F157A7 /* ImageDetailView.swift in Sources */,
+				CEA2397F2BE8C4B100F157A7 /* PhotoDetailView.swift in Sources */,
 				CEF239B02C2952E200739EAC /* SmileViewModel.swift in Sources */,
 				CE7C986A2BC12B1C00FA9646 /* UttchaApp.swift in Sources */,
 				CEA148D42BE9AF7D00457F18 /* NotificationManager.swift in Sources */,

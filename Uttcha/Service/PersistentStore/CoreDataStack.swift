@@ -40,19 +40,19 @@ extension CoreDataStack {
     }
 }
 
-// MARK: - Image
+// MARK: - Photo
 
 extension CoreDataStack {
-    func saveImage(_ bitmap: UIImage) {
-        let image = Photo(context: persistentContainer.viewContext)
+    func savePhoto(_ bitmap: UIImage) {
+        let photo = Photo(context: persistentContainer.viewContext)
 
-        image.blob = bitmap.pngData()
-        image.date = Date()
+        photo.blob = bitmap.pngData()
+        photo.date = Date()
 
         save()
     }
 
-    func getImageList(for monthComponents: DateComponents) -> [Photo] {
+    func getPhotos(for monthComponents: DateComponents) -> [Photo] {
         let request = NSFetchRequest<Photo>(entityName: "Photo")
         request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: true)]
 

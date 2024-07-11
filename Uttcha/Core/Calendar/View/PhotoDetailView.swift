@@ -1,5 +1,5 @@
 //
-//  ImageDetailView.swift
+//  PhotoDetailView.swift
 //  CalendarTest
 //
 //  Created by KHJ on 2024/05/06.
@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct ImageDetailView: View {
+struct PhotoDetailView: View {
     @ObservedObject var homeViewModel: HomeViewModel
 
-    @Binding var selectedImage: Photo?
+    @Binding var selectedPhoto: Photo?
     @Environment(\.dismiss) var dismiss
     @FocusState var inFocus: Int?
     @State private var text: String = ""
@@ -18,8 +18,8 @@ struct ImageDetailView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if let image = selectedImage,
-                   let blob = image.blob,
+                if let photo = selectedPhoto,
+                   let blob = photo.blob,
                    let uiImage = UIImage(data: blob) {
                     ScrollViewReader { sp in
                         ScrollView {
@@ -50,10 +50,10 @@ struct ImageDetailView: View {
                         }
                     }
                     .onAppear {
-                        text = image.memo ?? ""
+                        text = photo.memo ?? ""
                     }
                     .onChange(of: text) { _, _ in
-                        image.memo = text
+                        photo.memo = text
                     }
                 }
             }
@@ -63,8 +63,8 @@ struct ImageDetailView: View {
                         Button(role: .destructive) {
                             dismiss()
 
-                            if let selectedImage = selectedImage {
-                                homeViewModel.perform(action: .photoRemoveButtonTapped(selectedImage))
+                            if let selectedPhoto = selectedPhoto {
+                                homeViewModel.perform(action: .photoRemoveButtonTapped(selectedPhoto))
                             }
 
                         } label: {
@@ -80,7 +80,7 @@ struct ImageDetailView: View {
                 }
 
                 ToolbarItem(placement: .principal) {
-                    Text(selectedImage?.date?.string(withFormat: "M월 d일 HH:mm") ?? "")
+                    Text(selectedPhoto?.date?.string(withFormat: "M월 d일 HH:mm") ?? "")
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -96,14 +96,14 @@ struct ImageDetailView: View {
           photo.memo = ""
 
           // Create a sample image and convert it to Data
-          if let sampleImage = UIImage(systemName: "photo"),
-             let imageData = sampleImage.pngData() {
-              photo.blob = imageData
+          if let samplePhoto = UIImage(systemName: "photo"),
+             let photoData = samplePhoto.pngData() {
+              photo.blob = photoData
           }
 
           return photo
       }()
 
-    return ImageDetailView(homeViewModel: HomeViewModel(), selectedImage: $samplePhoto)
+    return PhotoDetailView(homeViewModel: HomeViewModel(), selectedPhoto: $samplePhoto)
         .environment(\.managedObjectContext, context)
 }

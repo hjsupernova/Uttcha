@@ -22,8 +22,8 @@ struct CameraScreenView: View {
 
                     CameraOverlayView(cameraViewModel: cameraViewModel)
                 }
-                .navigationDestination(item: $cameraViewModel.facePhoto) { takenImage in
-                    PhotoPreviewView(cameraViewModel: cameraViewModel, image: takenImage)
+                .navigationDestination(item: $cameraViewModel.facePhoto) { facePhoto in
+                    PhotoPreviewView(cameraViewModel: cameraViewModel, photo: facePhoto)
                 }
                 .ignoresSafeArea()
             }
