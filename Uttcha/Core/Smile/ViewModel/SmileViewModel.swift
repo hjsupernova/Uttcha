@@ -42,8 +42,8 @@ class SmileViewModel: ObservableObject {
     var longPressedMemory: MemoryModel? 
 
     init() {
-        getContactSavedList()
-        getMemorySavedList()
+        fetchSavedContacts()
+        fetchSavedMemories()
     }
     // MARK: - Actions
     func perform(action: SmileViewModelAction) {
@@ -54,7 +54,7 @@ class SmileViewModel: ObservableObject {
         case .contactListRowTapped(let contact):
             saveTappedContact(contact)
         case .contactListViewAppeared:
-            getContactList()
+            fetchContacts()
         case .contactLongTapped(let contact):
             showContactRemoveActionSheet(contact)
         case .contactRemoveButtonTapped:
@@ -80,10 +80,10 @@ class SmileViewModel: ObservableObject {
     private func saveTappedContact(_ contact: ContactModel) {
         CoreDataStack.shared.saveContact(contact, contactSavedList: contactSavedList)
 
-        getContactSavedList()
+        fetchSavedContacts()
     }
 
-    private func getContactList() {
+    private func fetchContacts() {
         let CNStore = CNContactStore()
 
         switch CNContactStore.authorizationStatus(for: .contacts) {
@@ -141,7 +141,7 @@ class SmileViewModel: ObservableObject {
         case .notDetermined:
             CNStore.requestAccess(for: .contacts) { granted, error in
                 if granted {
-                    self.getContactList()
+                    self.fetchContacts()
                 } else if let error = error {
                     print("error while requesting permission :\(error)")
                 }
@@ -165,7 +165,7 @@ class SmileViewModel: ObservableObject {
         if let longTappedContact = longTappedContact {
             CoreDataStack.shared.removeContact(longTappedContact)
 
-            getContactSavedList()
+            fetchSavedContacts()
         }
     }
 
@@ -182,7 +182,7 @@ class SmileViewModel: ObservableObject {
         if let longPressedMemory = longPressedMemory {
             CoreDataStack.shared.removeMemory(longPressedMemory)
 
-            getMemorySavedList()
+            fetchSavedMemories()
         }
     }
 
@@ -194,12 +194,12 @@ class SmileViewModel: ObservableObject {
 // MARK: - Private instance methods
 
 extension SmileViewModel {
-    private func getContactSavedList() {
-        contactSavedList = CoreDataStack.shared.getContactSavedList()
+    private func fetchSavedContacts() {
+        contactSavedList = CoreDataStack.shared.fetchSavedContacts()
     }
 
-    private func getMemorySavedList() {
-        memoryList = CoreDataStack.shared.getSavedMemoryList()
+    private func fetchSavedMemories() {
+        memoryList = CoreDataStack.shared.fetchSavedMemories()
     }
 
     private func showContactAuthorizationAlert() {

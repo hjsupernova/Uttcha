@@ -52,7 +52,7 @@ extension CoreDataStack {
         save()
     }
 
-    func getPhotos(for monthComponents: DateComponents) -> [Photo] {
+    func fetchPhotos(for monthComponents: DateComponents) -> [Photo] {
         let request = NSFetchRequest<Photo>(entityName: "Photo")
         request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: true)]
 
@@ -113,7 +113,7 @@ extension CoreDataStack {
         save()
     }
 
-    func getContactSavedList() -> [ContactModel] {
+    func fetchSavedContacts() -> [ContactModel] {
         let request = NSFetchRequest<Contact>(entityName: "Contact")
 
         do {
@@ -165,7 +165,7 @@ extension CoreDataStack {
         save()
     }
 
-    func getSavedMemoryList() -> [MemoryModel] {
+    func fetchSavedMemories() -> [MemoryModel] {
         let request = NSFetchRequest<Memory>(entityName: "Memory")
 
         do {

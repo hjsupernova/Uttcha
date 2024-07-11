@@ -224,7 +224,7 @@ struct UIImagePicker: UIViewControllerRepresentable {
 
                 if let uiImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage{
                     CoreDataStack.shared.saveMemory(uiImage)
-                    self.parent.memoryList = CoreDataStack.shared.getSavedMemoryList()
+                    self.parent.memoryList = CoreDataStack.shared.fetchSavedMemories()
                 }
             }
         }
