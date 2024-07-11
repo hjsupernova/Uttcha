@@ -36,7 +36,6 @@
 		CEB9408A2BC660BE003D9F7F /* SmileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB940892BC660BE003D9F7F /* SmileView.swift */; };
 		CEB9409D2BC77DBA003D9F7F /* HorizonCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = CEB9409C2BC77DBA003D9F7F /* HorizonCalendar */; };
 		CEB9409F2BC77DCE003D9F7F /* SmileCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB9409E2BC77DCE003D9F7F /* SmileCalendar.swift */; };
-		CEC27FAC2BC9499400B455D8 /* DebugText.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC27FAB2BC9499400B455D8 /* DebugText.swift */; };
 		CEDEDA082BCD3BEF00707EA1 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = CEDEDA072BCD3BEF00707EA1 /* Lottie */; };
 		CEDEDA0A2BCD3C0000707EA1 /* LottieSmile.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEDA092BCD3C0000707EA1 /* LottieSmile.swift */; };
 		CEDEDA0C2BCD3EED00707EA1 /* smile.json in Resources */ = {isa = PBXBuildFile; fileRef = CEDEDA0B2BCD3EED00707EA1 /* smile.json */; };
@@ -74,7 +73,6 @@
 		CEB940872BC66041003D9F7F /* UttchaTapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UttchaTapView.swift; sourceTree = "<group>"; };
 		CEB940892BC660BE003D9F7F /* SmileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmileView.swift; sourceTree = "<group>"; };
 		CEB9409E2BC77DCE003D9F7F /* SmileCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmileCalendar.swift; sourceTree = "<group>"; };
-		CEC27FAB2BC9499400B455D8 /* DebugText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugText.swift; sourceTree = "<group>"; };
 		CEDEDA092BCD3C0000707EA1 /* LottieSmile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieSmile.swift; sourceTree = "<group>"; };
 		CEDEDA0B2BCD3EED00707EA1 /* smile.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = smile.json; sourceTree = "<group>"; };
 		CEF239AB2C292EAF00739EAC /* Contact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
@@ -182,7 +180,6 @@
 				CEA2397A2BE8BDFE00F157A7 /* CameraScreenView.swift */,
 				CEA2397C2BE8BE5600F157A7 /* CameraView.swift */,
 				CE52C0F52BC188D70039C1E1 /* CameraViewController.swift */,
-				CEC27FAB2BC9499400B455D8 /* DebugText.swift */,
 				CEDEDA092BCD3C0000707EA1 /* LottieSmile.swift */,
 				CEA239762BE8BDC300F157A7 /* PhotoPreviewView.swift */,
 				CEB9402F2BC27CB4003D9F7F /* Shutter.swift */,
@@ -479,7 +476,6 @@
 				CEAEB4612BE8B93E00C522C1 /* SmileCalendarViewModel.swift in Sources */,
 				CEA2397D2BE8BE5600F157A7 /* CameraView.swift in Sources */,
 				CE7A231D2C3E7C4400CE294F /* FireworkView.swift in Sources */,
-				CEC27FAC2BC9499400B455D8 /* DebugText.swift in Sources */,
 				CEB940302BC27CB4003D9F7F /* Shutter.swift in Sources */,
 				CEA2397B2BE8BDFE00F157A7 /* CameraScreenView.swift in Sources */,
 				CEA148D92BEA32AB00457F18 /* View.swift in Sources */,

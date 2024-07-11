@@ -18,8 +18,6 @@ struct CameraScreenView: View {
                 ZStack {
                     CameraView(model: model)
 
-                    DebugText(model: model)
-
                     LottieSmile()
 
                     CameraOverlayView(model: model)
