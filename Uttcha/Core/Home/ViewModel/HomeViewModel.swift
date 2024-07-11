@@ -28,6 +28,8 @@ final class HomeViewModel: ObservableObject {
         }
     }
     @Published var isCameraButtonDisabled: Bool = false
+    @Published var fireworkTrigger = 0
+    @Published var fireworkConfiguration: FireworkConfig = FireworkConfig()
 
     private var visualizedMonths: Set<DateComponents> = []
 
@@ -49,6 +51,7 @@ final class HomeViewModel: ObservableObject {
         case .saveButtonTapped:
             getImageList(in: yearMonthComponents(from: Date()))
             NotificationManager.cancelNotificationFor(Date.now)
+            triggerFireworks()
         case .userScroll(let lowerBound, let upperBound):
             getImageListOnScrollIfNeeded(lowerBound: yearMonthComponents(from: lowerBound),
                                          upperBound: yearMonthComponents(from: upperBound))
@@ -93,6 +96,11 @@ final class HomeViewModel: ObservableObject {
             visualizedMonths.insert(upperBound)
         }
     }
+    
+    private func triggerFireworks() {
+        fireworkTrigger += 1
+    }
+
 }
 
 // MARK: - Private instance methods
