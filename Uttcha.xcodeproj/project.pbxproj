@@ -20,7 +20,6 @@
 		CE7C987E2BC134CD00FA9646 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7C987D2BC134CD00FA9646 /* HomeView.swift */; };
 		CEA148D42BE9AF7D00457F18 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA148D32BE9AF7D00457F18 /* NotificationManager.swift */; };
 		CEA148D92BEA32AB00457F18 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA148D82BEA32AB00457F18 /* View.swift */; };
-		CEA148E32BEA3BB000457F18 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = CEA148E22BEA3BB000457F18 /* SwiftUIIntrospect */; };
 		CEA239772BE8BDC300F157A7 /* PhotoPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA239762BE8BDC300F157A7 /* PhotoPreviewView.swift */; };
 		CEA239792BE8BDE200F157A7 /* CameraOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA239782BE8BDE200F157A7 /* CameraOverlayView.swift */; };
 		CEA2397B2BE8BDFE00F157A7 /* CameraScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA2397A2BE8BDFE00F157A7 /* CameraScreenView.swift */; };
@@ -89,7 +88,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE4560D62C3690F700AA4CDD /* Kingfisher in Frameworks */,
-				CEA148E32BEA3BB000457F18 /* SwiftUIIntrospect in Frameworks */,
 				CEB9409D2BC77DBA003D9F7F /* HorizonCalendar in Frameworks */,
 				CEDEDA082BCD3BEF00707EA1 /* Lottie in Frameworks */,
 			);
@@ -375,7 +373,6 @@
 			packageProductDependencies = (
 				CEB9409C2BC77DBA003D9F7F /* HorizonCalendar */,
 				CEDEDA072BCD3BEF00707EA1 /* Lottie */,
-				CEA148E22BEA3BB000457F18 /* SwiftUIIntrospect */,
 				CE4560D52C3690F700AA4CDD /* Kingfisher */,
 			);
 			productName = CalendarTest;
@@ -409,7 +406,6 @@
 			packageReferences = (
 				CEB9409B2BC77DBA003D9F7F /* XCRemoteSwiftPackageReference "HorizonCalendar" */,
 				CEDEDA062BCD3BEF00707EA1 /* XCRemoteSwiftPackageReference "lottie-spm" */,
-				CEA148E12BEA3BB000457F18 /* XCRemoteSwiftPackageReference "swiftui-introspect" */,
 				CE4560D42C3690F700AA4CDD /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = CE7C98672BC12B1C00FA9646 /* Products */;
@@ -714,14 +710,6 @@
 				minimumVersion = 7.12.0;
 			};
 		};
-		CEA148E12BEA3BB000457F18 /* XCRemoteSwiftPackageReference "swiftui-introspect" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/siteline/swiftui-introspect";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.3;
-			};
-		};
 		CEB9409B2BC77DBA003D9F7F /* XCRemoteSwiftPackageReference "HorizonCalendar" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/airbnb/HorizonCalendar.git";
@@ -745,11 +733,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CE4560D42C3690F700AA4CDD /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
-		};
-		CEA148E22BEA3BB000457F18 /* SwiftUIIntrospect */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CEA148E12BEA3BB000457F18 /* XCRemoteSwiftPackageReference "swiftui-introspect" */;
-			productName = SwiftUIIntrospect;
 		};
 		CEB9409C2BC77DBA003D9F7F /* HorizonCalendar */ = {
 			isa = XCSwiftPackageProductDependency;
