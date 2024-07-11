@@ -28,7 +28,8 @@ final class HomeViewModel: ObservableObject {
         }
     }
     @Published var isCameraButtonDisabled: Bool = false
-
+    @Published var fireworkTrigger = 0
+    @Published var fireworkConfiguration: FireworkConfig = FireworkConfig()
     private var visualizedMonths: Set<DateComponents> = []
 
     init() {
@@ -93,6 +94,11 @@ final class HomeViewModel: ObservableObject {
             visualizedMonths.insert(upperBound)
         }
     }
+    
+    private func triggerFireworks() {
+        fireworkTrigger += 1
+    }
+
 }
 
 // MARK: - Private instance methods

@@ -4,13 +4,73 @@
 //
 //  Created by KHJ on 7/10/24.
 //
+// swiftlint:disable all
 
 import SwiftUI
 
-struct FireworkView: View {
+/// - Parameters:
+///  - pieceCount: amount of confetti
+///  - colors: list of colors that is applied to the default shapes
+///  - pieceSize: size that confetti and emojis are scaled to
+///  - radius: explosion radius
+///  - repetitions: number of repetitions of the explosion
+///  - repetitionInterval: duration between the repetitions
+struct FireworkConfig {
+    let pieceCount: Int
+    let pieceType: [FireworkType]
+    let colors: [Color]
+    let pieceSize: CGFloat
+    let radius: CGFloat
+    var repetitions: Int
+    let repetitionInterval: Double
+    let explosionAnimationDuration: Double
+    let launchAnimDuration: Double
 
-    @Binding var counter: Int
-    @StateObject var vm = FireworkCenterVM()
+    init(pieceCount: Int = 20,
+         pieceType: [FireworkType] = [.text("😆"), .text("😁"), .text("🤣")],
+         colors: [Color] = [
+            Color(hex: "f88f22"),
+            Color(hex: "9c1d08"),
+            Color(hex: "ce7117"),
+            Color(hex: "f24d24"),
+            Color(hex: "113bc6"),
+            Color(hex: "c54a85"),
+            Color(hex: "92af96"),
+            Color(hex: "d23508")
+         ],
+         pieceSize: CGFloat = 50,
+         radius: CGFloat = 100,
+         repetitions: Int = 4,
+         repetitionInterval: Double = 1.0,
+         explosionAnimDuration: Double = 1.2,
+         launchAnimDuration: Double = 1.5) {
+        self.pieceCount = pieceCount
+        self.pieceType = pieceType
+        self.colors = colors
+        self.pieceSize = pieceSize
+        self.radius = radius
+        self.repetitions = repetitions
+        self.repetitionInterval = repetitionInterval
+        self.explosionAnimationDuration = explosionAnimDuration
+        self.launchAnimDuration = launchAnimDuration
+    }
+
+    func getShapes() -> [AnyView] {
+        var shapes = [AnyView]()
+        for firework in pieceType{
+            switch firework {
+            case .shape(_):
+                shapes.append(AnyView(firework.view.frame(width: pieceSize, height: pieceSize, alignment: .center)))
+            default:
+                shapes.append(AnyView(firework.view.font(.system(size: pieceSize))))
+            }
+        }
+        return shapes
+    }
+}
+
+struct FireworkView: View {
+    @ObservedObject var vm: HomeViewModel
     @State var animate = 0
     @State var finishedAnimationCounter = 0
     @State var firstAppear = false
@@ -27,10 +87,10 @@ struct FireworkView: View {
         .onAppear(){
             firstAppear = true
         }
-        .onChange(of: counter){value in
+        .onChange(of: vm.fireworkTrigger){value in
             if firstAppear{
-                for i in 0...vm.repetitions{
-                    DispatchQueue.main.asyncAfter(deadline: .now() + vm.repetitionInterval * Double(i)) {
+                for i in 0...vm.fireworkConfiguration.repetitions{
+                    DispatchQueue.main.asyncAfter(deadline: .now() + vm.fireworkConfiguration.repetitionInterval * Double(i)) {
                         animate += 1
                     }
                 }
@@ -41,7 +101,7 @@ struct FireworkView: View {
 
 struct FireworkContainer: View {
 
-    @StateObject var vm: FireworkCenterVM
+    @ObservedObject var vm: HomeViewModel
     @Binding var finishedAnimationCounter:Int
     @State var firstAppear = true
     @State var randomX = Double.random(in: -100...100)
@@ -51,7 +111,7 @@ struct FireworkContainer: View {
 
     var body: some View{
         ZStack{
-            ForEach(0..<vm.pieceCount, id:\.self){ i in
+            ForEach(0..<vm.fireworkConfiguration.pieceCount, id:\.self){ i in
                 FireworkFrame(
                     vm: vm,
                     index: i,
@@ -65,7 +125,7 @@ struct FireworkContainer: View {
         .offset(x: location.x, y: location.y)
         .onAppear(){
             if firstAppear{
-                withAnimation(Animation.timingCurve(0.075, 0.690, 0.330, 0.870, duration: vm.launchAnimDuration).repeatCount(1)) {
+                withAnimation(Animation.timingCurve(0.075, 0.690, 0.330, 0.870, duration: vm.fireworkConfiguration.launchAnimDuration).repeatCount(1)) {
                     location.x = randomX
                     location.y = -randomY
                 }
@@ -78,22 +138,22 @@ struct FireworkContainer: View {
         }
     }
     func getAnimDuration() -> CGFloat{
-        return vm.explosionAnimationDuration + vm.launchAnimDuration
+        return vm.fireworkConfiguration.explosionAnimationDuration + vm.fireworkConfiguration.launchAnimDuration
     }
     func getColor() -> Color{
-        return vm.colors.randomElement()!
+        return vm.fireworkConfiguration.colors.randomElement()!
     }
     func getRandomExplosionTimeVariation() -> CGFloat {
         return CGFloat((0...999).randomElement()!) / 2100
     }
     func getExplosionAnimationDuration() -> CGFloat {
-        return vm.explosionAnimationDuration + getRandomExplosionTimeVariation()
+        return vm.fireworkConfiguration.explosionAnimationDuration + getRandomExplosionTimeVariation()
     }
 }
 
 struct FireworkFrame: View{
 
-    @StateObject var vm: FireworkCenterVM
+    @ObservedObject var vm: HomeViewModel
     @State var location: CGPoint = CGPoint(x: 0, y: 0)
     @State var index: Int
     @State var launchHeight: CGFloat
@@ -105,13 +165,13 @@ struct FireworkFrame: View{
 
     var body: some View{
         ZStack{
-            FireworkItem(vm: vm, shape: getShape(), size: vm.pieceSize, color: color)
+            FireworkItem(vm: vm, shape: getShape(), size: vm.fireworkConfiguration.pieceSize, color: color)
                 .offset(x: location.x, y: location.y)
                 .onAppear{
                     withAnimation(
                         Animation
                             .timingCurve(0.0, 1.0, 1.0, 1.0, duration: duration)
-                            .delay(vm.launchAnimDuration).repeatCount(1)
+                            .delay(vm.fireworkConfiguration.launchAnimDuration).repeatCount(1)
                     ){
                         location.x = getDistance() * cos(deg2rad(getRandomAngle()))
                         location.y = -getDistance() * sin(deg2rad(getRandomAngle()))
@@ -134,7 +194,7 @@ struct FireworkFrame: View{
                      withAnimation(
                          Animation
                              .timingCurve(0.0, 1.0, 1.0, 1.0, duration: duration)
-                             .delay(vm.launchAnimDuration).repeatCount(1)
+                             .delay(vm.fireworkConfiguration.launchAnimDuration).repeatCount(1)
                      ){
                          percentage = 1.0
                          strokeWidth = 0.0
@@ -144,13 +204,13 @@ struct FireworkFrame: View{
         }
     }
     func getRandomAngle() -> CGFloat{
-        return (360.0 / Double(vm.pieceCount)) * Double(index)
+        return (360.0 / Double(vm.fireworkConfiguration.pieceCount)) * Double(index)
     }
     func getShape() -> AnyView {
-        return vm.getShapes().randomElement()!
+        return vm.fireworkConfiguration.getShapes().randomElement()!
     }
     func getDistance() -> CGFloat {
-        return vm.radius + (launchHeight / 10)
+        return vm.fireworkConfiguration.radius + (launchHeight / 10)
     }
     func deg2rad(_ number: CGFloat) -> CGFloat {
         return number * CGFloat.pi / 180
@@ -159,7 +219,7 @@ struct FireworkFrame: View{
 
 struct FireworkItem: View {
 
-    @StateObject var vm: FireworkCenterVM
+    @ObservedObject var vm: HomeViewModel
     @State var shape: AnyView
     @State var size: CGFloat
     @State var color: Color
@@ -174,75 +234,13 @@ struct FireworkItem: View {
             .onAppear() {
                 withAnimation(
                     Animation
-                        .linear(duration: vm.explosionAnimationDuration)
-                        .delay(vm.launchAnimDuration)
+                        .linear(duration: vm.fireworkConfiguration.explosionAnimationDuration)
+                        .delay(vm.fireworkConfiguration.launchAnimDuration)
                         .repeatCount(1)
                 ) {
                     scale = 0.0
                 }
             }
-    }
-}
-
-
-/// - Parameters:
-///  - pieceCount: amount of confetti
-///  - colors: list of colors that is applied to the default shapes
-///  - pieceSize: size that confetti and emojis are scaled to
-///  - radius: explosion radius
-///  - repetitions: number of repetitions of the explosion
-///  - repetitionInterval: duration between the repetitions
-class FireworkCenterVM: ObservableObject{
-    @Published var pieceCount: Int
-    @Published var pieceType: [FireworkType]
-    @Published var colors: [Color]
-    @Published var pieceSize: CGFloat
-    @Published var radius: CGFloat
-    @Published var repetitions: Int
-    @Published var repetitionInterval: Double
-    @Published var explosionAnimationDuration: Double
-    @Published var launchAnimDuration: Double
-
-    init(pieceCount: Int = 20,
-         pieceType: [FireworkType] = [.shape(.circle)],
-         colors: [Color] = [
-            Color.init(hex: "f88f22"),
-            Color.init(hex: "9c1d08"),
-            Color.init(hex: "ce7117"),
-            Color.init(hex: "f24d24"),
-            Color.init(hex: "113bc6"),
-            Color.init(hex: "c54a85"),
-            Color.init(hex: "92af96"),
-            Color.init(hex: "d23508")
-         ],
-         pieceSize: CGFloat = 10.0,
-         radius: CGFloat = 100,
-         repetitions: Int = 0,
-         repetitionInterval: Double = 1.0,
-         explosionAnimDuration: Double = 1.2,
-         launchAnimDuration: Double = 3.0
-    ) {
-        self.pieceCount = pieceCount
-        self.pieceType = pieceType
-        self.colors = colors
-        self.pieceSize = pieceSize
-        self.radius = radius
-        self.repetitions = repetitions
-        self.repetitionInterval = repetitionInterval
-        self.explosionAnimationDuration = explosionAnimDuration
-        self.launchAnimDuration = launchAnimDuration
-    }
-    func getShapes() -> [AnyView]{
-        var shapes = [AnyView]()
-        for firework in pieceType{
-            switch firework {
-            case .shape(_):
-                shapes.append(AnyView(firework.view.frame(width: pieceSize, height: pieceSize, alignment: .center)))
-            default:
-                shapes.append(AnyView(firework.view.font(.system(size: pieceSize))))
-            }
-        }
-        return shapes
     }
 }
 
@@ -357,6 +355,8 @@ extension Color {
     }
 }
 
-#Preview {
-    FireworkView(counter: .constant(1))
-}
+//#Preview {
+//    FireworkView(vm.counter: .constant(1))
+//}
+
+// swiftlint:enable all

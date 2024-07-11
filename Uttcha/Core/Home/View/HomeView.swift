@@ -22,7 +22,11 @@ struct HomeView: View {
                 )
                 .padding()
 
-                CameraButton(model: model, homeViewModel: homeViewModel)
+                ZStack {
+                    CameraButton(model: model, homeViewModel: homeViewModel)
+
+                    FireworkView(vm: homeViewModel)
+                }
             }
             .navigationTitle("오늘도 웃차 🤙🏻")
             .toolbar {
