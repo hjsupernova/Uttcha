@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct CameraView: UIViewControllerRepresentable {
-    private(set) var model: CameraViewModel
+    private(set) var cameraViewModel: CameraViewModel
 
     func makeUIViewController(context: Context) -> CameraViewController {
         let faceDetector = FaceDetector()
-        faceDetector.model = model
+        faceDetector.model = cameraViewModel
 
         let viewController = CameraViewController()
         viewController.faceDetector = faceDetector
@@ -24,5 +24,5 @@ struct CameraView: UIViewControllerRepresentable {
 }
 
 #Preview {
-    CameraView(model: CameraViewModel())
+    CameraView(cameraViewModel: CameraViewModel())
 }

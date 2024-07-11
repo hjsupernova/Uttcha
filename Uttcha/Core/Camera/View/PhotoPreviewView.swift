@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PhotoPreviewView: View {
-    @ObservedObject var model: CameraViewModel
+    @ObservedObject var cameraViewModel: CameraViewModel
     @EnvironmentObject var homeViewModel: HomeViewModel
 
     let image: UIImage
@@ -26,7 +26,7 @@ struct PhotoPreviewView: View {
                     ToolbarItemGroup(placement: .topBarTrailing) {
                         Button {
                             dismiss()
-                            model.perform(action: .savePhoto(image))
+                            cameraViewModel.perform(action: .savePhoto(image))
                             homeViewModel.perform(action: .saveButtonTapped)
                         } label: {
                             Text("저장 하기")

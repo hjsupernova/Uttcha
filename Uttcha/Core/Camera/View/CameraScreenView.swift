@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CameraScreenView: View {
-    @ObservedObject var model: CameraViewModel
+    @ObservedObject var cameraViewModel: CameraViewModel
 
     @Environment(\.dismiss) var dismiss
 
@@ -16,14 +16,14 @@ struct CameraScreenView: View {
         GeometryReader { geo in
             NavigationStack {
                 ZStack {
-                    CameraView(model: model)
+                    CameraView(cameraViewModel: cameraViewModel)
 
                     LottieSmile()
 
-                    CameraOverlayView(model: model)
+                    CameraOverlayView(cameraViewModel: cameraViewModel)
                 }
-                .navigationDestination(item: $model.facePhoto) { takenImage in
-                    PhotoPreviewView(model: model, image: takenImage)
+                .navigationDestination(item: $cameraViewModel.facePhoto) { takenImage in
+                    PhotoPreviewView(cameraViewModel: cameraViewModel, image: takenImage)
                 }
                 .ignoresSafeArea()
             }
@@ -32,5 +32,5 @@ struct CameraScreenView: View {
 }
 
 #Preview {
-    CameraScreenView(model: CameraViewModel())
+    CameraScreenView(cameraViewModel: CameraViewModel())
 }
