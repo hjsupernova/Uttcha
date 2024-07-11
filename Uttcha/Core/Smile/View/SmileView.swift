@@ -19,7 +19,7 @@ struct SmileView: View {
                     HeaderView(label: "친구에게 연락해보세요!")
 
                     ContactListView(
-                        contacts: smileViewModel.contactSavedList,
+                        contacts: smileViewModel.savedContacts,
                         addContactAction: {
                             smileViewModel.perform(action: .contactAddButtonTapped)
                         },
@@ -35,7 +35,7 @@ struct SmileView: View {
 
                     ImageListView(
                         smileViewModel: smileViewModel,
-                        memories: smileViewModel.memoryList,
+                        memories: smileViewModel.memories,
                         addImageButtonAction: {
                             smileViewModel.perform(action: .imageAddButtonTapped)
                         },
@@ -56,7 +56,7 @@ struct SmileView: View {
                 }
             }
             .sheet(isPresented: $smileViewModel.isShowingUIImagePicker) {
-                UIImagePicker(memoryList: $smileViewModel.memoryList)
+                UIImagePicker(memories: $smileViewModel.memories)
             }
             .confirmationDialog("삭제하기", isPresented: $smileViewModel.isShowingMemoryRemoveConfirmationDialog) {
                 Button("이미지 삭제", role: .destructive) {
@@ -199,7 +199,7 @@ struct MemoryImageFullScreenView: View {
 }
 
 struct UIImagePicker: UIViewControllerRepresentable {
-    @Binding var memoryList: [MemoryModel]
+    @Binding var memories: [MemoryModel]
 
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let imagePicker = UIImagePickerController()
@@ -224,7 +224,7 @@ struct UIImagePicker: UIViewControllerRepresentable {
 
                 if let uiImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage{
                     CoreDataStack.shared.saveMemory(uiImage)
-                    self.parent.memoryList = CoreDataStack.shared.fetchSavedMemories()
+                    self.parent.memories = CoreDataStack.shared.fetchSavedMemories()
                 }
             }
         }

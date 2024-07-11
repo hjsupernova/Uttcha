@@ -28,11 +28,11 @@ enum SmileViewModelAction {
 class SmileViewModel: ObservableObject {
     // MARK: - Publishers
     @Published var isShowingContactSheet: Bool = false
-    @Published var contactSavedList: [ContactModel] = []
+    @Published var savedContacts: [ContactModel] = []
     @Published var contacts: [ContactModel] = []
     @Published var isShowingContactRemoveConfirmationDialog: Bool = false
     @Published var isShowingUIImagePicker: Bool = false
-    @Published var memoryList: [MemoryModel] = []
+    @Published var memories: [MemoryModel] = []
     @Published var isShowingMemoryRemoveConfirmationDialog: Bool = false
     @Published var isShowingContactAuthorizationAlert: Bool = false
     @Published var tappedMemory: MemoryModel?
@@ -78,7 +78,7 @@ class SmileViewModel: ObservableObject {
     }
 
     private func saveTappedContact(_ contact: ContactModel) {
-        CoreDataStack.shared.saveContact(contact, contactSavedList: contactSavedList)
+        CoreDataStack.shared.saveContact(contact, savedContacts: savedContacts)
 
         fetchSavedContacts()
     }
@@ -195,11 +195,11 @@ class SmileViewModel: ObservableObject {
 
 extension SmileViewModel {
     private func fetchSavedContacts() {
-        contactSavedList = CoreDataStack.shared.fetchSavedContacts()
+        savedContacts = CoreDataStack.shared.fetchSavedContacts()
     }
 
     private func fetchSavedMemories() {
-        memoryList = CoreDataStack.shared.fetchSavedMemories()
+        memories = CoreDataStack.shared.fetchSavedMemories()
     }
 
     private func showContactAuthorizationAlert() {
