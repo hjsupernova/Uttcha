@@ -55,7 +55,7 @@ extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
         if isCapturingPhoto {
             isCapturingPhoto = false
 
-            savePassportPhoto(from: imageBuffer)
+            savePhoto(from: imageBuffer)
         }
 
         // PixelBuffer을 CIImage로 변경하는 작업
@@ -76,7 +76,7 @@ extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
 // MARK: - Private methods
 
 extension FaceDetector {
-    private func savePassportPhoto(from pixelBuffer: CVPixelBuffer) {
+    private func savePhoto(from pixelBuffer: CVPixelBuffer) {
         guard let model = model else { return }
         imageProcessingQueue.async { [self] in
             let originalImage = CIImage(cvPixelBuffer: pixelBuffer)
@@ -99,10 +99,10 @@ extension FaceDetector {
 
             let context = CIContext()
             if let cgImage = context.createCGImage(outputImage, from: photoRect) {
-                let passportPhoto = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
+                let photo = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
 
                 DispatchQueue.main.async {
-                    model.perform(action: .updatePreviewPhoto(passportPhoto))
+                    model.perform(action: .updatePreviewPhoto(photo))
                 }
             }
         }
