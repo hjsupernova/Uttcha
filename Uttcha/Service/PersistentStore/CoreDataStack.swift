@@ -115,10 +115,11 @@ extension CoreDataStack {
 
     func fetchSavedContacts() -> [ContactModel] {
         let request = NSFetchRequest<Contact>(entityName: "Contact")
+        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: true)]
 
         do {
             let coredataContacts = try persistentContainer.viewContext.fetch(request)
-            return coredataContacts.sorted { $0.date! < $1.date! }.map {
+            return coredataContacts.map {
                 ContactModel(
                     familyName: $0.familyName ?? "",
                     givenName: $0.givenName ?? "",
@@ -167,10 +168,11 @@ extension CoreDataStack {
 
     func fetchSavedMemories() -> [MemoryModel] {
         let request = NSFetchRequest<Memory>(entityName: "Memory")
+        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: true)]
 
         do {
             let memories = try persistentContainer.viewContext.fetch(request)
-            return memories.sorted { $0.date! < $1.date! }.map {
+            return memories.map {
                 MemoryModel(
                     id: $0.memoryId!,
                     image: $0.blob!,

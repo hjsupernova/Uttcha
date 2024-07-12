@@ -225,10 +225,10 @@ struct ContactListView: View {
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
-                if smileViewModel.contacts.isEmpty {
+                if smileViewModel.savedContacts.isEmpty {
                     AddContactButton(smileViewModel: smileViewModel)
                 } else {
-                    ForEach(smileViewModel.contacts) { contact in
+                    ForEach(smileViewModel.savedContacts) { contact in
                         ContactButton(
                             smileViewModel: smileViewModel, contact: contact
                         )
@@ -325,6 +325,7 @@ struct ContactListSheet: View {
         }
         .onAppear {
             smileViewModel.perform(action: .contactListViewAppeared)
+            print(smileViewModel.contacts.count)
         }
         .alert("Uttcha", isPresented: $smileViewModel.isShowingContactAuthorizationAlert) {
             Button("취소", role: .cancel) { }
