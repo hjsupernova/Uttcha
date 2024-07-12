@@ -18,31 +18,14 @@ struct SmileView: View {
                 VStack(alignment: .leading) {
                     HeaderView(label: "친구에게 연락해보세요!")
 
-                    ContactListView(
-                        contacts: smileViewModel.savedContacts,
-                        addContactAction: {
-                            smileViewModel.perform(action: .contactAddButtonTapped)
-                        },
-                        longPressAction: { contact in
-                            smileViewModel.perform(action: .contactLongTapped(contact))
-                        }
-                    )
+                    ContactListView(smileViewModel: smileViewModel)
                 }
                 .padding(.horizontal)
 
                 VStack(alignment: .leading) {
                     HeaderView(label: "소중한 추억!")
 
-                    ImageListView(
-                        smileViewModel: smileViewModel,
-                        memories: smileViewModel.memories,
-                        addImageButtonAction: {
-                            smileViewModel.perform(action: .imageAddButtonTapped)
-                        },
-                        longPressAction: { memory in
-                            smileViewModel.perform(action: .imageLongPressed(memory))
-                        }
-                    )
+                    ImageListView(smileViewModel: smileViewModel)
                 }
                 .padding(.horizontal)
             }
@@ -69,11 +52,33 @@ struct SmileView: View {
 
 // MARK: - Memories
 
-struct AddImageButton: View {
-    let action: () -> Void
+struct ImageListView: View {
+    @ObservedObject var smileViewModel: SmileViewModel
 
     var body: some View {
-        Button(action: action) {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack {
+                if smileViewModel.memories.isEmpty {
+                    AddImageButton(smileViewModel: smileViewModel)
+                } else {
+                    ForEach(smileViewModel.memories) { memory in
+                        MemoryButton(smileViewModel: smileViewModel, memory: memory)
+                    }
+
+                    AddImageButton(smileViewModel: smileViewModel)
+                }
+            }
+        }
+    }
+}
+
+struct AddImageButton: View {
+    @ObservedObject var smileViewModel: SmileViewModel
+
+    var body: some View {
+        Button {
+            smileViewModel.perform(action: .imageAddButtonTapped)
+        } label: {
             ZStack {
                 RoundedRectangle(cornerRadius: 16)
                     .strokeBorder(style: StrokeStyle(lineWidth: 4, dash: [10]))
@@ -87,36 +92,10 @@ struct AddImageButton: View {
     }
 }
 
-struct ImageListView: View {
-    @ObservedObject var smileViewModel: SmileViewModel
-
-    let memories: [MemoryModel]
-    let addImageButtonAction: () -> Void
-    let longPressAction: (MemoryModel) -> Void
-
-    var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack {
-                if memories.isEmpty {
-                    AddImageButton(action: addImageButtonAction)
-                } else {
-                    ForEach(memories) { memory in
-                        MemoryButton(smileViewModel: smileViewModel, memory: memory, longPressAction: longPressAction)
-                    }
-
-                    AddImageButton(action: addImageButtonAction)
-                }
-
-            }
-        }
-    }
-}
-
 struct MemoryButton: View {
     @ObservedObject var smileViewModel: SmileViewModel
 
     let memory: MemoryModel
-    let longPressAction: (MemoryModel) -> Void
 
     var body: some View {
         Button {
@@ -136,7 +115,7 @@ struct MemoryButton: View {
             }
         }
         .supportsLongPress {
-            longPressAction(memory)
+            smileViewModel.perform(action: .imageLongPressed(memory))
         }
         .fullScreenCover(item: $smileViewModel.tappedMemory) { memory in
             MemoryImageFullScreenView(memory: memory)
@@ -241,24 +220,21 @@ struct UIImagePicker: UIViewControllerRepresentable {
 // MARK: - Contacts
 
 struct ContactListView: View {
-    let contacts: [ContactModel]
-    let addContactAction: () -> Void
-    let longPressAction: (ContactModel) -> Void
+    @ObservedObject var smileViewModel: SmileViewModel
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
-                if contacts.isEmpty {
-                    AddContactButton(action: addContactAction)
+                if smileViewModel.contacts.isEmpty {
+                    AddContactButton(smileViewModel: smileViewModel)
                 } else {
-                    ForEach(contacts) { contact in
+                    ForEach(smileViewModel.contacts) { contact in
                         ContactButton(
-                            contact: contact,
-                            longPressAction: longPressAction
+                            smileViewModel: smileViewModel, contact: contact
                         )
                     }
 
-                    AddContactButton(action: addContactAction)
+                    AddContactButton(smileViewModel: smileViewModel)
                 }
             }
         }
@@ -266,10 +242,12 @@ struct ContactListView: View {
 }
 
 struct AddContactButton: View {
-    let action: () -> Void
+    @ObservedObject var smileViewModel: SmileViewModel
 
     var body: some View {
-        Button(action: action) {
+        Button {
+            smileViewModel.perform(action: .contactAddButtonTapped)
+        } label: {
             ZStack {
                 RoundedRectangle(cornerRadius: 16)
                     .strokeBorder(style: StrokeStyle(lineWidth: 4, dash: [10]))
@@ -284,8 +262,9 @@ struct AddContactButton: View {
 }
 
 struct ContactButton: View {
+    @ObservedObject var smileViewModel: SmileViewModel
+
     let contact: ContactModel
-    let longPressAction: (ContactModel) -> Void
 
     var body: some View {
         Link(destination: URL(string: "tel:\(contact.phoneNumber ?? "00000000000")")!) {
@@ -313,7 +292,7 @@ struct ContactButton: View {
 
         }
         .supportsLongPress {
-            longPressAction(contact)
+            smileViewModel.perform(action: .contactLongTapped(contact))
         }
     }
 }
