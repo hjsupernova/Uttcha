@@ -7,26 +7,13 @@
 
 import SwiftUI
 
-enum NotificationTimeOption: String, CaseIterable {
-    case day = "하루"
-    case morning = "오전"
-    case afternoon = "오후"
-    case night = "저녁"
-}
-
 struct SettingsView: View {
-    @AppStorage("isNotificationOn") var isNotificationOn = false
-    @AppStorage("isShowingNotificationOptionsSheet") var isShowingNotificationOptionsSheet = false
-    @AppStorage("selectedTimeOption") var selectedTimeOption = NotificationTimeOption.day
+    @StateObject private var settingsViewModel = SettingsViewModel()
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                NotificationSettingsSection(
-                    isNotificationOn: $isNotificationOn,
-                    isShowingNotificationOptionsSheet: $isShowingNotificationOptionsSheet,
-                    selectedTimeOption: $selectedTimeOption
-                )
+                NotificationSettingsSection(settingsViewModel: settingsViewModel)
 
                 AppInfoSection()
             }
@@ -34,36 +21,34 @@ struct SettingsView: View {
         .padding()
         .navigationTitle("설정")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $isShowingNotificationOptionsSheet) {
-            NotificaitonOptionsSheet(selectedTimeOption: $selectedTimeOption, isNotificationOn: $isNotificationOn)
+        .sheet(isPresented: $settingsViewModel.isShowingNotificationOptionsSheet) {
+            NotificaitonOptionsSheet(settingsViewModel: settingsViewModel)
                 .presentationDetents([.medium])
         }
     }
 }
 
 struct NotificationSettingsSection: View {
-    @Binding var isNotificationOn: Bool
-    @Binding var isShowingNotificationOptionsSheet: Bool
-    @Binding var selectedTimeOption: NotificationTimeOption
+    @ObservedObject var settingsViewModel: SettingsViewModel
 
     var body: some View {
         Text("설정")
 
         GroupBox {
-            Toggle("알림 \(isNotificationOn ? "ON" : "OFF")", isOn: $isNotificationOn)
-                .onChange(of: isNotificationOn) {
-                    if isNotificationOn {
-                        isShowingNotificationOptionsSheet = true
+            Toggle("알림 \(settingsViewModel.isNotificationOn ? "ON" : "OFF")", isOn: $settingsViewModel.isNotificationOn)
+                .onChange(of: settingsViewModel.isNotificationOn) {
+                    if settingsViewModel.isNotificationOn {
+                        settingsViewModel.isShowingNotificationOptionsSheet = true
                     } else {
-                        selectedTimeOption = .day
+                        settingsViewModel.selectedTimeOption = .day
                         NotificationManager.cancelAllNotifications()
                     }
                 }
                 .tint(.green)
 
             HStack {
-                if isNotificationOn {
-                    Text("\(selectedTimeOption.rawValue)중 알림을 무작위로 보내드릴게요!")
+                if settingsViewModel.isNotificationOn {
+                    Text("\(settingsViewModel.selectedTimeOption.rawValue)중 알림을 무작위로 보내드릴게요!")
                 } else {
                     Text("알림 시간대를 설정할 수 있어요")
                 }
@@ -75,9 +60,7 @@ struct NotificationSettingsSection: View {
 }
 
 struct NotificaitonOptionsSheet: View {
-    @Binding var selectedTimeOption: NotificationTimeOption
-    @Binding var isNotificationOn: Bool
-    @State private var isShowNotificationAuthorizationSettingAlert = false
+    @ObservedObject var settingsViewModel: SettingsViewModel
 
     @Environment(\.dismiss) var dismiss
 
@@ -91,7 +74,7 @@ struct NotificaitonOptionsSheet: View {
 
                 Button {
                     dismiss()
-                    isNotificationOn = false
+                    settingsViewModel.isNotificationOn = false
                 } label: {
                     Image(systemName: "xmark")
                         .font(.title)
@@ -100,7 +83,7 @@ struct NotificaitonOptionsSheet: View {
 
             Spacer()
 
-            Picker("", selection: $selectedTimeOption) {
+            Picker("", selection: $settingsViewModel.selectedTimeOption) {
                 ForEach(NotificationTimeOption.allCases, id: \.self) { option in
                     switch option {
                     case .day:
@@ -141,7 +124,7 @@ struct NotificaitonOptionsSheet: View {
                 }
             }
         }
-        .alert("Uttcha", isPresented: $isShowNotificationAuthorizationSettingAlert) {
+        .alert("Uttcha", isPresented: $settingsViewModel.isShowNotificationAuthorizationSettingAlert) {
             Button("취소", role: .cancel) { }
             Button("설정으로 이동") {
                 UIApplication.shared.open(
@@ -156,12 +139,12 @@ struct NotificaitonOptionsSheet: View {
     }
 
     private func scheduleNotificaiton() {
-        NotificationManager.scheduleNotifications(notificationTimeOption: selectedTimeOption)
-        isNotificationOn = true
+        NotificationManager.scheduleNotifications(notificationTimeOption: settingsViewModel.selectedTimeOption)
+        settingsViewModel.isNotificationOn = true
     }
 
     private func showNotificationAuthorizationSettingAlert() {
-        isShowNotificationAuthorizationSettingAlert = true
+        settingsViewModel.isShowNotificationAuthorizationSettingAlert = true
     }
 }
 
