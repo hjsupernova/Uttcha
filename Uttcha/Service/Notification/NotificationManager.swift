@@ -13,10 +13,10 @@ struct NotificationManager {
 
     static func requestNotificationAuthorization(completion: @escaping ((Bool) -> Void)) {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { success, error in
-            print("request start")
+            notificationLogger.debug("Request Notification Authorization")
             if success {
                 completion(true)
-                print("Notification authorization granted.")
+                notificationLogger.debug("Notification authorization granted.")
             } else {
                 completion(false)
             }
@@ -68,9 +68,9 @@ struct NotificationManager {
 
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("Error scheduling notification: \(error.localizedDescription)")
+                notificationLogger.error("Error scheduling notification: \(error.localizedDescription)")
             } else {
-                print("Notification scheduled at \(dateComponents)")
+                notificationLogger.debug("Notification scheduled at \(dateComponents)")
             }
         }
     }

@@ -5,6 +5,7 @@
 //  Created by KHJ on 2024/04/06.
 //
 
+import os
 import SwiftUI
 
 @main
@@ -35,3 +36,6 @@ struct UttchaApp: App {
         }
     }
 }
+
+/// A global logger for the app.
+let notificationLogger = Logger(subsystem: "com.hjdrw.Uttcha.notification", category: "notification")
