@@ -9,9 +9,9 @@ import Foundation
 import SwiftUI
 
 final class SettingsViewModel: ObservableObject {
-    @AppStorage("isNotificationOn") var isNotificationOn = false
-    @AppStorage("isShowingNotificationOptionsSheet") var isShowingNotificationOptionsSheet = false
-    @AppStorage("selectedTimeOption") var selectedTimeOption = NotificationTimeOption.day
+    @AppStorage(UserDefaultsKeys.isNotificationOn) var isNotificationOn = false
+    @AppStorage(UserDefaultsKeys.isShowingNotificationOptionsSheet) var isShowingNotificationOptionsSheet = false
+    @AppStorage(UserDefaultsKeys.selectedTimeOption) var selectedTimeOption = NotificationTimeOption.day
 
     @Published var isShowNotificationAuthorizationSettingAlert = false
 }
@@ -21,4 +21,11 @@ enum NotificationTimeOption: String, CaseIterable {
     case morning = "오전"
     case afternoon = "오후"
     case night = "저녁"
+}
+
+struct UserDefaultsKeys {
+    static let isNotificationOn = "isNotificationOn"
+    static let isShowingNotificationOptionsSheet = "isShowingNotificationOptionsSheet"
+    static let selectedTimeOption = "selectedTimeOption"
+    static let firstLaunchDate = "firstLaunchDate"
 }
