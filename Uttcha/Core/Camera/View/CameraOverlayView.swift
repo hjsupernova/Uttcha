@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CameraOverlayView: View {
-    @ObservedObject var model: CameraViewModel
+    @ObservedObject var cameraViewModel: CameraViewModel
     
     var body: some View {
         GeometryReader { geo in
@@ -17,12 +17,12 @@ struct CameraOverlayView: View {
                     Rectangle()
                         .fill(Color.black)
 
-                    ProgressView(model.cameraInstructionText, value: model.smileProgress, total: 100)
+                    ProgressView(cameraViewModel.cameraInstructionText, value: cameraViewModel.smileProgress, total: 100)
                         .foregroundStyle(.white)
                         .font(.title2).bold()
                         .padding(.horizontal)
                         .padding(.top)
-                        .animation(.linear, value: model.smileProgress)
+                        .animation(.linear, value: cameraViewModel.smileProgress)
 
                 }
 
@@ -33,17 +33,17 @@ struct CameraOverlayView: View {
                     Rectangle()
                         .fill(Color.black)
 
-                    if model.smileProgress == 100 {
+                    if cameraViewModel.smileProgress == 100 {
                         Shutter()
                             .onTapGesture {
-                                model.perform(action: .takePhoto)
+                                cameraViewModel.perform(action: .takePhoto)
                             }
                             .padding(.bottom)
                     }
 
                     HStack {
                         Button {
-                            model.perform(action: .dismissCamera)
+                            cameraViewModel.perform(action: .dismissCamera)
                         } label: {
                             Text("취소")
                                 .foregroundStyle(.white)
@@ -53,7 +53,7 @@ struct CameraOverlayView: View {
                         Spacer()
 
                         Menu {
-                            Picker("함께 웃기", selection: $model.neededFaceCount) {
+                            Picker("함께 웃기", selection: $cameraViewModel.neededFaceCount) {
                                 ForEach(1..<6) {
                                     Text("함께 웃기: \($0) 명").tag($0)
                                 }
@@ -73,5 +73,5 @@ struct CameraOverlayView: View {
 }
 
 #Preview {
-    CameraOverlayView(model: CameraViewModel())
+    CameraOverlayView(cameraViewModel: CameraViewModel())
 }

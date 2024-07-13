@@ -40,19 +40,19 @@ extension CoreDataStack {
     }
 }
 
-// MARK: - Image
+// MARK: - Photo
 
 extension CoreDataStack {
-    func saveImage(_ bitmap: UIImage) {
-        let image = Photo(context: persistentContainer.viewContext)
+    func savePhoto(_ bitmap: UIImage) {
+        let photo = Photo(context: persistentContainer.viewContext)
 
-        image.blob = bitmap.pngData()
-        image.date = Date()
+        photo.blob = bitmap.pngData()
+        photo.date = Date()
 
         save()
     }
 
-    func getImageList(for monthComponents: DateComponents) -> [Photo] {
+    func fetchPhotos(for monthComponents: DateComponents) -> [Photo] {
         let request = NSFetchRequest<Photo>(entityName: "Photo")
         request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: true)]
 
@@ -98,8 +98,8 @@ extension CoreDataStack {
 // MARK: - Contact
 
 extension CoreDataStack {
-    func saveContact(_ contact: ContactModel, contactSavedList: [ContactModel]) {
-        if contactSavedList.contains(where: { $0.familyName == contact.familyName && $0.givenName == contact.givenName }) {
+    func saveContact(_ contact: ContactModel, savedContacts: [ContactModel]) {
+        if savedContacts.contains(where: { $0.familyName == contact.familyName && $0.givenName == contact.givenName }) {
             return
         }
 
@@ -113,12 +113,13 @@ extension CoreDataStack {
         save()
     }
 
-    func getContactSavedList() -> [ContactModel] {
+    func fetchSavedContacts() -> [ContactModel] {
         let request = NSFetchRequest<Contact>(entityName: "Contact")
+        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: true)]
 
         do {
             let coredataContacts = try persistentContainer.viewContext.fetch(request)
-            return coredataContacts.sorted { $0.date! < $1.date! }.map {
+            return coredataContacts.map {
                 ContactModel(
                     familyName: $0.familyName ?? "",
                     givenName: $0.givenName ?? "",
@@ -165,12 +166,13 @@ extension CoreDataStack {
         save()
     }
 
-    func getSavedMemoryList() -> [MemoryModel] {
+    func fetchSavedMemories() -> [MemoryModel] {
         let request = NSFetchRequest<Memory>(entityName: "Memory")
+        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: true)]
 
         do {
-            let coredataMemoryList = try persistentContainer.viewContext.fetch(request)
-            return coredataMemoryList.sorted { $0.date! < $1.date! }.map {
+            let memories = try persistentContainer.viewContext.fetch(request)
+            return memories.map {
                 MemoryModel(
                     id: $0.memoryId!,
                     image: $0.blob!,
@@ -187,10 +189,10 @@ extension CoreDataStack {
         request.predicate = NSPredicate(format: "memoryId == %@", memory.id! as CVarArg)
 
         do {
-            let coredataMemoryList = try persistentContainer.viewContext.fetch(request)
+            let memories = try persistentContainer.viewContext.fetch(request)
 
-            for coreDataMemory in coredataMemoryList {
-                persistentContainer.viewContext.delete(coreDataMemory)
+            for memory in memories {
+                persistentContainer.viewContext.delete(memory)
 
             }
             save()

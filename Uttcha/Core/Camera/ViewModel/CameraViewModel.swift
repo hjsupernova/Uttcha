@@ -69,10 +69,10 @@ final class CameraViewModel: ObservableObject {
 
         case .takePhoto:
             takePhoto()
-        case .savePhoto(let image):
-            savePhotoPersistentStore(image)
-        case .updatePreviewPhoto(let image):
-            updatePreviewPhoto(image)
+        case .savePhoto(let photo):
+            savePhotoPersistentStore(photo)
+        case .updatePreviewPhoto(let photo):
+            updatePreviewPhoto(photo)
         case .showCamera:
             showCamera()
         case .dismissCamera:
@@ -101,7 +101,7 @@ final class CameraViewModel: ObservableObject {
     }
 
     private func savePhotoPersistentStore(_ photo: UIImage) {
-        CoreDataStack.shared.saveImage(photo)
+        CoreDataStack.shared.savePhoto(photo)
 
         facePhoto = nil
         dismissCamera()

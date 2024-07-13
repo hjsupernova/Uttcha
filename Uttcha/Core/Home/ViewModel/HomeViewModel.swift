@@ -34,7 +34,7 @@ final class HomeViewModel: ObservableObject {
     private var visualizedMonths: Set<DateComponents> = []
 
     init() {
-        getImageList(in: yearMonthComponents(from: Date()))
+        fetchPhotos(in: yearMonthComponents(from: Date()))
     }
 
     // MARK: - Actions
@@ -49,14 +49,14 @@ final class HomeViewModel: ObservableObject {
         case .photoRemoveButtonTapped(let photo):
             removePhoto(photo)
         case .saveButtonTapped:
-            getImageList(in: yearMonthComponents(from: Date()))
+            fetchPhotos(in: yearMonthComponents(from: Date()))
             NotificationManager.cancelNotificationFor(Date.now)
             triggerFireworks()
         case .userScroll(let lowerBound, let upperBound):
-            getImageListOnScrollIfNeeded(lowerBound: yearMonthComponents(from: lowerBound),
+            fetchPhotosOnScrollIfNeeded(lowerBound: yearMonthComponents(from: lowerBound),
                                          upperBound: yearMonthComponents(from: upperBound))
         case .monthRowTapped(let selectedMonth):
-            getImageList(in: yearMonthComponents(from: selectedMonth))
+            fetchPhotos(in: yearMonthComponents(from: selectedMonth))
         }
     }
 
@@ -78,21 +78,21 @@ final class HomeViewModel: ObservableObject {
         photos.remove(photo)
     }
 
-    private func getImageList(in month: DateComponents) {
-        let newImageList = CoreDataStack.shared.getImageList(for: month)
-        photos.formUnion(newImageList)
+    private func fetchPhotos(in month: DateComponents) {
+        let newPhotos = CoreDataStack.shared.fetchPhotos(for: month)
+        photos.formUnion(newPhotos)
         visualizedMonths.insert(month)
     }
 
-    private func getImageListOnScrollIfNeeded(lowerBound: DateComponents, upperBound: DateComponents) {
+    private func fetchPhotosOnScrollIfNeeded(lowerBound: DateComponents, upperBound: DateComponents) {
 
         if !visualizedMonths.contains(lowerBound) {
-            let newImages = CoreDataStack.shared.getImageList(for: lowerBound)
-            photos.formUnion(newImages)
+            let newPhotos = CoreDataStack.shared.fetchPhotos(for: lowerBound)
+            photos.formUnion(newPhotos)
             visualizedMonths.insert(lowerBound)
         } else if !visualizedMonths.contains(upperBound) {
-            let newImages = CoreDataStack.shared.getImageList(for: upperBound)
-            photos.formUnion(newImages)
+            let newPhotos = CoreDataStack.shared.fetchPhotos(for: upperBound)
+            photos.formUnion(newPhotos)
             visualizedMonths.insert(upperBound)
         }
     }

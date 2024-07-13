@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject private var model = CameraViewModel()
+    @StateObject private var cameraViewModel = CameraViewModel()
     @StateObject private var homeViewModel = HomeViewModel()
 
     var body: some View {
@@ -18,12 +18,12 @@ struct HomeView: View {
                     homeViewModel: homeViewModel,
                     calendar: .autoupdatingCurrent,
                     monthsLayout: .horizontal,
-                    isShowingCamera: $model.isShowingCameraView
+                    isShowingCamera: $cameraViewModel.isShowingCameraView
                 )
                 .padding()
 
                 ZStack {
-                    CameraButton(model: model, homeViewModel: homeViewModel)
+                    CameraButton(cameraViewModel: cameraViewModel, homeViewModel: homeViewModel)
 
                     FireworkView(vm: homeViewModel)
                 }
@@ -37,15 +37,15 @@ struct HomeView: View {
                 }
             }
         }
-        .fullScreenCover(isPresented: $model.isShowingCameraView) {
-            CameraScreenView(model: model)
+        .fullScreenCover(isPresented: $cameraViewModel.isShowingCameraView) {
+            CameraScreenView(cameraViewModel: cameraViewModel)
         }
         .environmentObject(homeViewModel)
     }
 }
 
 struct CameraButton: View {
-    @ObservedObject var model: CameraViewModel
+    @ObservedObject var cameraViewModel: CameraViewModel
     @ObservedObject var homeViewModel: HomeViewModel
 
     var body: some View {
@@ -56,7 +56,7 @@ struct CameraButton: View {
 
             VStack {
                 Button {
-                    model.perform(action: .showCamera)
+                    cameraViewModel.perform(action: .showCamera)
                 } label: {
                     VStack {
                         Text(homeViewModel.isCameraButtonDisabled ? "내일 봐요!" : "웃어 봐요!")

@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct PhotoPreviewView: View {
-    @ObservedObject var model: CameraViewModel
+    @ObservedObject var cameraViewModel: CameraViewModel
     @EnvironmentObject var homeViewModel: HomeViewModel
 
-    let image: UIImage
+    let photo: UIImage
 
     @Environment(\.dismiss) var dismiss
 
@@ -19,14 +19,14 @@ struct PhotoPreviewView: View {
         VStack {
             Spacer()
 
-            Image(uiImage: image)
+            Image(uiImage: photo)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .toolbar {
                     ToolbarItemGroup(placement: .topBarTrailing) {
                         Button {
                             dismiss()
-                            model.perform(action: .savePhoto(image))
+                            cameraViewModel.perform(action: .savePhoto(photo))
                             homeViewModel.perform(action: .saveButtonTapped)
                         } label: {
                             Text("저장 하기")

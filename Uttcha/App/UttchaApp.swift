@@ -5,13 +5,14 @@
 //  Created by KHJ on 2024/04/06.
 //
 
+import os
 import SwiftUI
 
 @main
 struct UttchaApp: App {
     private var coreDataStack = CoreDataStack.shared
-    @AppStorage("isNotificationOn") var isNotificationOn = false
-    @AppStorage("selectedTimeOption") var selectedTimeOption = NotificationTimeOption.day
+    @AppStorage(UserDefaultsKeys.isNotificationOn) var isNotificationOn = false
+    @AppStorage(UserDefaultsKeys.selectedTimeOption) var selectedTimeOption = NotificationTimeOption.day
 
     var body: some Scene {
         WindowGroup {
@@ -25,8 +26,8 @@ struct UttchaApp: App {
                         NotificationManager.scheduleNotificationsIfNeeded(notificationTimeOption: selectedTimeOption)
                     }
 
-                    if UserDefaults.standard.object(forKey: "FirstLaunchDate") == nil {
-                        UserDefaults.standard.set(Date(), forKey: "FirstLaunchDate")
+                    if UserDefaults.standard.object(forKey: UserDefaultsKeys.firstLaunchDate) == nil {
+                        UserDefaults.standard.set(Date(), forKey: UserDefaultsKeys.firstLaunchDate)
                     }
 
                 }
@@ -35,3 +36,6 @@ struct UttchaApp: App {
         }
     }
 }
+
+/// A global logger for the app.
+let notificationLogger = Logger(subsystem: "com.hjdrw.Uttcha.notification", category: "notification")
