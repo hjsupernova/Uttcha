@@ -8,12 +8,71 @@
 import Foundation
 import SwiftUI
 
+enum SettingsViewModelAction {
+    case dismissOptionSheetWithoutTurningOn
+    case scheduleNotifications
+    case onOptionSheetAppear
+}
+
 final class SettingsViewModel: ObservableObject {
-    @AppStorage(UserDefaultsKeys.isNotificationOn) var isNotificationOn = false
+    @AppStorage(UserDefaultsKeys.isNotificationOn) var isNotificationOn = false {
+        didSet {
+            handleNotificationToggle()
+        }
+    }
     @AppStorage(UserDefaultsKeys.isShowingNotificationOptionsSheet) var isShowingNotificationOptionsSheet = false
     @AppStorage(UserDefaultsKeys.selectedTimeOption) var selectedTimeOption = NotificationTimeOption.day
 
-    @Published var isShowNotificationAuthorizationSettingAlert = false
+    @Published var isShowingNotificationAuthorizationSettingAlert = false
+
+    // MARK: - Actions
+    func perform(action: SettingsViewModelAction) {
+        switch action {
+        case .dismissOptionSheetWithoutTurningOn:
+            turnOffNotificationToggle()
+        case .scheduleNotifications:
+            schduleNotifications()
+        case .onOptionSheetAppear:
+            break
+        }
+    }
+
+    // MARK: - Action Handlers
+    private func turnOffNotificationToggle() {
+        isNotificationOn = false
+    }
+
+    private func schduleNotifications() {
+        NotificationManager.scheduleNotifications(notificationTimeOption: selectedTimeOption)
+        isNotificationOn = true
+    }
+
+    private func requestNotificationAuthorization() {
+        NotificationManager.requestNotificationAuthorization { success in
+            if !success {
+                self.isShowingNotificationAuthorizationSettingAlert = true
+            }
+        }
+
+    }
+    // MARK: - Private instance methods
+    private func handleNotificationToggle() {
+        if isNotificationOn {
+            showNotificationOptions()
+        } else {
+            resetNotificationSettings()
+        }
+    }
+
+    private func showNotificationOptions() {
+        isShowingNotificationOptionsSheet = true
+    }
+
+    private func resetNotificationSettings() {
+        selectedTimeOption = .day
+        NotificationManager.cancelAllNotifications()
+    }
+
 }
 
 enum NotificationTimeOption: String, CaseIterable {

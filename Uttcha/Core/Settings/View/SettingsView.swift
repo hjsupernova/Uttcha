@@ -21,10 +21,6 @@ struct SettingsView: View {
         .padding()
         .navigationTitle("설정")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $settingsViewModel.isShowingNotificationOptionsSheet) {
-            NotificaitonOptionsSheet(settingsViewModel: settingsViewModel)
-                .presentationDetents([.medium])
-        }
     }
 }
 
@@ -36,25 +32,18 @@ struct NotificationSettingsSection: View {
 
         GroupBox {
             Toggle("알림 \(settingsViewModel.isNotificationOn ? "ON" : "OFF")", isOn: $settingsViewModel.isNotificationOn)
-                .onChange(of: settingsViewModel.isNotificationOn) {
-                    if settingsViewModel.isNotificationOn {
-                        settingsViewModel.isShowingNotificationOptionsSheet = true
-                    } else {
-                        settingsViewModel.selectedTimeOption = .day
-                        NotificationManager.cancelAllNotifications()
-                    }
-                }
                 .tint(.green)
 
             HStack {
-                if settingsViewModel.isNotificationOn {
-                    Text("\(settingsViewModel.selectedTimeOption.rawValue)중 알림을 무작위로 보내드릴게요!")
-                } else {
-                    Text("알림 시간대를 설정할 수 있어요")
-                }
-
+                Text(
+                    settingsViewModel.isNotificationOn ? "\(settingsViewModel.selectedTimeOption.rawValue)중 알림을 무작위로 보내드릴게요!" : "알림 시간대를 설정할 수 있어요"
+                )
                 Spacer()
             }
+        }
+        .sheet(isPresented: $settingsViewModel.isShowingNotificationOptionsSheet) {
+            NotificaitonOptionsSheet(settingsViewModel: settingsViewModel)
+                .presentationDetents([.medium])
         }
     }
 }
@@ -74,7 +63,7 @@ struct NotificaitonOptionsSheet: View {
 
                 Button {
                     dismiss()
-                    settingsViewModel.isNotificationOn = false
+                    settingsViewModel.perform(action: .dismissOptionSheetWithoutTurningOn)
                 } label: {
                     Image(systemName: "xmark")
                         .font(.title)
@@ -103,7 +92,7 @@ struct NotificaitonOptionsSheet: View {
             Spacer()
 
             Button {
-                scheduleNotificaiton()
+                settingsViewModel.perform(action: .scheduleNotifications)
                 dismiss()
             } label: {
                 Text("저장")
@@ -115,16 +104,9 @@ struct NotificaitonOptionsSheet: View {
         .padding()
         .interactiveDismissDisabled()
         .onAppear {
-            print("Onappear")
-
-            NotificationManager.requestNotificationAuthorization { success in
-                print(success)
-                if !success {
-                    showNotificationAuthorizationSettingAlert()
-                }
-            }
+            settingsViewModel.perform(action: .onOptionSheetAppear)
         }
-        .alert("Uttcha", isPresented: $settingsViewModel.isShowNotificationAuthorizationSettingAlert) {
+        .alert("Uttcha", isPresented: $settingsViewModel.isShowingNotificationAuthorizationSettingAlert) {
             Button("취소", role: .cancel) { }
             Button("설정으로 이동") {
                 UIApplication.shared.open(
@@ -136,15 +118,6 @@ struct NotificaitonOptionsSheet: View {
             Text("앱에 알림 권한이 없습니다. 설정을 변경해주세요.")
         }
 
-    }
-
-    private func scheduleNotificaiton() {
-        NotificationManager.scheduleNotifications(notificationTimeOption: settingsViewModel.selectedTimeOption)
-        settingsViewModel.isNotificationOn = true
-    }
-
-    private func showNotificationAuthorizationSettingAlert() {
-        settingsViewModel.isShowNotificationAuthorizationSettingAlert = true
     }
 }
 
