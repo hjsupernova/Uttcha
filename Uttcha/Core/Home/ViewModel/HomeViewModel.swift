@@ -15,6 +15,7 @@ enum HomeViewModelAction {
     case saveButtonTapped
     case userScroll(DateComponents, DateComponents)
     case monthRowTapped(Date)
+    case appDidBecomeActive
 }
 
 final class HomeViewModel: ObservableObject {
@@ -57,6 +58,8 @@ final class HomeViewModel: ObservableObject {
                                          upperBound: yearMonthComponents(from: upperBound))
         case .monthRowTapped(let selectedMonth):
             fetchPhotos(in: yearMonthComponents(from: selectedMonth))
+        case .appDidBecomeActive:
+            calculateButtonAvailabilty()
         }
     }
 
@@ -101,11 +104,6 @@ final class HomeViewModel: ObservableObject {
         fireworkTrigger += 1
     }
 
-}
-
-// MARK: - Private instance methods
-
-extension HomeViewModel {
     private func calculateButtonAvailabilty() {
         if photos.isEmpty {
             isCameraButtonDisabled = false
@@ -120,7 +118,11 @@ extension HomeViewModel {
             }
         }
     }
+}
 
+// MARK: - Private instance methods
+
+extension HomeViewModel {
     private func yearMonthComponents(from components: DateComponents) -> DateComponents {
         var yearMonth = DateComponents()
         yearMonth.year = components.year

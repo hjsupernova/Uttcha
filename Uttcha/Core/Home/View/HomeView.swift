@@ -47,6 +47,7 @@ struct HomeView: View {
 struct CameraButton: View {
     @ObservedObject var cameraViewModel: CameraViewModel
     @ObservedObject var homeViewModel: HomeViewModel
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         ZStack {
@@ -67,6 +68,11 @@ struct CameraButton: View {
                     }
                 }
                 .disabled(homeViewModel.isCameraButtonDisabled)
+            }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                homeViewModel.perform(action: .appDidBecomeActive)
             }
         }
     }
