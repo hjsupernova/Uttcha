@@ -79,8 +79,9 @@ extension CoreDataStack {
     }
 
     func removePhoto(_ photo: Photo) {
+        guard let photoDate = photo.date else { return }
         let request = NSFetchRequest<Photo>(entityName: "Photo")
-        request.predicate = NSPredicate(format: "date == %@", photo.date! as CVarArg)
+        request.predicate = NSPredicate(format: "date == %@", photoDate as CVarArg)
 
         do {
             let photos = try persistentContainer.viewContext.fetch(request)
