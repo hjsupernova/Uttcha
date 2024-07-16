@@ -19,8 +19,8 @@ struct PhotoDetailView: View {
         NavigationStack {
             Group {
                 if let photo = selectedPhoto,
-                   let blob = photo.blob,
-                   let uiImage = UIImage(data: blob) {
+                   let imageData = photo.imageData,
+                   let uiImage = UIImage(data: imageData) {
                     ScrollViewReader { sp in
                         ScrollView {
                                 Image(uiImage: uiImage)
@@ -80,7 +80,7 @@ struct PhotoDetailView: View {
                 }
 
                 ToolbarItem(placement: .principal) {
-                    Text(selectedPhoto?.date?.string(withFormat: "M월 d일 HH:mm") ?? "")
+                    Text(selectedPhoto?.dateCreated?.string(withFormat: "M월 d일 HH:mm") ?? "")
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -92,13 +92,13 @@ struct PhotoDetailView: View {
     let context = CoreDataStack.shared.persistentContainer.viewContext
     @State var samplePhoto: Photo? = {
           let photo = Photo(context: context)
-          photo.date = Date()
+          photo.dateCreated = Date()
           photo.memo = ""
 
           // Create a sample image and convert it to Data
           if let samplePhoto = UIImage(systemName: "photo"),
              let photoData = samplePhoto.pngData() {
-              photo.blob = photoData
+              photo.imageData = photoData
           }
 
           return photo

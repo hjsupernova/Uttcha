@@ -46,15 +46,15 @@ extension CoreDataStack {
     func savePhoto(_ bitmap: UIImage) {
         let photo = Photo(context: persistentContainer.viewContext)
 
-        photo.blob = bitmap.pngData()
-        photo.date = Date()
+        photo.imageData = bitmap.pngData()
+        photo.dateCreated = Date()
 
         save()
     }
 
     func fetchPhotos(for monthComponents: DateComponents) -> [Photo] {
         let request = NSFetchRequest<Photo>(entityName: "Photo")
-        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: true)]
+        request.sortDescriptors = [NSSortDescriptor(key: "dateCreated", ascending: true)]
 
         let calendar = Calendar.current
 
@@ -66,7 +66,7 @@ extension CoreDataStack {
         }
 
         // Create the predicate
-        request.predicate = NSPredicate(format: "date >= %@ AND date < %@",
+        request.predicate = NSPredicate(format: "dateCreated >= %@ AND dateCreated < %@",
                                         startOfMonth as NSDate,
                                         startOfNextMonth as NSDate)
 
@@ -79,9 +79,9 @@ extension CoreDataStack {
     }
 
     func removePhoto(_ photo: Photo) {
-        guard let photoDate = photo.date else { return }
+        guard let photoDate = photo.dateCreated else { return }
         let request = NSFetchRequest<Photo>(entityName: "Photo")
-        request.predicate = NSPredicate(format: "date == %@", photoDate as CVarArg)
+        request.predicate = NSPredicate(format: "dateCreated == %@", photoDate as CVarArg)
 
         do {
             let photos = try persistentContainer.viewContext.fetch(request)

@@ -81,10 +81,10 @@ struct SmileCalendar: View {
         .dayBackgrounds { day in
             if let calendarDate = calendar.date(from: day.components),
                let photo = homeViewModel.photos.first(where: { photoItem in
-                   guard let photoDate = photoItem.date else { return false }
+                   guard let photoDate = photoItem.dateCreated else { return false }
                    return calendar.isDate(photoDate, inSameDayAs: calendarDate)}),
-               let imageData = photo.blob,
-               let date = photo.date {
+               let imageData = photo.imageData,
+               let date = photo.dateCreated {
                 KFImage
                     .data(imageData, cacheKey: date.description)
                     .resizable()
@@ -97,7 +97,7 @@ struct SmileCalendar: View {
         .onDaySelection { day in
             if let calendarDate = calendar.date(from: day.components) {
                 if let photo = homeViewModel.photos.first(where: { photoItem in
-                    guard let photoDate = photoItem.date else { return false }
+                    guard let photoDate = photoItem.dateCreated else { return false }
                     return calendar.isDate(photoDate, inSameDayAs: calendarDate)
                 }) {
                     selectedPhoto = photo

@@ -109,7 +109,7 @@ final class HomeViewModel: ObservableObject {
             isCameraButtonDisabled = false
         } else {
             for photo in photos {
-                if let date = photo.date {
+                if let date = photo.dateCreated {
                     isCameraButtonDisabled = Calendar.current.isDateInToday(date)
                     return
                 }
