@@ -65,7 +65,6 @@ struct MemoryListView: View {
                 } else {
                     ForEach(smileViewModel.memories) { memory in
                         MemoryButton(smileViewModel: smileViewModel, memory: memory)
-                            .background(Color.red.opacity(0.3))
                     }
 
                     AddMemoryButton(smileViewModel: smileViewModel)
