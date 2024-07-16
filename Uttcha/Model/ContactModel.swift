@@ -11,6 +11,6 @@ struct ContactModel: Identifiable {
     let id = UUID()
     var familyName: String
     var givenName: String
-    var phoneNumber: String?
-    var imageData: Data?
+    var phoneNumber: String
+    var imageData: Data
 }

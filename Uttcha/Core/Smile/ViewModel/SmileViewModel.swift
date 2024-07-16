@@ -104,8 +104,8 @@ class SmileViewModel: ObservableObject {
                         let contact = ContactModel(
                             familyName: cnContact.familyName,
                             givenName: cnContact.givenName,
-                            phoneNumber: cnContact.phoneNumbers.first?.value.stringValue,
-                            imageData: cnContact.imageData
+                            phoneNumber: cnContact.phoneNumbers.first?.value.stringValue ?? "01000000000",
+                            imageData: cnContact.imageData ?? UIImage(systemName: "person.circle.fill")!.pngData()!
                         )
 
                         fetchedContacts.append(contact)

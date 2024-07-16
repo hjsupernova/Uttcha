@@ -79,35 +79,33 @@ struct SmileCalendar: View {
                 .bold()
         }
         .dayBackgrounds { day in
-            let calendarDate = calendar.date(from: day.components)!
-            let photo = homeViewModel.photos.filter {
-                calendar.isDate($0.date!, inSameDayAs: calendarDate)
-            }.first
-
-            if let photo = photo {
+            if let calendarDate = calendar.date(from: day.components),
+               let photo = homeViewModel.photos.first(where: { photoItem in
+                   guard let photoDate = photoItem.dateCreated else { return false }
+                   return calendar.isDate(photoDate, inSameDayAs: calendarDate)}),
+               let imageData = photo.imageData,
+               let date = photo.dateCreated {
                 KFImage
-                    .data(photo.blob!, cacheKey: photo.date!.description)
+                    .data(imageData, cacheKey: date.description)
                     .resizable()
                     .scaledToFit()
                     .clipShape(RoundedRectangle(cornerRadius: 16))
+            } else {
+                EmptyView()
             }
         }
         .onDaySelection { day in
-            let calendarDate = calendar.date(from: day.components)!
-
-            let photo = homeViewModel.photos.filter {
-                calendar.isDate($0.date!, inSameDayAs: calendarDate)
-            }.first
-
-            if let photo = photo {
-                selectedPhoto = photo
-                // TODO: action에 유저 액션? 아니면 행해야하는 액션?
-                homeViewModel.perform(action: .photoTapped)
-            } else if calendar.isDateInToday(calendarDate) {
-                isShowingCamera = true
+            if let calendarDate = calendar.date(from: day.components) {
+                if let photo = homeViewModel.photos.first(where: { photoItem in
+                    guard let photoDate = photoItem.dateCreated else { return false }
+                    return calendar.isDate(photoDate, inSameDayAs: calendarDate)
+                }) {
+                    selectedPhoto = photo
+                    homeViewModel.perform(action: .photoTapped)
+                } else if calendar.isDateInToday(calendarDate) {
+                    isShowingCamera = true
+                }
             }
-
-            print(day.day)
         }
 
         .onScroll { visibleDayRange, _ in
