@@ -110,17 +110,19 @@ struct SmileCalendar: View {
                                                       visibleDayRange.upperBound.components))
         }
         .clipShape(RoundedRectangle(cornerRadius: 16))
-        .sheet(isPresented: $homeViewModel.isShowingDetailView) {
-            PhotoDetailView(
-                homeViewModel: homeViewModel,
-                selectedPhoto: $selectedPhoto
-            )
-        }
-        .sheet(isPresented: $homeViewModel.isShowingMonthsSheet) {
-            MonthsAvailable(calendarViewProxy: calendarViewProxy,
-                            homeViewModel: homeViewModel,
-                            startDate: visibleDateRange.lowerBound)
-                .presentationDetents([.medium])
+        .sheet(item: $homeViewModel.presentedSheet) { sheet in
+            switch sheet {
+            case .photoDetail:
+                PhotoDetailView(
+                    homeViewModel: homeViewModel,
+                    selectedPhoto: $selectedPhoto
+                )
+            case .monthsAvailable:
+                MonthsAvailable(calendarViewProxy: calendarViewProxy,
+                                homeViewModel: homeViewModel,
+                                startDate: visibleDateRange.lowerBound)
+                    .presentationDetents([.medium])
+            }
         }
         .onAppear {
             calendarViewProxy.scrollToMonth(

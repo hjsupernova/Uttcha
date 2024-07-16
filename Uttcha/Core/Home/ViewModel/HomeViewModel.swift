@@ -7,6 +7,12 @@
 
 import Foundation
 
+enum Sheet: String, Identifiable {
+    case photoDetail, monthsAvailable
+
+    var id: String { rawValue }
+}
+
 enum HomeViewModelAction {
     case cameraButtonTapped
     case showMonthsSheet
@@ -21,8 +27,6 @@ enum HomeViewModelAction {
 final class HomeViewModel: ObservableObject {
     // MARK: - Publishers
     @Published var isShowingCameraView: Bool = false
-    @Published var isShowingMonthsSheet = false
-    @Published var isShowingDetailView = false
     @Published var photos: Set<Photo> = [] {
         didSet {
             calculateButtonAvailabilty()
@@ -31,6 +35,7 @@ final class HomeViewModel: ObservableObject {
     @Published var isCameraButtonDisabled: Bool = false
     @Published var fireworkTrigger = 0
     @Published var fireworkConfiguration: FireworkConfig = FireworkConfig()
+    @Published var presentedSheet: Sheet?
 
     private var visualizedMonths: Set<DateComponents> = []
 
@@ -69,11 +74,11 @@ final class HomeViewModel: ObservableObject {
     }
 
     private func showMonthsSheet() {
-        isShowingMonthsSheet = true
+        presentedSheet = .monthsAvailable
     }
 
     private func showDetailView() {
-        isShowingDetailView = true
+        presentedSheet = .photoDetail
     }
 
     private func removePhoto(_ photo: Photo) {

@@ -30,16 +30,18 @@ struct SmileView: View {
                 .padding(.horizontal)
             }
             .navigationTitle("Uttcha")
-            .sheet(isPresented: $smileViewModel.isShowingContactSheet) {
-                ContactListSheet(smileViewModel: smileViewModel)
+            .sheet(item: $smileViewModel.presentedSheet) { sheet in
+                switch sheet {
+                case .contacts:
+                    ContactListSheet(smileViewModel: smileViewModel)
+                case .imagePicker:
+                    UIImagePicker(memories: $smileViewModel.memories)
+                }
             }
             .confirmationDialog("삭제하기", isPresented: $smileViewModel.isShowingContactRemoveConfirmationDialog) {
                 Button("연락처 삭제", role: .destructive) {
                     smileViewModel.perform(action: .contactRemoveButtonTapped)
                 }
-            }
-            .sheet(isPresented: $smileViewModel.isShowingUIImagePicker) {
-                UIImagePicker(memories: $smileViewModel.memories)
             }
             .confirmationDialog("삭제하기", isPresented: $smileViewModel.isShowingMemoryRemoveConfirmationDialog) {
                 Button("이미지 삭제", role: .destructive) {
