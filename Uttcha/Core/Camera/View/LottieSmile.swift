@@ -13,6 +13,7 @@ struct LottieSmile: View {
 
     var body: some View {
         LottieView(animation: .named("smile"))
+            .opacity(isFinished ? 0 : 1)
             .playbackMode(.playing(.fromProgress(0, toProgress: 1, loopMode: .playOnce)))
             .animationSpeed(0.8)
             .animationDidFinish { completed in
@@ -20,7 +21,6 @@ struct LottieSmile: View {
                     isFinished = true
                 }
             }
-            .opacity(isFinished ? 0 : 1)
     }
 }
 

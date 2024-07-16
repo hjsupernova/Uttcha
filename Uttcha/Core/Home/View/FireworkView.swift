@@ -64,6 +64,7 @@ struct FireworkConfig {
 
 struct FireworkView: View {
     @ObservedObject var vm: HomeViewModel
+
     @State var animate = 0
     @State var finishedAnimationCounter = 0
     @State var firstAppear = false
@@ -93,8 +94,8 @@ struct FireworkView: View {
 }
 
 struct FireworkContainer: View {
-
     @ObservedObject var vm: HomeViewModel
+
     @Binding var finishedAnimationCounter:Int
     @State var firstAppear = true
     @State var randomX = Double.random(in: -100...100)
@@ -145,8 +146,8 @@ struct FireworkContainer: View {
 }
 
 struct FireworkFrame: View{
-
     @ObservedObject var vm: HomeViewModel
+
     @State var location: CGPoint = CGPoint(x: 0, y: 0)
     @State var index: Int
     @State var launchHeight: CGFloat
@@ -211,8 +212,8 @@ struct FireworkFrame: View{
 }
 
 struct FireworkItem: View {
-
     @ObservedObject var vm: HomeViewModel
+    
     @State var shape: AnyView
     @State var size: CGFloat
     @State var color: Color

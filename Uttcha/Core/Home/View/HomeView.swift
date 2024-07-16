@@ -47,6 +47,7 @@ struct HomeView: View {
 struct CameraButton: View {
     @ObservedObject var cameraViewModel: CameraViewModel
     @ObservedObject var homeViewModel: HomeViewModel
+
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {

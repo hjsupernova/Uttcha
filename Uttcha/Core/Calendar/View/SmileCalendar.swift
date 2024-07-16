@@ -51,10 +51,9 @@ struct SmileCalendar: View {
             proxy: calendarViewProxy
         )
         .backgroundColor(.systemGray6)
-
+        .clipShape(RoundedRectangle(cornerRadius: 16))
         .horizontalDayMargin(0)
         .verticalDayMargin(12)
-
         .monthHeaders { month in
             let monthHeaderText = monthDateFormatter.string(from: calendar.date(from: month.components)!)
             Button {
@@ -94,6 +93,18 @@ struct SmileCalendar: View {
                 EmptyView()
             }
         }
+        .sheet(isPresented: $homeViewModel.isShowingDetailView) {
+            PhotoDetailView(
+                homeViewModel: homeViewModel,
+                selectedPhoto: $selectedPhoto
+            )
+        }
+        .sheet(isPresented: $homeViewModel.isShowingMonthsSheet) {
+            MonthsAvailable(calendarViewProxy: calendarViewProxy,
+                            homeViewModel: homeViewModel,
+                            startDate: visibleDateRange.lowerBound)
+                .presentationDetents([.medium])
+        }
         .onDaySelection { day in
             if let calendarDate = calendar.date(from: day.components) {
                 if let photo = homeViewModel.photos.first(where: { photoItem in
@@ -107,12 +118,10 @@ struct SmileCalendar: View {
                 }
             }
         }
-
         .onScroll { visibleDayRange, _ in
             homeViewModel.perform(action: .userScroll(visibleDayRange.lowerBound.components,
                                                       visibleDayRange.upperBound.components))
         }
-
         .onAppear {
             calendarViewProxy.scrollToMonth(
                 containing: .now,
@@ -120,22 +129,6 @@ struct SmileCalendar: View {
                 animated: false
             )
         }
-
-        .sheet(isPresented: $homeViewModel.isShowingDetailView) {
-            PhotoDetailView(
-                homeViewModel: homeViewModel,
-                selectedPhoto: $selectedPhoto
-            )
-        }
-        .sheet(isPresented: $homeViewModel.isShowingMonthsSheet) {
-            MonthsAvailable(calendarViewProxy: calendarViewProxy,
-                            homeViewModel: homeViewModel,
-                            startDate: visibleDateRange.lowerBound)
-                .presentationDetents([.medium])
-        }
-        .clipShape(
-            RoundedRectangle(cornerRadius: 16)
-        )
     }
 }
 
@@ -168,6 +161,7 @@ struct MonthsAvailable: View {
                 ForEach(monthsBetween(start: Date(), end: startDate), id: \.self) { date in
                     HStack {
                         Text(formatDate(date))
+                            .font(.body)
                             .onTapGesture {
                                 calendarViewProxy.scrollToMonth(
                                     containing: date,
@@ -178,7 +172,6 @@ struct MonthsAvailable: View {
 
                                 dismiss()
                             }
-                            .font(.body)
 
                         Spacer()
                     }

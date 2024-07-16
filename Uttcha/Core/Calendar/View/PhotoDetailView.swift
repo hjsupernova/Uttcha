@@ -31,9 +31,9 @@ struct PhotoDetailView: View {
 
                             ZStack(alignment: .topLeading) {
                                 TextEditor(text: $text).id(0)
-                                    .focused($inFocus, equals: 0)
                                     .frame(height: 300)
                                     .background(.yellow)
+                                    .focused($inFocus, equals: 0)
 
                                 if text.isEmpty {
                                     Text("오늘 하루를 기록해보세요.")
@@ -57,6 +57,7 @@ struct PhotoDetailView: View {
                     }
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
@@ -83,7 +84,6 @@ struct PhotoDetailView: View {
                     Text(selectedPhoto?.dateCreated?.string(withFormat: "M월 d일 HH:mm") ?? "")
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
