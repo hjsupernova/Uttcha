@@ -6,6 +6,7 @@
 //
 
 import Combine
+import SwiftUI
 import UIKit
 
 enum CameraViewModelAction {
@@ -20,6 +21,7 @@ enum CameraViewModelAction {
     case savePhoto(UIImage)
     case showCamera
     case dismissCamera
+    case onOverlayViewAppeared
 }
 
 enum FaceDetectedState {
@@ -77,6 +79,8 @@ final class CameraViewModel: ObservableObject {
             showCamera()
         case .dismissCamera:
             dismissCamera()
+        case .onOverlayViewAppeared:
+            resetSmileProgress()
         }
     }
 
@@ -165,7 +169,9 @@ extension CameraViewModel {
             .sink { [weak self] _ in
                 guard let self = self else { return }
                 if self.smileProgress < 100 {
-                    self.smileProgress += 10
+                    withAnimation {
+                        self.smileProgress += 10
+                    }
                 } else if self.smileProgress >= 100 {
                     if !hasTriggeredCompleteSmileHaptic {
                         HapticManager.impact(style: .medium)

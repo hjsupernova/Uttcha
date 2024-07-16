@@ -22,7 +22,6 @@ struct CameraOverlayView: View {
                         .font(.title2).bold()
                         .padding(.horizontal)
                         .padding(.top)
-                        .animation(.linear, value: cameraViewModel.smileProgress)
                 }
 
                 Spacer()
@@ -66,7 +65,9 @@ struct CameraOverlayView: View {
                     .padding(.horizontal)
                 }
             }
-
+        }
+        .onAppear {
+            cameraViewModel.perform(action: .onOverlayViewAppeared)
         }
     }
 }
