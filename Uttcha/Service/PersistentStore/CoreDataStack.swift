@@ -108,14 +108,14 @@ extension CoreDataStack {
         coreDataContact.givenName = contact.givenName
         coreDataContact.phoneNumber = contact.phoneNumber
         coreDataContact.imageData = contact.imageData
-        coreDataContact.date = Date()
+        coreDataContact.dateCreated = Date()
 
         save()
     }
 
     func fetchSavedContacts() -> [ContactModel] {
         let request = NSFetchRequest<Contact>(entityName: "Contact")
-        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: true)]
+        request.sortDescriptors = [NSSortDescriptor(key: "dateCreated", ascending: true)]
 
         do {
             let coredataContacts = try persistentContainer.viewContext.fetch(request)
