@@ -51,7 +51,6 @@ struct SmileCalendar: View {
             proxy: calendarViewProxy
         )
         .backgroundColor(.systemGray6)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
         .horizontalDayMargin(0)
         .verticalDayMargin(12)
         .monthHeaders { month in
@@ -93,18 +92,6 @@ struct SmileCalendar: View {
                 EmptyView()
             }
         }
-        .sheet(isPresented: $homeViewModel.isShowingDetailView) {
-            PhotoDetailView(
-                homeViewModel: homeViewModel,
-                selectedPhoto: $selectedPhoto
-            )
-        }
-        .sheet(isPresented: $homeViewModel.isShowingMonthsSheet) {
-            MonthsAvailable(calendarViewProxy: calendarViewProxy,
-                            homeViewModel: homeViewModel,
-                            startDate: visibleDateRange.lowerBound)
-                .presentationDetents([.medium])
-        }
         .onDaySelection { day in
             if let calendarDate = calendar.date(from: day.components) {
                 if let photo = homeViewModel.photos.first(where: { photoItem in
@@ -121,6 +108,19 @@ struct SmileCalendar: View {
         .onScroll { visibleDayRange, _ in
             homeViewModel.perform(action: .userScroll(visibleDayRange.lowerBound.components,
                                                       visibleDayRange.upperBound.components))
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .sheet(isPresented: $homeViewModel.isShowingDetailView) {
+            PhotoDetailView(
+                homeViewModel: homeViewModel,
+                selectedPhoto: $selectedPhoto
+            )
+        }
+        .sheet(isPresented: $homeViewModel.isShowingMonthsSheet) {
+            MonthsAvailable(calendarViewProxy: calendarViewProxy,
+                            homeViewModel: homeViewModel,
+                            startDate: visibleDateRange.lowerBound)
+                .presentationDetents([.medium])
         }
         .onAppear {
             calendarViewProxy.scrollToMonth(
