@@ -156,12 +156,12 @@ extension CoreDataStack {
     func saveMemory(_ uiImage: UIImage) {
         guard let jpegData = uiImage.jpegData(compressionQuality: 0.5) else { return }
 
-        let image = Memory(context: persistentContainer.viewContext)
+        let memory = Memory(context: persistentContainer.viewContext)
 
         // TODO: 여기서 image.dateCreated 등이 생략될 수 있다는 게 문제.. 이걸 컴파일단에서 막아야함..
-        image.imageData = jpegData
-        image.dateCreated = Date()
-        image.memoryId = UUID()
+        memory.imageData = jpegData
+        memory.dateCreated = Date()
+        memory.memoryId = UUID()
 
         save()
     }

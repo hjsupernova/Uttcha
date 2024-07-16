@@ -25,7 +25,7 @@ struct SmileView: View {
                 VStack(alignment: .leading) {
                     HeaderView(label: "소중한 추억!")
 
-                    ImageListView(smileViewModel: smileViewModel)
+                    MemoryListView(smileViewModel: smileViewModel)
                 }
                 .padding(.horizontal)
             }
@@ -54,27 +54,28 @@ struct SmileView: View {
 
 // MARK: - Memories
 
-struct ImageListView: View {
+struct MemoryListView: View {
     @ObservedObject var smileViewModel: SmileViewModel
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack {
+            HStack(spacing: 10) {
                 if smileViewModel.memories.isEmpty {
-                    AddImageButton(smileViewModel: smileViewModel)
+                    AddMemoryButton(smileViewModel: smileViewModel)
                 } else {
                     ForEach(smileViewModel.memories) { memory in
                         MemoryButton(smileViewModel: smileViewModel, memory: memory)
+                            .background(Color.red.opacity(0.3))
                     }
 
-                    AddImageButton(smileViewModel: smileViewModel)
+                    AddMemoryButton(smileViewModel: smileViewModel)
                 }
             }
         }
     }
 }
 
-struct AddImageButton: View {
+struct AddMemoryButton: View {
     @ObservedObject var smileViewModel: SmileViewModel
 
     var body: some View {
@@ -109,11 +110,11 @@ struct MemoryButton: View {
                     .scaledToFill()
                     .frame(width: 150, height: 200)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .contentShape(RoundedRectangle(cornerRadius: 16))
             } else {
                 RoundedRectangle(cornerRadius: 16)
                     .frame(width: 150, height: 200)
                     .foregroundStyle(Color(uiColor: .systemGray6))
-
             }
         }
         .fullScreenCover(item: $smileViewModel.tappedMemory) { memory in
