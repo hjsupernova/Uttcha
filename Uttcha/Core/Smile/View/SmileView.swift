@@ -101,8 +101,8 @@ struct MemoryButton: View {
         Button {
             smileViewModel.perform(action: .imageTapped(memory))
         } label: {
-            if let uiImage = UIImage(data: memory.image) {
-                KFImage(source: .provider(RawImageDataProvider(data: memory.image, cacheKey: memory.date.description)))
+            if let uiImage = UIImage(data: memory.imageData) {
+                KFImage(source: .provider(RawImageDataProvider(data: memory.imageData, cacheKey: memory.dateCreated.description)))
                     .resizable()
                     .scaledToFill()
                     .frame(width: 150, height: 200)
@@ -130,7 +130,7 @@ struct MemoryImageFullScreenView: View {
 
     var body: some View {
         NavigationStack {
-            if let uiImage = UIImage(data: memory.image) {
+            if let uiImage = UIImage(data: memory.imageData) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFit()

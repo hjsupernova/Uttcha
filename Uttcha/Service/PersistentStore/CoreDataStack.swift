@@ -153,14 +153,13 @@ extension CoreDataStack {
 
 extension CoreDataStack {
     func saveMemory(_ uiImage: UIImage) {
+        guard let jpegData = uiImage.jpegData(compressionQuality: 0.5) else { return }
+
         let image = Memory(context: persistentContainer.viewContext)
 
-        if let jpegData = uiImage.jpegData(compressionQuality: 0.5) {
-            image.blob = jpegData
-            print("jpeg: \(jpegData.count)")
-        }
-
-        image.date = Date()
+        // TODO: 여기서 image.dateCreated 등이 생략될 수 있다는 게 문제.. 이걸 컴파일단에서 막아야함..
+        image.imageData = jpegData
+        image.dateCreated = Date()
         image.memoryId = UUID()
 
         save()
@@ -168,16 +167,17 @@ extension CoreDataStack {
 
     func fetchSavedMemories() -> [MemoryModel] {
         let request = NSFetchRequest<Memory>(entityName: "Memory")
-        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: true)]
+        request.sortDescriptors = [NSSortDescriptor(key: "dateCreated", ascending: true)]
 
         do {
             let memories = try persistentContainer.viewContext.fetch(request)
-            return memories.map {
-                MemoryModel(
-                    id: $0.memoryId!,
-                    image: $0.blob!,
-                    date: $0.date!
-                )
+            return memories.compactMap {
+                if let id = $0.memoryId,
+                   let imageData = $0.imageData,
+                   let date = $0.dateCreated {
+                    return MemoryModel(id: id, imageData: imageData, dateCreated: date)
+                }
+                return nil
             }
         } catch {
             return []
@@ -186,7 +186,7 @@ extension CoreDataStack {
 
     func removeMemory(_ memory: MemoryModel) {
         let request = NSFetchRequest<Memory>(entityName: "Memory")
-        request.predicate = NSPredicate(format: "memoryId == %@", memory.id! as CVarArg)
+        request.predicate = NSPredicate(format: "memoryId == %@", memory.id as CVarArg)
 
         do {
             let memories = try persistentContainer.viewContext.fetch(request)
@@ -200,12 +200,6 @@ extension CoreDataStack {
             print("Failed to fetch contact to remove : \(error)")
         }
     }
-}
-
-struct MemoryModel: Identifiable {
-    let id: UUID?
-    let image: Data
-    let date: Date
 }
 
 // MARK: - Mock Data

@@ -8,8 +8,8 @@
         <attribute name="phoneNumber" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Memory" representedClassName="Memory" syncable="YES" codeGenerationType="class">
-        <attribute name="blob" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
-        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dateCreated" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="imageData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="memoryId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
     </entity>
     <entity name="Photo" representedClassName="Photo" syncable="YES" codeGenerationType="class">
