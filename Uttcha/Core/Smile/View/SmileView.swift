@@ -30,16 +30,18 @@ struct SmileView: View {
                 .padding(.horizontal)
             }
             .navigationTitle("Uttcha")
-            .sheet(isPresented: $smileViewModel.isShowingContactSheet) {
-                ContactListSheet(smileViewModel: smileViewModel)
+            .sheet(item: $smileViewModel.presentedSheet) { sheet in
+                switch sheet {
+                case .contacts:
+                    ContactListSheet(smileViewModel: smileViewModel)
+                case .imagePicker:
+                    UIImagePicker(memories: $smileViewModel.memories)
+                }
             }
             .confirmationDialog("삭제하기", isPresented: $smileViewModel.isShowingContactRemoveConfirmationDialog) {
                 Button("연락처 삭제", role: .destructive) {
                     smileViewModel.perform(action: .contactRemoveButtonTapped)
                 }
-            }
-            .sheet(isPresented: $smileViewModel.isShowingUIImagePicker) {
-                UIImagePicker(memories: $smileViewModel.memories)
             }
             .confirmationDialog("삭제하기", isPresented: $smileViewModel.isShowingMemoryRemoveConfirmationDialog) {
                 Button("이미지 삭제", role: .destructive) {
@@ -114,11 +116,11 @@ struct MemoryButton: View {
 
             }
         }
-        .supportsLongPress {
-            smileViewModel.perform(action: .imageLongPressed(memory))
-        }
         .fullScreenCover(item: $smileViewModel.tappedMemory) { memory in
             MemoryImageFullScreenView(memory: memory)
+        }
+        .supportsLongPress {
+            smileViewModel.perform(action: .imageLongPressed(memory))
         }
     }
 }
@@ -151,8 +153,9 @@ struct MemoryImageFullScreenView: View {
     }
 
     struct SwipeToDismissModifier: ViewModifier {
-        var onDismiss: () -> Void
         @State private var offset: CGSize = .zero
+
+        var onDismiss: () -> Void
 
         func body(content: Content) -> some View {
             content
@@ -323,10 +326,6 @@ struct ContactListSheet: View {
                 }
             }
         }
-        .onAppear {
-            smileViewModel.perform(action: .contactListViewAppeared)
-            print(smileViewModel.contacts.count)
-        }
         .alert("Uttcha", isPresented: $smileViewModel.isShowingContactAuthorizationAlert) {
             Button("취소", role: .cancel) { }
 
@@ -339,7 +338,10 @@ struct ContactListSheet: View {
         } message: {
             Text("앱에 연락처 권한이 없습니다. 설정을 변경해주세요.")
         }
-
+        .onAppear {
+            smileViewModel.perform(action: .contactListViewAppeared)
+            print(smileViewModel.contacts.count)
+        }
     }
 }
 

@@ -23,7 +23,6 @@ struct CameraOverlayView: View {
                         .padding(.horizontal)
                         .padding(.top)
                         .animation(.linear, value: cameraViewModel.smileProgress)
-
                 }
 
                 Spacer()
@@ -35,10 +34,10 @@ struct CameraOverlayView: View {
 
                     if cameraViewModel.smileProgress == 100 {
                         Shutter()
+                            .padding(.bottom)
                             .onTapGesture {
                                 cameraViewModel.perform(action: .takePhoto)
                             }
-                            .padding(.bottom)
                     }
 
                     HStack {

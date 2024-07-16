@@ -9,6 +9,12 @@ import Contacts
 import Foundation
 import UIKit
 
+enum SmileViewSheet: String, Identifiable {
+    case contacts, imagePicker
+
+    var id: String { rawValue }
+}
+
 enum SmileViewModelAction {
 
     // Contacts
@@ -27,15 +33,14 @@ enum SmileViewModelAction {
 
 class SmileViewModel: ObservableObject {
     // MARK: - Publishers
-    @Published var isShowingContactSheet: Bool = false
     @Published var savedContacts: [ContactModel] = []
     @Published var contacts: [ContactModel] = []
     @Published var isShowingContactRemoveConfirmationDialog: Bool = false
-    @Published var isShowingUIImagePicker: Bool = false
     @Published var memories: [MemoryModel] = []
     @Published var isShowingMemoryRemoveConfirmationDialog: Bool = false
     @Published var isShowingContactAuthorizationAlert: Bool = false
     @Published var tappedMemory: MemoryModel?
+    @Published var presentedSheet: SmileViewSheet?
 
     // MARK: - Public properties
     var longTappedContact: ContactModel?
@@ -74,7 +79,7 @@ class SmileViewModel: ObservableObject {
 
     // MARK: - Action Handlers
     private func showContactSheet() {
-        isShowingContactSheet = true
+        presentedSheet = .contacts
     }
 
     private func saveTappedContact(_ contact: ContactModel) {
@@ -170,7 +175,7 @@ class SmileViewModel: ObservableObject {
     }
 
     private func showUIImagePicker() {
-        isShowingUIImagePicker = true
+        presentedSheet = .imagePicker
     }
 
     private func showMemoryRemoveActionSheet(_ memory: MemoryModel) {
