@@ -121,10 +121,10 @@ extension CoreDataStack {
             let coredataContacts = try persistentContainer.viewContext.fetch(request)
             return coredataContacts.map {
                 ContactModel(
-                    familyName: $0.familyName ?? "",
-                    givenName: $0.givenName ?? "",
-                    phoneNumber: $0.phoneNumber,
-                    imageData: $0.imageData
+                    familyName: $0.familyName ?? "N/A",
+                    givenName: $0.givenName ?? "N/A",
+                    phoneNumber: $0.phoneNumber ?? "01000000000",
+                    imageData: $0.imageData ?? UIImage(systemName: "person.circle.fill")!.pngData()!
                 )
             }
         } catch {

@@ -267,14 +267,14 @@ struct ContactButton: View {
     let contact: ContactModel
 
     var body: some View {
-        Link(destination: URL(string: "tel:\(contact.phoneNumber ?? "00000000000")")!) {
+        Link(destination: URL(string: "tel:\(contact.phoneNumber)")!) {
             ZStack {
                 RoundedRectangle(cornerRadius: 16)
                     .frame(width: 150, height: 200)
                     .foregroundStyle(Color(uiColor: .systemGray6))
 
                 VStack {
-                    if let imageData = contact.imageData, let uiImage = UIImage(data: imageData) {
+                    if let uiImage = UIImage(data: contact.imageData) {
                         Image(uiImage: uiImage)
                             .resizable()
                             .frame(width: 50, height: 50)
@@ -348,7 +348,7 @@ struct ContactRow: View {
 
     var body: some View {
         HStack {
-            if let imageData = contact.imageData, let uiImage = UIImage(data: imageData) {
+            if let uiImage = UIImage(data: contact.imageData) {
                 Image(uiImage: uiImage)
                     .resizable()
                     .frame(width: 50, height: 50)
@@ -360,9 +360,9 @@ struct ContactRow: View {
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("\(contact.familyName ?? "" )\(contact.givenName ?? "" )").fontWeight(.semibold)
+                Text("\(contact.familyName)\(contact.givenName )").fontWeight(.semibold)
 
-                Text("\(contact.phoneNumber ?? "")")
+                Text("\(contact.phoneNumber)")
                     .font(.caption2 )
                     .foregroundStyle(.gray)
             }.multilineTextAlignment(.leading)
@@ -389,7 +389,8 @@ struct HeaderView: View {
         familyName: "현진",
         givenName: "김",
         phoneNumber: "010-0000-0000",
-        imageData: nil
+        imageData: UIImage(systemName: "person.circle.fill")!.pngData()!
     )
+    
     return ContactRow(contact: contact)
 }
