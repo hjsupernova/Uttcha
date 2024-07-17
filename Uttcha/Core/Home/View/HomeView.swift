@@ -13,14 +13,16 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
+             VStack {
                 SmileCalendar(
                     homeViewModel: homeViewModel,
                     calendar: .autoupdatingCurrent,
                     monthsLayout: .horizontal,
                     isShowingCamera: $cameraViewModel.isShowingCameraView
                 )
-                .padding()
+                .padding([.horizontal, .bottom])
+
+                Spacer()
 
                 ZStack {
                     CameraButton(cameraViewModel: cameraViewModel, homeViewModel: homeViewModel)
@@ -28,7 +30,6 @@ struct HomeView: View {
                     FireworkView(vm: homeViewModel)
                 }
             }
-            .navigationTitle("오늘도 웃차 🤙🏻")
             .toolbar {
                 NavigationLink {
                     SettingsView()
@@ -81,4 +82,5 @@ struct CameraButton: View {
 
 #Preview {
     UttchaTapView()
+        .tint(.white)
 }

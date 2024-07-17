@@ -50,7 +50,6 @@ struct SmileCalendar: View {
             dataDependency: homeViewModel.photos,
             proxy: calendarViewProxy
         )
-        .backgroundColor(.systemGray6)
         .horizontalDayMargin(0)
         .verticalDayMargin(12)
         .monthHeaders { month in
@@ -64,6 +63,7 @@ struct SmileCalendar: View {
 
                     Image(systemName: "arrowtriangle.down.fill")
                         .foregroundStyle(.gray)
+                        .font(.callout)
 
                 }
                 .padding()
@@ -73,8 +73,26 @@ struct SmileCalendar: View {
             Text(dayNames[weekdayIndex]).bold()
         }
         .days { day in
-            Text("\(day.day)")
-                .bold()
+            if let date = calendar.date(from: day.components) {
+                if calendar.isDate(Date.now, inSameDayAs: date) {
+                    ZStack(alignment: .center) {
+                        Circle()
+                            .foregroundStyle(.white)
+                            .aspectRatio(1, contentMode: .fill)
+
+                        Text("\(day.day)")
+                            .foregroundStyle(.black)
+                            .bold()
+                    }
+                } else if date > Date.now {
+                    Text("\(day.day)")
+                        .foregroundStyle(.gray)
+                        .bold()
+                } else {
+                    Text("\(day.day)")
+                        .bold()
+                }
+            }
         }
         .dayBackgrounds { day in
             if let calendarDate = calendar.date(from: day.components),
@@ -109,7 +127,6 @@ struct SmileCalendar: View {
             homeViewModel.perform(action: .userScroll(visibleDayRange.lowerBound.components,
                                                       visibleDayRange.upperBound.components))
         }
-        .clipShape(RoundedRectangle(cornerRadius: 16))
         .sheet(item: $homeViewModel.presentedSheet) { sheet in
             switch sheet {
             case .photoDetail:
