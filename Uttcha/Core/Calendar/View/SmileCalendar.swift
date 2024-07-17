@@ -50,8 +50,8 @@ struct SmileCalendar: View {
             dataDependency: homeViewModel.photos,
             proxy: calendarViewProxy
         )
-        .horizontalDayMargin(0)
-        .verticalDayMargin(12)
+        .horizontalDayMargin(4)
+        .verticalDayMargin(8)
         .monthHeaders { month in
             let monthHeaderText = monthDateFormatter.string(from: calendar.date(from: month.components)!)
             Button {
@@ -74,26 +74,31 @@ struct SmileCalendar: View {
         }
         .days { day in
             if let date = calendar.date(from: day.components) {
-                if calendar.isDate(Date.now, inSameDayAs: date) {
+                let isToday = calendar.isDate(Date.now, inSameDayAs: date)
+                let isFuture = date > Date.now
+                let hasPhoto = isToday && homeViewModel.photos.contains { photo in
+                    guard let photoDate = photo.dateCreated else { return false }
+                    return calendar.isDate(photoDate, inSameDayAs: date)
+                }
+                
+                if isToday && !hasPhoto {
                     ZStack(alignment: .center) {
                         Circle()
                             .foregroundStyle(.white)
                             .aspectRatio(1, contentMode: .fill)
-
                         Text("\(day.day)")
                             .foregroundStyle(.black)
                             .bold()
                     }
-                } else if date > Date.now {
-                    Text("\(day.day)")
-                        .foregroundStyle(.gray)
-                        .bold()
                 } else {
                     Text("\(day.day)")
+                        .foregroundStyle(isFuture ? .gray : .primary)
                         .bold()
                 }
+
             }
         }
+        .dayAspectRatio(1)
         .dayBackgrounds { day in
             if let calendarDate = calendar.date(from: day.components),
                let photo = homeViewModel.photos.first(where: { photoItem in
@@ -105,7 +110,7 @@ struct SmileCalendar: View {
                     .data(imageData, cacheKey: date.description)
                     .resizable()
                     .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
             } else {
                 EmptyView()
             }

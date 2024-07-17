@@ -65,7 +65,7 @@ struct CameraButton: View {
                         Text(homeViewModel.isCameraButtonDisabled ? "내일 봐요!" : "웃어 봐요!")
                             .fontWeight(.bold)
 
-                        Text(homeViewModel.isCameraButtonDisabled ? "😘" : "🥲")
+                        Text(homeViewModel.isCameraButtonDisabled ? "😘" : "😊")
                             .font(.largeTitle)
                     }
                 }
