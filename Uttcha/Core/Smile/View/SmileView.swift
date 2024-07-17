@@ -16,20 +16,21 @@ struct SmileView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading) {
-                    HeaderView(label: "친구에게 연락해보세요!")
+                    HeaderView(label: "소중한 사람")
 
                     ContactListView(smileViewModel: smileViewModel)
                 }
                 .padding(.horizontal)
 
                 VStack(alignment: .leading) {
-                    HeaderView(label: "소중한 추억!")
+                    HeaderView(label: "소중한 추억")
 
                     MemoryListView(smileViewModel: smileViewModel)
                 }
                 .padding(.horizontal)
             }
-            .navigationTitle("Uttcha")
+            .navigationTitle("웃자")
+            .navigationBarTitleDisplayMode(.inline)
             .sheet(item: $smileViewModel.presentedSheet) { sheet in
                 switch sheet {
                 case .contacts:
