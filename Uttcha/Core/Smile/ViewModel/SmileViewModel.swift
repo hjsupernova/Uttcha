@@ -21,7 +21,7 @@ enum SmileViewModelAction {
     case contactAddButtonTapped
     case contactListRowTapped(ContactModel)
     case contactListViewAppeared
-    case contactLongTapped(ContactModel)
+    case contactLongPressed(ContactModel)
     case contactRemoveButtonTapped
 
     // Memories
@@ -71,7 +71,7 @@ class SmileViewModel: ObservableObject {
             saveTappedContact(contact)
         case .contactListViewAppeared:
             fetchContacts()
-        case .contactLongTapped(let contact):
+        case .contactLongPressed(let contact):
             showContactRemoveActionSheet(contact)
         case .contactRemoveButtonTapped:
             removeLongTappedContact()
