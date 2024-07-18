@@ -166,6 +166,7 @@ class SmileViewModel: ObservableObject {
     }
 
     private func showContactRemoveActionSheet(_ contact: ContactModel) {
+        HapticManager.impact(style: .medium)
         longTappedContact = contact
         isShowingContactRemoveConfirmationDialog = true
 
@@ -184,6 +185,7 @@ class SmileViewModel: ObservableObject {
     }
 
     private func showMemoryRemoveActionSheet(_ memory: MemoryModel) {
+        HapticManager.impact(style: .medium)
         longPressedMemory = memory
         isShowingMemoryRemoveConfirmationDialog = true
     }
