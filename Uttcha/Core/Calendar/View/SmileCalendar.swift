@@ -50,9 +50,8 @@ struct SmileCalendar: View {
             dataDependency: homeViewModel.photos,
             proxy: calendarViewProxy
         )
-        .backgroundColor(.systemGray6)
-        .horizontalDayMargin(0)
-        .verticalDayMargin(12)
+        .horizontalDayMargin(8)
+        .verticalDayMargin(20)
         .monthHeaders { month in
             let monthHeaderText = monthDateFormatter.string(from: calendar.date(from: month.components)!)
             Button {
@@ -64,6 +63,7 @@ struct SmileCalendar: View {
 
                     Image(systemName: "arrowtriangle.down.fill")
                         .foregroundStyle(.gray)
+                        .font(.callout)
 
                 }
                 .padding()
@@ -73,9 +73,32 @@ struct SmileCalendar: View {
             Text(dayNames[weekdayIndex]).bold()
         }
         .days { day in
-            Text("\(day.day)")
-                .bold()
+            if let date = calendar.date(from: day.components) {
+                let isToday = calendar.isDate(Date.now, inSameDayAs: date)
+                let isFuture = date > Date.now
+                let hasPhoto = isToday && homeViewModel.photos.contains { photo in
+                    guard let photoDate = photo.dateCreated else { return false }
+                    return calendar.isDate(photoDate, inSameDayAs: date)
+                }
+
+                if isToday && !hasPhoto {
+                    ZStack(alignment: .center) {
+                        Circle()
+                            .foregroundStyle(.white)
+                            .aspectRatio(1, contentMode: .fill)
+                        Text("\(day.day)")
+                            .foregroundStyle(.black)
+                            .bold()
+                    }
+                } else {
+                    Text("\(day.day)")
+                        .foregroundStyle(isFuture ? .gray : .primary)
+                        .bold()
+                }
+
+            }
         }
+        .dayAspectRatio(1)
         .dayBackgrounds { day in
             if let calendarDate = calendar.date(from: day.components),
                let photo = homeViewModel.photos.first(where: { photoItem in
@@ -86,8 +109,8 @@ struct SmileCalendar: View {
                 KFImage
                     .data(imageData, cacheKey: date.description)
                     .resizable()
-                    .scaledToFit()
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .scaledToFill()
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
             } else {
                 EmptyView()
             }
@@ -109,7 +132,6 @@ struct SmileCalendar: View {
             homeViewModel.perform(action: .userScroll(visibleDayRange.lowerBound.components,
                                                       visibleDayRange.upperBound.components))
         }
-        .clipShape(RoundedRectangle(cornerRadius: 16))
         .sheet(item: $homeViewModel.presentedSheet) { sheet in
             switch sheet {
             case .photoDetail:
@@ -201,6 +223,10 @@ struct MonthsAvailable: View {
         }
         return result
     }
+}
+
+#Preview {
+    UttchaTapView()
 }
 
 #Preview {
