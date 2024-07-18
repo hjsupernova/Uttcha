@@ -44,10 +44,18 @@ class SmileViewModel: ObservableObject {
     @Published var isShowingContactAuthorizationAlert: Bool = false
     @Published var tappedMemory: MemoryModel?
     @Published var presentedSheet: SmileViewSheet?
+    @Published var contactSearchText: String = ""
 
     // MARK: - Public properties
     var longTappedContact: ContactModel?
-    var longPressedMemory: MemoryModel? 
+    var longPressedMemory: MemoryModel?
+    var filteredContacts: [ContactModel] {
+        if contactSearchText.isEmpty {
+            return contacts
+        } else {
+            return contacts.filter { "\($0.familyName)\($0.givenName)".contains(contactSearchText) }
+        }
+    }
 
     init() {
         fetchSavedContacts()
