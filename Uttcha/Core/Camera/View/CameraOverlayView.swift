@@ -53,7 +53,7 @@ struct CameraOverlayView: View {
                         Menu {
                             Picker("함께 웃기", selection: $cameraViewModel.neededFaceCount) {
                                 ForEach(1..<6) {
-                                    Text("함께 웃기: \($0) 명").tag($0)
+                                    Text("\($0)명과 함께 웃기").tag($0)
                                 }
                             }
                         } label: {

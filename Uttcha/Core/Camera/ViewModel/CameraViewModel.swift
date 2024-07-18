@@ -32,34 +32,24 @@ enum FaceDetectedState {
 
 final class CameraViewModel: ObservableObject {
     // MARK: - Published Properties
-    @Published var neededFaceCount: Int = 1
-    @Published private(set) var hasDetectedEnoughFaces: Bool = false
+    @Published private(set) var faceDetectedState: FaceDetectedState = .noFaceDetected
     @Published private(set) var smileProgress = 0.0
+    @Published var neededFaceCount: Int = 1
     @Published var isShowingCameraView = false
-    @Published private(set) var hasDetectedEnoughSmileFaces: Bool
-    @Published private(set) var hasSmile: Bool
     @Published var facePhoto: UIImage?
-    @Published private(set) var cameraInstructionText: String = "웃어보세요! 😍"
-    @Published private(set) var faceDetectedState: FaceDetectedState
 
     // MARK: - Pirvate Properties
+    private var hasDetectedEnoughFaces: Bool = false
+    private(set) var cameraInstructionText: String = "웃어봐요 😊"
+
     private var timer: AnyCancellable?
     private var isTimerRunning: Bool = false
-
     private var hasTriggeredStartSmileHaptic = false
     private var hasTriggeredCompleteSmileHaptic = false
     private var debounceWorkItem: DispatchWorkItem?
 
     // MARK: - Public Properties
     let shutterReleased = PassthroughSubject<Void, Never>()
-
-    // MARK: - Initializaiton
-    init() {
-        faceDetectedState = .noFaceDetected
-        hasDetectedEnoughSmileFaces = false
-        hasDetectedEnoughFaces = false
-        hasSmile = false
-    }
 
     // MARK: - Actions
     func perform(action: CameraViewModelAction) {
@@ -132,7 +122,7 @@ extension CameraViewModel {
     private func updateFaceDetectionState(faceCount: Int, allSmiling: Bool) {
         hasDetectedEnoughFaces = faceCount >= neededFaceCount
         faceDetectedState = .faceDetected(allSmiling)
-        cameraInstructionText = hasDetectedEnoughFaces ? "웃어보세요! 😍" : "\(neededFaceCount - faceCount) 명이 부족해요! 😭"
+        cameraInstructionText = hasDetectedEnoughFaces ? "웃어봐요 😊" : "\(neededFaceCount - faceCount) 명이 부족해요! 🥲"
     }
 
     private func processFaceDetectionResult() {
