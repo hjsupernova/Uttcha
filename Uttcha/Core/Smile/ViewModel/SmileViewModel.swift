@@ -24,11 +24,14 @@ enum SmileViewModelAction {
     case contactLongTapped(ContactModel)
     case contactRemoveButtonTapped
 
-    // Images
-    case imageAddButtonTapped
-    case imageLongPressed(MemoryModel)
-    case imageRemoveButtonTapped
-    case imageTapped(MemoryModel)
+    // Memories
+    case memoryAddButtonTapped
+    case memoryLongPressed(MemoryModel)
+    case memoryRemoveButtonTapped
+    case memoryTapped(MemoryModel)
+
+    // UIImagePicker
+    case selectImage(UIImage)
 }
 
 class SmileViewModel: ObservableObject {
@@ -66,14 +69,16 @@ class SmileViewModel: ObservableObject {
             removeLongTappedContact()
 
         // images
-        case .imageAddButtonTapped:
+        case .memoryAddButtonTapped:
             showUIImagePicker()
-        case .imageLongPressed(let memory):
+        case .memoryLongPressed(let memory):
             showMemoryRemoveActionSheet(memory)
-        case .imageRemoveButtonTapped:
+        case .memoryRemoveButtonTapped:
             removeLongPressedMemory()
-        case .imageTapped(let memory):
+        case .memoryTapped(let memory):
             showMemoryDetailView(memory)
+        case .selectImage(let image):
+            saveMemoryWithSelectedImage(image)
         }
     }
 
@@ -161,6 +166,7 @@ class SmileViewModel: ObservableObject {
     }
 
     private func showContactRemoveActionSheet(_ contact: ContactModel) {
+        HapticManager.impact(style: .medium)
         longTappedContact = contact
         isShowingContactRemoveConfirmationDialog = true
 
@@ -179,6 +185,7 @@ class SmileViewModel: ObservableObject {
     }
 
     private func showMemoryRemoveActionSheet(_ memory: MemoryModel) {
+        HapticManager.impact(style: .medium)
         longPressedMemory = memory
         isShowingMemoryRemoveConfirmationDialog = true
     }
@@ -193,6 +200,12 @@ class SmileViewModel: ObservableObject {
 
     private func showMemoryDetailView(_ memory: MemoryModel) {
         tappedMemory = memory
+    }
+
+    private func saveMemoryWithSelectedImage(_ image: UIImage) {
+        CoreDataStack.shared.saveMemory(image)
+
+        fetchSavedMemories()
     }
 }
 
