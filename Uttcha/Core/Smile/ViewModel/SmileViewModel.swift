@@ -29,6 +29,9 @@ enum SmileViewModelAction {
     case imageLongPressed(MemoryModel)
     case imageRemoveButtonTapped
     case imageTapped(MemoryModel)
+
+    // UIImagePicker
+    case selectImage(UIImage)
 }
 
 class SmileViewModel: ObservableObject {
@@ -74,6 +77,8 @@ class SmileViewModel: ObservableObject {
             removeLongPressedMemory()
         case .imageTapped(let memory):
             showMemoryDetailView(memory)
+        case .selectImage(let image):
+            saveMemoryWithSelectedImage(image)
         }
     }
 
@@ -193,6 +198,12 @@ class SmileViewModel: ObservableObject {
 
     private func showMemoryDetailView(_ memory: MemoryModel) {
         tappedMemory = memory
+    }
+
+    private func saveMemoryWithSelectedImage(_ image: UIImage) {
+        CoreDataStack.shared.saveMemory(image)
+
+        fetchSavedMemories()
     }
 }
 

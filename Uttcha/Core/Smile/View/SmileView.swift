@@ -36,17 +36,21 @@ struct SmileView: View {
                 case .contacts:
                     ContactListSheet(smileViewModel: smileViewModel)
                 case .imagePicker:
-                    UIImagePicker(memories: $smileViewModel.memories)
+                    UIImagePicker(smileViewModel: smileViewModel)
                 }
             }
             .confirmationDialog("삭제하기", isPresented: $smileViewModel.isShowingContactRemoveConfirmationDialog) {
                 Button("연락처 삭제", role: .destructive) {
-                    smileViewModel.perform(action: .contactRemoveButtonTapped)
+                    withAnimation {
+                        smileViewModel.perform(action: .contactRemoveButtonTapped)
+                    }
                 }
             }
             .confirmationDialog("삭제하기", isPresented: $smileViewModel.isShowingMemoryRemoveConfirmationDialog) {
                 Button("이미지 삭제", role: .destructive) {
-                    smileViewModel.perform(action: .imageRemoveButtonTapped)
+                    withAnimation {
+                        smileViewModel.perform(action: .imageRemoveButtonTapped)
+                    }
                 }
             }
         }
@@ -182,7 +186,7 @@ struct MemoryImageFullScreenView: View {
 }
 
 struct UIImagePicker: UIViewControllerRepresentable {
-    @Binding var memories: [MemoryModel]
+    @ObservedObject var smileViewModel: SmileViewModel
 
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let imagePicker = UIImagePickerController()
@@ -205,9 +209,10 @@ struct UIImagePicker: UIViewControllerRepresentable {
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             picker.dismiss(animated: true) {
 
-                if let uiImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage{
-                    CoreDataStack.shared.saveMemory(uiImage)
-                    self.parent.memories = CoreDataStack.shared.fetchSavedMemories()
+                if let uiImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+                    withAnimation {
+                        self.parent.smileViewModel.perform(action: .selectImage(uiImage))
+                    }
                 }
             }
         }
@@ -310,7 +315,9 @@ struct ContactListSheet: View {
         NavigationStack {
             List(smileViewModel.contacts, id: \.id) { contact in
                 Button {
-                    smileViewModel.perform(action: .contactListRowTapped(contact))
+                    withAnimation {
+                        smileViewModel.perform(action: .contactListRowTapped(contact))
+                    }
 
                     dismiss()
                 } label: {
@@ -394,6 +401,6 @@ struct HeaderView: View {
         phoneNumber: "010-0000-0000",
         imageData: UIImage(systemName: "person.circle.fill")!.pngData()!
     )
-    
+
     return ContactRow(contact: contact)
 }
