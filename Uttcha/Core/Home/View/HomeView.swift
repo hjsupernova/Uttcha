@@ -13,7 +13,7 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack {
-             VStack {
+            VStack {
                 SmileCalendar(
                     homeViewModel: homeViewModel,
                     calendar: .autoupdatingCurrent,
@@ -22,13 +22,13 @@ struct HomeView: View {
                 )
                 .padding([.horizontal, .bottom])
 
-                Spacer()
-
                 ZStack {
                     CameraButton(cameraViewModel: cameraViewModel, homeViewModel: homeViewModel)
 
                     FireworkView(vm: homeViewModel)
                 }
+
+                Spacer()
             }
             .toolbar {
                 NavigationLink {
@@ -62,10 +62,10 @@ struct CameraButton: View {
                     cameraViewModel.perform(action: .showCamera)
                 } label: {
                     VStack {
-                        Text(homeViewModel.isCameraButtonDisabled ? "내일 봐요!" : "웃어 봐요!")
+                        Text(homeViewModel.isCameraButtonDisabled ? "내일봐요" : "웃어봐요")
                             .fontWeight(.bold)
 
-                        Text(homeViewModel.isCameraButtonDisabled ? "😘" : "😊")
+                        Text(homeViewModel.isCameraButtonDisabled ? "🥳" : "😊")
                             .font(.largeTitle)
                     }
                 }

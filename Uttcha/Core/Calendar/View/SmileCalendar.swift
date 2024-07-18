@@ -50,8 +50,8 @@ struct SmileCalendar: View {
             dataDependency: homeViewModel.photos,
             proxy: calendarViewProxy
         )
-        .horizontalDayMargin(4)
-        .verticalDayMargin(8)
+        .horizontalDayMargin(8)
+        .verticalDayMargin(20)
         .monthHeaders { month in
             let monthHeaderText = monthDateFormatter.string(from: calendar.date(from: month.components)!)
             Button {
@@ -80,7 +80,7 @@ struct SmileCalendar: View {
                     guard let photoDate = photo.dateCreated else { return false }
                     return calendar.isDate(photoDate, inSameDayAs: date)
                 }
-                
+
                 if isToday && !hasPhoto {
                     ZStack(alignment: .center) {
                         Circle()
@@ -109,7 +109,7 @@ struct SmileCalendar: View {
                 KFImage
                     .data(imageData, cacheKey: date.description)
                     .resizable()
-                    .scaledToFit()
+                    .scaledToFill()
                     .clipShape(RoundedRectangle(cornerRadius: 4))
             } else {
                 EmptyView()
@@ -223,6 +223,10 @@ struct MonthsAvailable: View {
         }
         return result
     }
+}
+
+#Preview {
+    UttchaTapView()
 }
 
 #Preview {
