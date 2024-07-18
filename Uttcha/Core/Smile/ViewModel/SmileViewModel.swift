@@ -24,11 +24,11 @@ enum SmileViewModelAction {
     case contactLongTapped(ContactModel)
     case contactRemoveButtonTapped
 
-    // Images
-    case imageAddButtonTapped
-    case imageLongPressed(MemoryModel)
-    case imageRemoveButtonTapped
-    case imageTapped(MemoryModel)
+    // Memories
+    case memoryAddButtonTapped
+    case memoryLongPressed(MemoryModel)
+    case memoryRemoveButtonTapped
+    case memoryTapped(MemoryModel)
 
     // UIImagePicker
     case selectImage(UIImage)
@@ -69,13 +69,13 @@ class SmileViewModel: ObservableObject {
             removeLongTappedContact()
 
         // images
-        case .imageAddButtonTapped:
+        case .memoryAddButtonTapped:
             showUIImagePicker()
-        case .imageLongPressed(let memory):
+        case .memoryLongPressed(let memory):
             showMemoryRemoveActionSheet(memory)
-        case .imageRemoveButtonTapped:
+        case .memoryRemoveButtonTapped:
             removeLongPressedMemory()
-        case .imageTapped(let memory):
+        case .memoryTapped(let memory):
             showMemoryDetailView(memory)
         case .selectImage(let image):
             saveMemoryWithSelectedImage(image)

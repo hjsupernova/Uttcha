@@ -49,7 +49,7 @@ struct SmileView: View {
             .confirmationDialog("삭제하기", isPresented: $smileViewModel.isShowingMemoryRemoveConfirmationDialog) {
                 Button("이미지 삭제", role: .destructive) {
                     withAnimation {
-                        smileViewModel.perform(action: .imageRemoveButtonTapped)
+                        smileViewModel.perform(action: .memoryRemoveButtonTapped)
                     }
                 }
             }
@@ -84,7 +84,7 @@ struct AddMemoryButton: View {
 
     var body: some View {
         Button {
-            smileViewModel.perform(action: .imageAddButtonTapped)
+            smileViewModel.perform(action: .memoryAddButtonTapped)
         } label: {
             ZStack {
                 RoundedRectangle(cornerRadius: 16)
@@ -106,7 +106,7 @@ struct MemoryButton: View {
 
     var body: some View {
         Button {
-            smileViewModel.perform(action: .imageTapped(memory))
+            smileViewModel.perform(action: .memoryTapped(memory))
         } label: {
             if let uiImage = UIImage(data: memory.imageData) {
                 KFImage(source: .provider(RawImageDataProvider(data: memory.imageData, cacheKey: memory.dateCreated.description)))
@@ -125,7 +125,7 @@ struct MemoryButton: View {
             MemoryImageFullScreenView(memory: memory)
         }
         .supportsLongPress {
-            smileViewModel.perform(action: .imageLongPressed(memory))
+            smileViewModel.perform(action: .memoryLongPressed(memory))
         }
     }
 }
