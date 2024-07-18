@@ -36,10 +36,10 @@ enum SmileViewModelAction {
 
 class SmileViewModel: ObservableObject {
     // MARK: - Publishers
-    @Published var savedContacts: [ContactModel] = []
-    @Published var contacts: [ContactModel] = []
+    @Published private(set) var savedContacts: [ContactModel] = []
+    @Published private(set) var contacts: [ContactModel] = []
     @Published var isShowingContactRemoveConfirmationDialog: Bool = false
-    @Published var memories: [MemoryModel] = []
+    @Published private(set) var memories: [MemoryModel] = []
     @Published var isShowingMemoryRemoveConfirmationDialog: Bool = false
     @Published var isShowingContactAuthorizationAlert: Bool = false
     @Published var tappedMemory: MemoryModel?
@@ -57,6 +57,7 @@ class SmileViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Initializer
     init() {
         fetchSavedContacts()
         fetchSavedMemories()

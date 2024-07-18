@@ -25,7 +25,7 @@ struct HomeView: View {
                 ZStack {
                     CameraButton(cameraViewModel: cameraViewModel, homeViewModel: homeViewModel)
 
-                    FireworkView(vm: homeViewModel)
+                    FireworkView(homeViewModel: homeViewModel)
                 }
 
                 Spacer()
