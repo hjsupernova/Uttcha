@@ -21,7 +21,7 @@ enum SmileViewModelAction {
     case contactAddButtonTapped
     case contactListRowTapped(ContactModel)
     case contactListViewAppeared
-    case contactLongTapped(ContactModel)
+    case contactLongPressed(ContactModel)
     case contactRemoveButtonTapped
 
     // Memories
@@ -44,10 +44,18 @@ class SmileViewModel: ObservableObject {
     @Published var isShowingContactAuthorizationAlert: Bool = false
     @Published var tappedMemory: MemoryModel?
     @Published var presentedSheet: SmileViewSheet?
+    @Published var contactSearchText: String = ""
 
     // MARK: - Public properties
     var longTappedContact: ContactModel?
-    var longPressedMemory: MemoryModel? 
+    var longPressedMemory: MemoryModel?
+    var filteredContacts: [ContactModel] {
+        if contactSearchText.isEmpty {
+            return contacts
+        } else {
+            return contacts.filter { "\($0.familyName)\($0.givenName)".contains(contactSearchText) }
+        }
+    }
 
     init() {
         fetchSavedContacts()
@@ -63,7 +71,7 @@ class SmileViewModel: ObservableObject {
             saveTappedContact(contact)
         case .contactListViewAppeared:
             fetchContacts()
-        case .contactLongTapped(let contact):
+        case .contactLongPressed(let contact):
             showContactRemoveActionSheet(contact)
         case .contactRemoveButtonTapped:
             removeLongTappedContact()

@@ -301,7 +301,7 @@ struct ContactButton: View {
 
         }
         .supportsLongPress {
-            smileViewModel.perform(action: .contactLongTapped(contact))
+            smileViewModel.perform(action: .contactLongPressed(contact))
         }
     }
 }
@@ -313,7 +313,7 @@ struct ContactListSheet: View {
 
     var body: some View {
         NavigationStack {
-            List(smileViewModel.contacts, id: \.id) { contact in
+            List(smileViewModel.filteredContacts, id: \.id) { contact in
                 Button {
                     withAnimation {
                         smileViewModel.perform(action: .contactListRowTapped(contact))
@@ -334,6 +334,7 @@ struct ContactListSheet: View {
                 }
             }
         }
+        .searchable(text: $smileViewModel.contactSearchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "검색")
         .alert("Uttcha", isPresented: $smileViewModel.isShowingContactAuthorizationAlert) {
             Button("취소", role: .cancel) { }
 
@@ -348,7 +349,6 @@ struct ContactListSheet: View {
         }
         .onAppear {
             smileViewModel.perform(action: .contactListViewAppeared)
-            print(smileViewModel.contacts.count)
         }
     }
 }
