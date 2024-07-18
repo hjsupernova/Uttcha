@@ -63,7 +63,7 @@ struct FireworkConfig {
 }
 
 struct FireworkView: View {
-    @ObservedObject var vm: HomeViewModel
+    @ObservedObject var homeViewModel: HomeViewModel
 
     @State var animate = 0
     @State var finishedAnimationCounter = 0
@@ -73,7 +73,7 @@ struct FireworkView: View {
         ZStack{
             ForEach(finishedAnimationCounter..<animate, id:\.self){ i in
                 FireworkContainer(
-                    vm: vm,
+                    vm: homeViewModel,
                     finishedAnimationCounter: $finishedAnimationCounter
                 )
             }
@@ -81,10 +81,10 @@ struct FireworkView: View {
         .onAppear(){
             firstAppear = true
         }
-        .onChange(of: vm.fireworkTrigger){value in
+        .onChange(of: homeViewModel.fireworkTrigger) {value in
             if firstAppear{
-                for i in 0...vm.fireworkConfiguration.repetitions{
-                    DispatchQueue.main.asyncAfter(deadline: .now() + vm.fireworkConfiguration.repetitionInterval * Double(i)) {
+                for i in 0...homeViewModel.fireworkConfiguration.repetitions{
+                    DispatchQueue.main.asyncAfter(deadline: .now() + homeViewModel.fireworkConfiguration.repetitionInterval * Double(i)) {
                         animate += 1
                     }
                 }

@@ -27,18 +27,20 @@ enum HomeViewModelAction {
 final class HomeViewModel: ObservableObject {
     // MARK: - Publishers
     @Published var isShowingCameraView: Bool = false
-    @Published var photos: Set<Photo> = [] {
+    @Published private(set) var photos: Set<Photo> = [] {
         didSet {
             calculateButtonAvailabilty()
         }
     }
     @Published var isCameraButtonDisabled: Bool = false
-    @Published var fireworkTrigger = 0
-    @Published var fireworkConfiguration: FireworkConfig = FireworkConfig()
+    @Published private(set) var fireworkTrigger = 0
+    @Published private(set) var fireworkConfiguration: FireworkConfig = FireworkConfig()
     @Published var presentedSheet: Sheet?
 
+    // MARK: - Private properties
     private var visualizedMonths: Set<DateComponents> = []
 
+    // MARK: - Initializer
     init() {
         fetchPhotos(in: yearMonthComponents(from: Date()))
     }
