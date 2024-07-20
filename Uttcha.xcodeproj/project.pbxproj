@@ -16,6 +16,9 @@
 		CE52C0F42BC185760039C1E1 /* FaceDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE52C0F32BC185760039C1E1 /* FaceDetector.swift */; };
 		CE52C0F62BC188D70039C1E1 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE52C0F52BC188D70039C1E1 /* CameraViewController.swift */; };
 		CE6A735D2C4B9B8600E447CC /* SpotifyiOS in Frameworks */ = {isa = PBXBuildFile; productRef = CE6A735C2C4B9B8600E447CC /* SpotifyiOS */; };
+		CE6A735F2C4B9D5B00E447CC /* SpotifyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6A735E2C4B9D5B00E447CC /* SpotifyController.swift */; };
+		CE6A73632C4BA0F200E447CC /* SecureAPIKeys.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE6A73622C4BA0F200E447CC /* SecureAPIKeys.plist */; };
+		CE6A73652C4BA13600E447CC /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6A73642C4BA13600E447CC /* Bundle.swift */; };
 		CE7A231D2C3E7C4400CE294F /* FireworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7A231C2C3E7C4400CE294F /* FireworkView.swift */; };
 		CE7C986A2BC12B1C00FA9646 /* UttchaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7C98692BC12B1C00FA9646 /* UttchaApp.swift */; };
 		CE7C986E2BC12B1E00FA9646 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE7C986D2BC12B1E00FA9646 /* Assets.xcassets */; };
@@ -55,6 +58,9 @@
 		CE4FFE692C338D4F00198F8E /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		CE52C0F32BC185760039C1E1 /* FaceDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetector.swift; sourceTree = "<group>"; };
 		CE52C0F52BC188D70039C1E1 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		CE6A735E2C4B9D5B00E447CC /* SpotifyController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyController.swift; sourceTree = "<group>"; };
+		CE6A73622C4BA0F200E447CC /* SecureAPIKeys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = SecureAPIKeys.plist; sourceTree = "<group>"; };
+		CE6A73642C4BA13600E447CC /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		CE7A231C2C3E7C4400CE294F /* FireworkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireworkView.swift; sourceTree = "<group>"; };
 		CE7C98662BC12B1C00FA9646 /* Uttcha.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Uttcha.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE7C98692BC12B1C00FA9646 /* UttchaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UttchaApp.swift; sourceTree = "<group>"; };
@@ -119,6 +125,7 @@
 		CE2E04F12BE5F43B002EC16F /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				CE6A73642C4BA13600E447CC /* Bundle.swift */,
 				CE2E04F22BE5F443002EC16F /* Color.swift */,
 				CEA239802BE8C91D00F157A7 /* Date.swift */,
 				CEA148D82BEA32AB00457F18 /* View.swift */,
@@ -146,6 +153,7 @@
 		CE7C985D2BC12B1C00FA9646 = {
 			isa = PBXGroup;
 			children = (
+				CE6A73622C4BA0F200E447CC /* SecureAPIKeys.plist */,
 				CEAEB4502BE8A5F300C522C1 /* .swiftlint.yml */,
 				CE7C98682BC12B1C00FA9646 /* Uttcha */,
 				CE7C98672BC12B1C00FA9646 /* Products */,
@@ -361,6 +369,7 @@
 			isa = PBXGroup;
 			children = (
 				CEF239AF2C2952E200739EAC /* SmileViewModel.swift */,
+				CE6A735E2C4B9D5B00E447CC /* SpotifyController.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -445,6 +454,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE6A73632C4BA0F200E447CC /* SecureAPIKeys.plist in Resources */,
 				CE2F317B2C26C18D00260D7B /* Preview Assets.xcassets in Resources */,
 				CEAEB4512BE8A5F300C522C1 /* .swiftlint.yml in Resources */,
 				CEDEDA0C2BCD3EED00707EA1 /* smile.json in Resources */,
@@ -480,6 +490,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEF239AC2C292EAF00739EAC /* ContactModel.swift in Sources */,
+				CE6A73652C4BA13600E447CC /* Bundle.swift in Sources */,
 				CEA239812BE8C91D00F157A7 /* Date.swift in Sources */,
 				CE9185D22C4556FA00FA302B /* MemoryModel.swift in Sources */,
 				CE4FFE6A2C338D4F00198F8E /* HapticManager.swift in Sources */,
@@ -493,6 +504,7 @@
 				CEA239792BE8BDE200F157A7 /* CameraOverlayView.swift in Sources */,
 				CE2E04F62BE62FA2002EC16F /* SettingsView.swift in Sources */,
 				CE2E04F32BE5F443002EC16F /* Color.swift in Sources */,
+				CE6A735F2C4B9D5B00E447CC /* SpotifyController.swift in Sources */,
 				CE52C0F42BC185760039C1E1 /* FaceDetector.swift in Sources */,
 				CEB940862BC552E1003D9F7F /* CoreDataStack.swift in Sources */,
 				CEB940882BC66041003D9F7F /* UttchaTapView.swift in Sources */,
