@@ -15,6 +15,7 @@
 		CE4FFE6A2C338D4F00198F8E /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FFE692C338D4F00198F8E /* HapticManager.swift */; };
 		CE52C0F42BC185760039C1E1 /* FaceDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE52C0F32BC185760039C1E1 /* FaceDetector.swift */; };
 		CE52C0F62BC188D70039C1E1 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE52C0F52BC188D70039C1E1 /* CameraViewController.swift */; };
+		CE6A735D2C4B9B8600E447CC /* SpotifyiOS in Frameworks */ = {isa = PBXBuildFile; productRef = CE6A735C2C4B9B8600E447CC /* SpotifyiOS */; };
 		CE7A231D2C3E7C4400CE294F /* FireworkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7A231C2C3E7C4400CE294F /* FireworkView.swift */; };
 		CE7C986A2BC12B1C00FA9646 /* UttchaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7C98692BC12B1C00FA9646 /* UttchaApp.swift */; };
 		CE7C986E2BC12B1E00FA9646 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE7C986D2BC12B1E00FA9646 /* Assets.xcassets */; };
@@ -92,6 +93,7 @@
 				CE4560D62C3690F700AA4CDD /* Kingfisher in Frameworks */,
 				CEB9409D2BC77DBA003D9F7F /* HorizonCalendar in Frameworks */,
 				CEDEDA082BCD3BEF00707EA1 /* Lottie in Frameworks */,
+				CE6A735D2C4B9B8600E447CC /* SpotifyiOS in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,6 +395,7 @@
 				CEB9409C2BC77DBA003D9F7F /* HorizonCalendar */,
 				CEDEDA072BCD3BEF00707EA1 /* Lottie */,
 				CE4560D52C3690F700AA4CDD /* Kingfisher */,
+				CE6A735C2C4B9B8600E447CC /* SpotifyiOS */,
 			);
 			productName = CalendarTest;
 			productReference = CE7C98662BC12B1C00FA9646 /* Uttcha.app */;
@@ -426,6 +429,7 @@
 				CEB9409B2BC77DBA003D9F7F /* XCRemoteSwiftPackageReference "HorizonCalendar" */,
 				CEDEDA062BCD3BEF00707EA1 /* XCRemoteSwiftPackageReference "lottie-spm" */,
 				CE4560D42C3690F700AA4CDD /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				CE6A735B2C4B9B8600E447CC /* XCRemoteSwiftPackageReference "ios-sdk" */,
 			);
 			productRefGroup = CE7C98672BC12B1C00FA9646 /* Products */;
 			projectDirPath = "";
@@ -736,6 +740,14 @@
 				minimumVersion = 7.12.0;
 			};
 		};
+		CE6A735B2C4B9B8600E447CC /* XCRemoteSwiftPackageReference "ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/spotify/ios-sdk.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		CEB9409B2BC77DBA003D9F7F /* XCRemoteSwiftPackageReference "HorizonCalendar" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/airbnb/HorizonCalendar.git";
@@ -759,6 +771,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CE4560D42C3690F700AA4CDD /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
+		};
+		CE6A735C2C4B9B8600E447CC /* SpotifyiOS */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE6A735B2C4B9B8600E447CC /* XCRemoteSwiftPackageReference "ios-sdk" */;
+			productName = SpotifyiOS;
 		};
 		CEB9409C2BC77DBA003D9F7F /* HorizonCalendar */ = {
 			isa = XCSwiftPackageProductDependency;

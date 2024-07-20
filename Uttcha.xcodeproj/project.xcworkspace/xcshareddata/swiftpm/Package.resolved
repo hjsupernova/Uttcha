@@ -1,4 +1,5 @@
 {
+  "originHash" : "d0dad62ed2b85060d8a86f657baa1da1a173171269868288c9b82239914a36df",
   "pins" : [
     {
       "identity" : "horizoncalendar",
@@ -7,6 +8,15 @@
       "state" : {
         "branch" : "master",
         "revision" : "6d6d11a6b304b3ee8703906cbd3eddfd33c784de"
+      }
+    },
+    {
+      "identity" : "ios-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/spotify/ios-sdk.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "8aec6234b78df7b3ea88208b14b07779a9e61f87"
       }
     },
     {
@@ -28,5 +38,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
