@@ -203,6 +203,69 @@ extension CoreDataStack {
     }
 }
 
+// MARK: - Tracks
+
+extension CoreDataStack {
+    func saveTrack(_ track: TrackModel) {
+        let coreDataTrack = Track(context: persistentContainer.viewContext)
+
+        coreDataTrack.trackId = track.id
+        coreDataTrack.trackURI = track.trackURI
+        coreDataTrack.trackName = track.trackName
+        coreDataTrack.trackArtist = track.trackArtist
+        coreDataTrack.trackImageData = track.trackImage
+        coreDataTrack.dateCreated = track.dateCreated
+
+        save()
+    }
+
+    func fetchSavedTracks() -> [TrackModel] {
+        let request = NSFetchRequest<Track>(entityName: "Track")
+        request.sortDescriptors = [NSSortDescriptor(key: "dateCreated", ascending: true)]
+
+        do {
+            let tracks = try persistentContainer.viewContext.fetch(request)
+            print(tracks.count)
+            return tracks.compactMap {
+                if let id = $0.trackId,
+                let uri = $0.trackURI,
+                let name = $0.trackName,
+                let artist = $0.trackArtist,
+                let dateCreated = $0.dateCreated {
+                    return TrackModel(
+                        id: id,
+                        trackURI: uri,
+                        trackName: name,
+                        trackArtist: artist,
+                        trackImage: $0.trackImageData,
+                        dateCreated: dateCreated
+                    )
+                }
+                return nil
+            }
+        } catch {
+            return []
+        }
+    }
+
+    func removeTrack(_ track: TrackModel) {
+        let request = NSFetchRequest<Track>(entityName: "Track")
+        request.predicate = NSPredicate(format: "trackId == %@", track.id as CVarArg)
+
+        do {
+            let tracks = try persistentContainer.viewContext.fetch(request)
+
+            for track in tracks {
+                persistentContainer.viewContext.delete(track)
+
+            }
+            save()
+        } catch {
+            print("Failed to fetch contact to remove : \(error)")
+        }
+    }
+}
+
 // MARK: - Mock Data
 
 func createMockDates() -> [Date] {
