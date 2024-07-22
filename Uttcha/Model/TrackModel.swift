@@ -12,6 +12,6 @@ struct TrackModel: Identifiable {
     let trackURI: String
     let trackName: String
     let trackArtist: String
-    let trackImage: Data? 
+    let trackImage: Data?
     let dateCreated: Date
 }
