@@ -87,31 +87,45 @@ struct TrackListView: View {
 }
 
 struct TrackButton: View {
+    @EnvironmentObject var spotifyController: SpotifyController
+
     let track: TrackModel
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 16)
-                .frame(width: 150, height: 200)
-                .foregroundStyle(Color(uiColor: .systemGray6))
-
-
+        Button {
+            // show player
+        } label: {
             ZStack {
-                if let imageData = track.trackImage,                     let uiImage = UIImage(data: imageData) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFit()
+                RoundedRectangle(cornerRadius: 16)
+                    .frame(width: 150, height: 200)
+                    .foregroundStyle(Color(uiColor: .systemGray6))
+
+                ZStack {
+                    if let imageData = track.trackImage,                     let uiImage = UIImage(data: imageData) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFit()
+                    }
+
+                    VStack {
+                        Text(track.trackName)
+                        Text(track.trackArtist)
+
+                    }
                 }
 
-                VStack {
-                    Text(track.trackName)
-                    Text(track.trackArtist)
-
+            }
+        }
+        .supportsLongPress { 
+            spotifyController.perform(action: .trackLongPressed(track))
+        }
+        .confirmationDialog("삭제하기", isPresented: $spotifyController.isShowingTrackRemoveConfirmationDialog) {
+            Button("이미지 삭제", role: .destructive) {
+                withAnimation {
+                    spotifyController.perform(action: .trackRemoveButtonTapped)
                 }
             }
-
         }
-        .supportsLongPress { }
     }
 }
 

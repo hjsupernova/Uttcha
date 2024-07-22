@@ -12,11 +12,14 @@ import SpotifyiOS
 
 enum SpotifyControllerAction {
     case addTrackButtonTapped
+    case trackLongPressed(TrackModel)
+    case trackRemoveButtonTapped
 }
 
 class SpotifyController: NSObject, ObservableObject {
     // MARK: - Publishers
     @Published private(set) var tracks: [TrackModel] = []
+    @Published var isShowingTrackRemoveConfirmationDialog: Bool = false
 
     // MARK: - Private properties
     static private let kAccessTokenKey = "access-token-key"
@@ -45,9 +48,13 @@ class SpotifyController: NSObject, ObservableObject {
         return appRemote
     }()
 
+    // MARK: - Public properties
+    var longPressedTrack: TrackModel?
+
     // MARK: - Initializer
     override init() {
         super.init()
+        fetchSavedTracks()
 
         connectCancellable = NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
             .receive(on: DispatchQueue.main)
@@ -67,6 +74,10 @@ class SpotifyController: NSObject, ObservableObject {
         switch action {
         case .addTrackButtonTapped:
             ensureSpotifyConnection()
+        case .trackLongPressed(let track):
+            showTrackRemoveActionSheet(track)
+        case .trackRemoveButtonTapped:
+            removeLongPressedTrack()
         }
     }
 
@@ -90,6 +101,20 @@ class SpotifyController: NSObject, ObservableObject {
             self.accessToken = accessToken
         } else if let errorDescription = parameters?[SPTAppRemoteErrorDescriptionKey] {
             print(errorDescription)
+        }
+    }
+
+    private func showTrackRemoveActionSheet(_ track: TrackModel) {
+        HapticManager.impact(style: .medium)
+        longPressedTrack = track
+        isShowingTrackRemoveConfirmationDialog = true
+    }
+
+    private func removeLongPressedTrack() {
+        if let longPressedTrack {
+            CoreDataStack.shared.removeTrack(longPressedTrack)
+
+            fetchSavedTracks()
         }
     }
 
@@ -119,6 +144,10 @@ extension SpotifyController {
         if let url = URL(string: "spotify://"), UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.open(url)
         }
+    }
+
+    private func fetchSavedTracks() {
+        tracks = CoreDataStack.shared.fetchSavedTracks()
     }
 }
 
@@ -175,14 +204,15 @@ extension SpotifyController: SPTAppRemotePlayerStateDelegate {
                 trackImage: trackImage,
                 dateCreated: Date.now
             )
-            
-            self.addTrackToList(track)
+
+            self.saveTrack(track)
         }
     }
 
-    private func addTrackToList(_ track: TrackModel) {
-        tracks.append(track)
+    private func saveTrack(_ track: TrackModel) {
+        CoreDataStack.shared.saveTrack(track)
+
+        fetchSavedTracks()
         isAddButtonTapped = false
     }
 }
-
