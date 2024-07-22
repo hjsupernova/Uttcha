@@ -28,6 +28,13 @@ struct SmileView: View {
                     MemoryListView(smileViewModel: smileViewModel)
                 }
                 .padding(.horizontal)
+
+                VStack(alignment: .leading) {
+                    HeaderView(label: "음악")
+
+                    TrackListView()
+                }
+                .padding(.horizontal)
             }
             .navigationTitle("웃자")
             .navigationBarTitleDisplayMode(.inline)
@@ -53,6 +60,77 @@ struct SmileView: View {
                     }
                 }
             }
+        }
+    }
+}
+
+// MARK: - Track
+
+struct TrackListView: View {
+    @EnvironmentObject var spotifyController: SpotifyController
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 10) {
+                if spotifyController.tracks.isEmpty {
+                    AddTrackButton()
+                } else {
+                    ForEach(spotifyController.tracks) { track in
+                        TrackButton(track: track)
+                    }
+
+                    AddTrackButton()
+                }
+            }
+        }
+    }
+}
+
+struct TrackButton: View {
+    let track: TrackModel
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 16)
+                .frame(width: 150, height: 200)
+                .foregroundStyle(Color(uiColor: .systemGray6))
+
+
+            ZStack {
+                if let imageData = track.trackImage,                     let uiImage = UIImage(data: imageData) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFit()
+                }
+
+                VStack {
+                    Text(track.trackName)
+                    Text(track.trackArtist)
+
+                }
+            }
+
+        }
+        .supportsLongPress { }
+    }
+}
+
+struct AddTrackButton: View {
+    @EnvironmentObject var spotifyController: SpotifyController
+
+    var body: some View {
+        Button {
+            spotifyController.perform(action: .addTrackButtonTapped)
+        } label: {
+            ZStack {
+                RoundedRectangle(cornerRadius: 16)
+                    .strokeBorder(style: StrokeStyle(lineWidth: 4, dash: [10]))
+                    .frame(width: 150, height: 200)
+
+                Image(systemName: "plus")
+                    .font(.title).bold()
+            }
+            .foregroundStyle(Color(uiColor: .systemGray6))
         }
     }
 }

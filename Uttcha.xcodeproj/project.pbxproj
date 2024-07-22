@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CE08CF7D2C412D0F001EF477 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE08CF7C2C412D0F001EF477 /* SettingsViewModel.swift */; };
+		CE1BF9FC2C4E3AD3007DD772 /* TrackModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1BF9FB2C4E3AD3007DD772 /* TrackModel.swift */; };
 		CE2E04F32BE5F443002EC16F /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2E04F22BE5F443002EC16F /* Color.swift */; };
 		CE2E04F62BE62FA2002EC16F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2E04F52BE62FA2002EC16F /* SettingsView.swift */; };
 		CE2F317B2C26C18D00260D7B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE2F317A2C26C18D00260D7B /* Preview Assets.xcassets */; };
@@ -52,6 +53,7 @@
 
 /* Begin PBXFileReference section */
 		CE08CF7C2C412D0F001EF477 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		CE1BF9FB2C4E3AD3007DD772 /* TrackModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackModel.swift; sourceTree = "<group>"; };
 		CE2E04F22BE5F443002EC16F /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		CE2E04F52BE62FA2002EC16F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		CE2F317A2C26C18D00260D7B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -355,6 +357,7 @@
 				CEB940812BC552B6003D9F7F /* Model.xcdatamodeld */,
 				CEF239AB2C292EAF00739EAC /* ContactModel.swift */,
 				CE9185D12C4556FA00FA302B /* MemoryModel.swift */,
+				CE1BF9FB2C4E3AD3007DD772 /* TrackModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -505,6 +508,7 @@
 				CEA148D42BE9AF7D00457F18 /* NotificationManager.swift in Sources */,
 				CEA239792BE8BDE200F157A7 /* CameraOverlayView.swift in Sources */,
 				CE2E04F62BE62FA2002EC16F /* SettingsView.swift in Sources */,
+				CE1BF9FC2C4E3AD3007DD772 /* TrackModel.swift in Sources */,
 				CE2E04F32BE5F443002EC16F /* Color.swift in Sources */,
 				CE6A735F2C4B9D5B00E447CC /* SpotifyController.swift in Sources */,
 				CE52C0F42BC185760039C1E1 /* FaceDetector.swift in Sources */,

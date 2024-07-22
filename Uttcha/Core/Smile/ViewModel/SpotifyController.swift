@@ -10,23 +10,45 @@ import Foundation
 
 import SpotifyiOS
 
+enum SpotifyControllerAction {
+    case addTrackButtonTapped
+}
+
 class SpotifyController: NSObject, ObservableObject {
+    // MARK: - Publishers
+    @Published private(set) var tracks: [TrackModel] = []
+
+    // MARK: - Private properties
     static private let kAccessTokenKey = "access-token-key"
-    let spotifyClientID = Bundle.main.spotifyClientID
-    let spotifyRedirectURL = URL(string:"spotify-ios-quick-start://spotify-login-callback")!
-    var accessToken = UserDefaults.standard.string(forKey: kAccessTokenKey) {
+    private let spotifyClientID = Bundle.main.spotifyClientID
+    private let spotifyRedirectURL = URL(string:"spotify-ios-quick-start://spotify-login-callback")!
+    private var accessToken = UserDefaults.standard.string(forKey: kAccessTokenKey) {
         didSet {
             let defaults = UserDefaults.standard
             defaults.setValue(accessToken, forKey: SpotifyController.kAccessTokenKey)
         }
     }
-    var playURI = ""
+    private var isAddButtonTapped = false
 
     private var connectCancellable: AnyCancellable?
     private var disconnectCancellable: AnyCancellable?
 
+    private lazy var configuration = SPTConfiguration(
+        clientID: spotifyClientID,
+        redirectURL: spotifyRedirectURL
+    )
+
+    private lazy var appRemote: SPTAppRemote = {
+        let appRemote = SPTAppRemote(configuration: configuration, logLevel: .debug)
+        appRemote.connectionParameters.accessToken = self.accessToken
+        appRemote.delegate = self
+        return appRemote
+    }()
+
+    // MARK: - Initializer
     override init() {
         super.init()
+
         connectCancellable = NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
             .receive(on: DispatchQueue.main)
             .sink { _ in
@@ -40,17 +62,25 @@ class SpotifyController: NSObject, ObservableObject {
             }
     }
 
-    lazy var configuration = SPTConfiguration(
-        clientID: spotifyClientID,
-        redirectURL: spotifyRedirectURL
-    )
+    // MARK: - Actions
+    func perform(action: SpotifyControllerAction) {
+        switch action {
+        case .addTrackButtonTapped:
+            ensureSpotifyConnection()
+        }
+    }
 
-    lazy var appRemote: SPTAppRemote = {
-        let appRemote = SPTAppRemote(configuration: configuration, logLevel: .debug)
-        appRemote.connectionParameters.accessToken = self.accessToken
-        appRemote.delegate = self
-        return appRemote
-    }()
+    // MARK: - Action Handlers
+
+    private func ensureSpotifyConnection() {
+        if !appRemote.isConnected {
+            authorize()
+        } else {
+            open()
+        }
+
+        isAddButtonTapped = true
+    }
 
     func setAccessToken(from url: URL) {
         let parameters = appRemote.authorizationParameters(from: url)
@@ -61,10 +91,6 @@ class SpotifyController: NSObject, ObservableObject {
         } else if let errorDescription = parameters?[SPTAppRemoteErrorDescriptionKey] {
             print(errorDescription)
         }
-    }
-
-    func authorize() {
-        self.appRemote.authorizeAndPlayURI("")
     }
 
     func connect() {
@@ -80,14 +106,23 @@ class SpotifyController: NSObject, ObservableObject {
             appRemote.disconnect()
         }
     }
+}
 
-    func open() {
-        if let url = URL(string: "spotify://"),             UIApplication.shared.canOpenURL(url) {
+// MARK: - Private instance methods
+
+extension SpotifyController {
+    private func authorize() {
+        self.appRemote.authorizeAndPlayURI("")
+    }
+
+    private func open() {
+        if let url = URL(string: "spotify://"), UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.open(url)
         }
     }
 }
 
+// MARK: - Delegates
 extension SpotifyController: SPTAppRemoteDelegate {
     func appRemoteDidEstablishConnection(_ appRemote: SPTAppRemote) {
         self.appRemote = appRemote
@@ -112,5 +147,42 @@ extension SpotifyController: SPTAppRemoteDelegate {
 
 extension SpotifyController: SPTAppRemotePlayerStateDelegate {
     func playerStateDidChange(_ playerState: SPTAppRemotePlayerState) {
+        guard isAddButtonTapped else { return }
+
+        let track = playerState.track
+        fetchImageAndAddTrack(for: track)
+    }
+
+    private func fetchImageAndAddTrack(for track: SPTAppRemoteTrack) {
+        let imageSize = CGSize(width: 300, height: 300)
+
+        appRemote.imageAPI?.fetchImage(forItem: track, with: imageSize) { [weak self] (image, error) in
+            guard let self = self else { return }
+
+            var trackImage: Data? = nil
+
+            if let error = error {
+                print("Error fetching track image: \(error.localizedDescription)")
+            } else if let image = image as? UIImage {
+                trackImage = image.jpegData(compressionQuality: 0.5)
+            }
+
+            let track = TrackModel(
+                id: UUID(),
+                trackURI: track.uri,
+                trackName: track.name,
+                trackArtist: track.artist.name,
+                trackImage: trackImage,
+                dateCreated: Date.now
+            )
+            
+            self.addTrackToList(track)
+        }
+    }
+
+    private func addTrackToList(_ track: TrackModel) {
+        tracks.append(track)
+        isAddButtonTapped = false
     }
 }
+
