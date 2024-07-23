@@ -11,6 +11,7 @@ import Foundation
 import SpotifyiOS
 
 enum SpotifyControllerAction {
+    case tapTrackButton(TrackModel)
     case addTrackButtonTapped
     case trackLongPressed(TrackModel)
     case trackRemoveButtonTapped
@@ -72,6 +73,8 @@ class SpotifyController: NSObject, ObservableObject {
     // MARK: - Actions
     func perform(action: SpotifyControllerAction) {
         switch action {
+        case .tapTrackButton(let track):
+            open()
         case .addTrackButtonTapped:
             ensureSpotifyConnection()
         case .trackLongPressed(let track):
@@ -82,7 +85,6 @@ class SpotifyController: NSObject, ObservableObject {
     }
 
     // MARK: - Action Handlers
-
     private func ensureSpotifyConnection() {
         if !appRemote.isConnected {
             authorize()

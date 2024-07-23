@@ -93,7 +93,7 @@ struct TrackButton: View {
 
     var body: some View {
         Button {
-            // show player
+            spotifyController.perform(action: .tapTrackButton(track))
         } label: {
             ZStack {
                 RoundedRectangle(cornerRadius: 16)
