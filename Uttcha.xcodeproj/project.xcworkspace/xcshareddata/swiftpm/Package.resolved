@@ -1,4 +1,5 @@
 {
+  "originHash" : "853a04fbc805d10b2681b81f9455624d64066c1cd432ac44d6c026a2c2c287b0",
   "pins" : [
     {
       "identity" : "horizoncalendar",
@@ -28,5 +29,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
