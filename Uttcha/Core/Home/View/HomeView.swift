@@ -22,7 +22,6 @@ struct HomeView: View {
                 )
                 .padding([.horizontal, .bottom])
 
-                
                 CameraButton(cameraViewModel: cameraViewModel, homeViewModel: homeViewModel)
 
                 Spacer()
@@ -31,7 +30,7 @@ struct HomeView: View {
                 NavigationLink {
                     SettingsView()
                 } label: {
-                    Image(systemName: "bell.fill")
+                    Image(systemName: "list.bullet")
                 }
             }
         }
