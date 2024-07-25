@@ -51,7 +51,7 @@ struct PhotoDetailView: View {
                     .onAppear {
                         text = photo.memo ?? ""
                     }
-                    .onChange(of: text) { _, _ in
+                    .onChange(of: text) { _ in
                         photo.memo = text
                     }
                 }

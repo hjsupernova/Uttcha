@@ -1,5 +1,5 @@
 {
-  "originHash" : "853a04fbc805d10b2681b81f9455624d64066c1cd432ac44d6c026a2c2c287b0",
+  "originHash" : "c2e225c5e29aaac92b8830f9356510f6569d67e1845c89ce926a3d6ee0127bcf",
   "pins" : [
     {
       "identity" : "horizoncalendar",
@@ -7,7 +7,7 @@
       "location" : "https://github.com/airbnb/HorizonCalendar.git",
       "state" : {
         "branch" : "master",
-        "revision" : "6d6d11a6b304b3ee8703906cbd3eddfd33c784de"
+        "revision" : "87b81e27dfa78662b2bd9918e3fd8bec9a6a9452"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/airbnb/lottie-spm.git",
       "state" : {
-        "revision" : "4d0c11c85f5a9ec3d1b0daf2dc6daebc0e2df897",
-        "version" : "4.4.2"
+        "revision" : "b842598f1295f3ffa1475b1580672d1fe5b83580",
+        "version" : "4.5.0"
       }
     }
   ],

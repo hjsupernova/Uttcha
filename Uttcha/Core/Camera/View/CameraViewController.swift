@@ -62,7 +62,7 @@ class CameraViewController: UIViewController {
                         changePrivacySetting,
                         comment: "Alert message when the user has denied access to the camera"
                     )
-                    let alertController = UIAlertController(title: "Uttcha", message: message, preferredStyle: .alert)
+                    let alertController = UIAlertController(title: "웃자", message: message, preferredStyle: .alert)
 
                     alertController.addAction(UIAlertAction(title: NSLocalizedString("취소", comment: "Alert OK button"),
                                                             style: .cancel,
@@ -84,7 +84,7 @@ class CameraViewController: UIViewController {
                 DispatchQueue.main.async {
                     let alertMsg = "Alert message when something goes wrong during capture session configuration"
                     let message = NSLocalizedString("카메라 사용이 불가능합니다.", comment: alertMsg)
-                    let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
+                    let alertController = UIAlertController(title: "웃자", message: message, preferredStyle: .alert)
 
                     alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"),
                                                             style: .cancel,
@@ -118,12 +118,7 @@ class CameraViewController: UIViewController {
     private let session = AVCaptureSession()
     private var isSessionRunning = false
 
-    private let sessionQueue = DispatchSerialQueue(
-        label: "session queue",
-        qos: .userInitiated,
-        attributes: [],
-        autoreleaseFrequency: .workItem
-    )
+    private let sessionQueue = DispatchQueue(label: "session queue")
 
     private var setupResult: SessionSetupResult = .success
     
