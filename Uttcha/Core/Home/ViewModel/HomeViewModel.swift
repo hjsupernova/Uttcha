@@ -36,6 +36,7 @@ final class HomeViewModel: ObservableObject {
     @Published private(set) var fireworkTrigger = 0
     @Published private(set) var fireworkConfiguration: FireworkConfig = FireworkConfig()
     @Published var presentedSheet: Sheet?
+    @Published var selectedPhoto: Photo?
 
     // MARK: - Private properties
     private var visualizedMonths: Set<DateComponents> = []
@@ -57,7 +58,7 @@ final class HomeViewModel: ObservableObject {
         case .photoRemoveButtonTapped(let photo):
             removePhoto(photo)
         case .saveButtonTapped:
-            fetchPhotos(in: yearMonthComponents(from: Date()))
+            fetchTodayPhoto()
             NotificationManager.cancelNotificationFor(Date.now)
             triggerFireworks()
         case .userScroll(let lowerBound, let upperBound):
@@ -86,6 +87,26 @@ final class HomeViewModel: ObservableObject {
     private func removePhoto(_ photo: Photo) {
         CoreDataStack.shared.removePhoto(photo)
         photos.remove(photo)
+    }
+
+    private func fetchTodayPhoto() {
+        CoreDataStack.shared.fetchTodayPhoto { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+
+                switch result {
+                case .success(let newPhoto):
+                    guard let newPhoto = newPhoto else {
+                        print("No photo found for today")
+                        return
+                    }
+                    self.photos.insert(newPhoto)
+                case .failure(let error):
+                    print("Error fetching today's photo: \(error)")
+                    // Handle error (e.g., show an alert to the user)
+                }
+            }
+        }
     }
 
     private func fetchPhotos(in month: DateComponents) {

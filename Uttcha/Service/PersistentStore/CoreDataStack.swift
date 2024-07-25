@@ -52,6 +52,36 @@ extension CoreDataStack {
         save()
     }
 
+    func fetchTodayPhoto(completion: @escaping (Result<Photo?, Error>) -> Void) {
+        let request = NSFetchRequest<Photo>(entityName: "Photo")
+        request.sortDescriptors = [NSSortDescriptor(key: "dateCreated", ascending: false)]  // Latest first
+        request.fetchLimit = 1  // Limit to one photo
+
+        let calendar = Calendar.current
+        let now = Date()
+
+        // Create start and end of today
+
+        let startOfDay = calendar.startOfDay(for: now)
+        guard let endOfDay = calendar.date(byAdding: DateComponents(day: 1, second: -1), to: startOfDay) else {
+            completion(.failure(NSError(domain: "DateError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not create date range for today"])))
+            return
+        }
+
+        // Create the predicate
+        request.predicate = NSPredicate(format: "dateCreated >= %@ AND dateCreated <= %@",
+                                        startOfDay as NSDate,
+                                        endOfDay as NSDate)
+
+        do {
+            let results = try persistentContainer.viewContext.fetch(request)
+            completion(.success(results.first))
+        } catch {
+            print("Error fetching today's photo: \(error)")
+            completion(.failure(error))
+        }
+    }
+
     func fetchPhotos(for monthComponents: DateComponents) -> [Photo] {
         let request = NSFetchRequest<Photo>(entityName: "Photo")
         request.sortDescriptors = [NSSortDescriptor(key: "dateCreated", ascending: true)]

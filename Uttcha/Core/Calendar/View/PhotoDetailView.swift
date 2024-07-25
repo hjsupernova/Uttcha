@@ -10,7 +10,6 @@ import SwiftUI
 struct PhotoDetailView: View {
     @ObservedObject var homeViewModel: HomeViewModel
 
-    @Binding var selectedPhoto: Photo?
     @Environment(\.dismiss) var dismiss
     @FocusState var inFocus: Int?
     @State private var text: String = ""
@@ -18,7 +17,7 @@ struct PhotoDetailView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if let photo = selectedPhoto,
+                if let photo = homeViewModel.selectedPhoto,
                    let imageData = photo.imageData,
                    let uiImage = UIImage(data: imageData) {
                     ScrollViewReader { sp in
@@ -64,7 +63,7 @@ struct PhotoDetailView: View {
                         Button(role: .destructive) {
                             dismiss()
 
-                            if let selectedPhoto = selectedPhoto {
+                            if let selectedPhoto = homeViewModel.selectedPhoto {
                                 homeViewModel.perform(action: .photoRemoveButtonTapped(selectedPhoto))
                             }
 
@@ -81,7 +80,7 @@ struct PhotoDetailView: View {
                 }
 
                 ToolbarItem(placement: .principal) {
-                    Text(selectedPhoto?.dateCreated?.string(withFormat: "M월 d일 HH:mm") ?? "")
+                    Text(homeViewModel.selectedPhoto?.dateCreated?.string(withFormat: "M월 d일 HH:mm") ?? "")
                 }
             }
         }
@@ -104,6 +103,6 @@ struct PhotoDetailView: View {
           return photo
       }()
 
-    return PhotoDetailView(homeViewModel: HomeViewModel(), selectedPhoto: $samplePhoto)
+    return PhotoDetailView(homeViewModel: HomeViewModel())
         .environment(\.managedObjectContext, context)
 }
