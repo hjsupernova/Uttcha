@@ -69,8 +69,8 @@ struct CameraButton: View {
                 .disabled(homeViewModel.isCameraButtonDisabled)
             }
         }
-        .onChange(of: scenePhase) { _, phase in
-            if phase == .active {
+        .onChange(of: scenePhase) { _ in
+            if scenePhase == .active {
                 homeViewModel.perform(action: .appDidBecomeActive)
             }
         }

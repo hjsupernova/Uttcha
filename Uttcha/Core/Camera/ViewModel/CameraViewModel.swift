@@ -36,12 +36,12 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var smileProgress = 0.0
     @Published var neededFaceCount: Int = 1
     @Published var isShowingCameraView = false
-    @Published var facePhoto: UIImage?
+    @Published var isShowingPhotoPreviewView = false
 
     // MARK: - Pirvate Properties
     private var hasDetectedEnoughFaces: Bool = false
     private(set) var cameraInstructionText: String = "웃어봐요 😊"
-
+    private(set) var facePhoto: UIImage?
     private var timer: AnyCancellable?
     private var isTimerRunning: Bool = false
     private var hasTriggeredStartSmileHaptic = false
@@ -98,12 +98,14 @@ final class CameraViewModel: ObservableObject {
         CoreDataStack.shared.savePhoto(photo)
 
         facePhoto = nil
+        isShowingPhotoPreviewView = false
         dismissCamera()
     }
 
     private func updatePreviewPhoto(_ photo: UIImage) {
         DispatchQueue.main.async { [self] in
             facePhoto = photo
+            isShowingPhotoPreviewView = true
         }
     }
 
