@@ -15,19 +15,21 @@ struct SmileView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading) {
-                    HeaderView(label: "소중한 사람")
+                VStack(spacing: 12) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        HeaderView(label: "연락하기")
 
-                    ContactListView(smileViewModel: smileViewModel)
+                        ContactListView(smileViewModel: smileViewModel)
+                    }
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        HeaderView(label: "추억보기")
+
+                        MemoryListView(smileViewModel: smileViewModel)
+                    }
                 }
                 .padding(.horizontal)
 
-                VStack(alignment: .leading) {
-                    HeaderView(label: "소중한 추억")
-
-                    MemoryListView(smileViewModel: smileViewModel)
-                }
-                .padding(.horizontal)
             }
             .navigationTitle("웃자")
             .navigationBarTitleDisplayMode(.inline)

@@ -22,7 +22,6 @@ struct SmileCalendar: View {
     private let monthDateFormatter: DateFormatter
     private let dayNames = ["일", "월", "화", "수", "목", "금", "토"]
 
-    @State private var selectedPhoto: Photo?
     @Binding var isShowingCamera: Bool
 
     init(homeViewModel: HomeViewModel, calendar: Calendar, monthsLayout: MonthsLayout, isShowingCamera: Binding<Bool>) {
@@ -121,7 +120,7 @@ struct SmileCalendar: View {
                     guard let photoDate = photoItem.dateCreated else { return false }
                     return calendar.isDate(photoDate, inSameDayAs: calendarDate)
                 }) {
-                    selectedPhoto = photo
+                    homeViewModel.selectedPhoto = photo
                     homeViewModel.perform(action: .photoTapped)
                 } else if calendar.isDateInToday(calendarDate) {
                     isShowingCamera = true
@@ -135,10 +134,7 @@ struct SmileCalendar: View {
         .sheet(item: $homeViewModel.presentedSheet) { sheet in
             switch sheet {
             case .photoDetail:
-                PhotoDetailView(
-                    homeViewModel: homeViewModel,
-                    selectedPhoto: $selectedPhoto
-                )
+                PhotoDetailView(homeViewModel: homeViewModel)
             case .monthsAvailable:
                 MonthsAvailable(calendarViewProxy: calendarViewProxy,
                                 homeViewModel: homeViewModel,
