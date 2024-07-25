@@ -22,11 +22,8 @@ struct HomeView: View {
                 )
                 .padding([.horizontal, .bottom])
 
-                ZStack {
-                    CameraButton(cameraViewModel: cameraViewModel, homeViewModel: homeViewModel)
-
-                    FireworkView(homeViewModel: homeViewModel)
-                }
+                
+                CameraButton(cameraViewModel: cameraViewModel, homeViewModel: homeViewModel)
 
                 Spacer()
             }
