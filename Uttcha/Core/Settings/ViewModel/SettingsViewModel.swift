@@ -105,7 +105,7 @@ enum NotificationTimeOption: String, CaseIterable {
         case .afternoon:
             "오후 (12:00 ~ 18:00)"
         case .night:
-            "저녁 (18:00 ~ 22:00) "
+            "저녁 (18:00 ~ 22:00)"
         }
     }
 

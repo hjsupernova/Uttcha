@@ -13,25 +13,27 @@ struct UttchaApp: App {
     private var coreDataStack = CoreDataStack.shared
     @AppStorage(UserDefaultsKeys.isNotificationOn) var isNotificationOn = false
     @AppStorage(UserDefaultsKeys.selectedTimeOption) var selectedTimeOption = NotificationTimeOption.day
+    @Environment(\.scenePhase) var scenePhase
 
     var body: some Scene {
         WindowGroup {
             UttchaTapView()
+                .preferredColorScheme(.dark)
+                .tint(.white)
                 .environment(\.managedObjectContext, coreDataStack.persistentContainer.viewContext)
                 .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
                     coreDataStack.save()
                 }
                 .onAppear {
-                    if isNotificationOn {
-                        NotificationManager.scheduleNotificationsIfNeeded(notificationTimeOption: selectedTimeOption)
-                    }
-
                     if UserDefaults.standard.object(forKey: UserDefaultsKeys.firstLaunchDate) == nil {
                         UserDefaults.standard.set(Date(), forKey: UserDefaultsKeys.firstLaunchDate)
                     }
                 }
-                .preferredColorScheme(.dark)
-                .tint(.white)
+        }
+        .onChange(of: scenePhase) { newScenePhase in
+            if newScenePhase == .active {
+                NotificationManager.scheduleNotificationsIfNeeded(notificationTimeOption: selectedTimeOption)
+            }
         }
     }
 }
