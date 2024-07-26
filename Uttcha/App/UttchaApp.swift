@@ -29,7 +29,6 @@ struct UttchaApp: App {
                     if UserDefaults.standard.object(forKey: UserDefaultsKeys.firstLaunchDate) == nil {
                         UserDefaults.standard.set(Date(), forKey: UserDefaultsKeys.firstLaunchDate)
                     }
-
                 }
                 .preferredColorScheme(.dark)
                 .tint(.white)

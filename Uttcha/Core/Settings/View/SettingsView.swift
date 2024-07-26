@@ -45,6 +45,17 @@ struct NotificationSettingsSection: View {
             NotificaitonOptionsSheet(settingsViewModel: settingsViewModel)
                 .presentationDetents([.medium])
         }
+        .alert("웃자", isPresented: $settingsViewModel.isShowingNotificationAuthorizationSettingAlert) {
+            Button("취소", role: .cancel) { }
+            Button("설정으로 이동") {
+                UIApplication.shared.open(
+                    URL(string: UIApplication.openSettingsURLString)!,
+                    options: [:],
+                    completionHandler: nil)
+            }
+        } message: {
+            Text("앱에 알림 권한이 없습니다. 설정을 변경해주세요.")
+        }
     }
 }
 
@@ -94,20 +105,6 @@ struct NotificaitonOptionsSheet: View {
         }
         .padding()
         .interactiveDismissDisabled()
-        .alert("Uttcha", isPresented: $settingsViewModel.isShowingNotificationAuthorizationSettingAlert) {
-            Button("취소", role: .cancel) { }
-            Button("설정으로 이동") {
-                UIApplication.shared.open(
-                    URL(string: UIApplication.openSettingsURLString)!,
-                    options: [:],
-                    completionHandler: nil)
-            }
-        } message: {
-            Text("앱에 알림 권한이 없습니다. 설정을 변경해주세요.")
-        }
-        .onAppear {
-            settingsViewModel.perform(action: .onOptionSheetAppear)
-        }
     }
 }
 

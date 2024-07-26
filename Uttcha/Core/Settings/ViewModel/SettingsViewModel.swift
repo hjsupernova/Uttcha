@@ -44,23 +44,44 @@ final class SettingsViewModel: ObservableObject {
 
     private func schduleNotifications() {
         NotificationManager.scheduleNotifications(notificationTimeOption: selectedTimeOption)
-        isNotificationOn = true
     }
 
-    private func requestNotificationAuthorization() {
-        NotificationManager.requestNotificationAuthorization { success in
-            if !success {
-                self.isShowingNotificationAuthorizationSettingAlert = true
-            }
-        }
-
-    }
     // MARK: - Private instance methods
     private func handleNotificationToggle() {
         if isNotificationOn {
-            showNotificationOptions()
+            UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    switch settings.authorizationStatus {
+                    case .notDetermined:
+                        self.requestAuthorization()
+                    case .denied:
+                        self.isShowingNotificationAuthorizationSettingAlert = true
+                        self.isNotificationOn = false
+                    case .authorized, .provisional:
+                        self.showNotificationOptions()
+                    default:
+                        break
+                    }
+                }
+            }
         } else {
-            resetNotificationSettings()
+            resetNotificationOptions()
+            NotificationManager.cancelAllNotifications()
+        }
+    }
+
+    private func requestAuthorization() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, _ in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                if granted {
+                    self.showNotificationOptions()
+                } else {
+                    self.isShowingNotificationAuthorizationSettingAlert = true
+                    self.isNotificationOn = false
+                }
+            }
         }
     }
 
@@ -68,11 +89,9 @@ final class SettingsViewModel: ObservableObject {
         isShowingNotificationOptionsSheet = true
     }
 
-    private func resetNotificationSettings() {
+    private func resetNotificationOptions() {
         selectedTimeOption = .day
-        NotificationManager.cancelAllNotifications()
     }
-
 }
 
 enum NotificationTimeOption: String, CaseIterable {
