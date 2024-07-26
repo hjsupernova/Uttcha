@@ -108,6 +108,19 @@ enum NotificationTimeOption: String, CaseIterable {
             "저녁 (18:00 ~ 22:00) "
         }
     }
+
+    var timeRange: (start: Int, end: Int) {
+        switch self {
+        case .day:
+            (8, 22)
+        case .morning:
+            (8, 12)
+        case .afternoon:
+            (12, 18)
+        case .night:
+            (18, 22)
+        }
+    }
 }
 
 struct UserDefaultsKeys {
