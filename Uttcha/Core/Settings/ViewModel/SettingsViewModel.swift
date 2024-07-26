@@ -11,7 +11,6 @@ import SwiftUI
 enum SettingsViewModelAction {
     case dismissOptionSheetWithoutTurningOn
     case scheduleNotifications
-    case onOptionSheetAppear
 }
 
 final class SettingsViewModel: ObservableObject {
@@ -22,7 +21,6 @@ final class SettingsViewModel: ObservableObject {
     }
     @AppStorage(UserDefaultsKeys.isShowingNotificationOptionsSheet) var isShowingNotificationOptionsSheet = false
     @AppStorage(UserDefaultsKeys.selectedTimeOption) var selectedTimeOption = NotificationTimeOption.day
-
     @Published var isShowingNotificationAuthorizationSettingAlert = false
 
     // MARK: - Actions
@@ -32,8 +30,6 @@ final class SettingsViewModel: ObservableObject {
             turnOffNotificationToggle()
         case .scheduleNotifications:
             schduleNotifications()
-        case .onOptionSheetAppear:
-            break
         }
     }
 
