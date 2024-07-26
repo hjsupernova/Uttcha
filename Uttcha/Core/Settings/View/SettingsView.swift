@@ -74,16 +74,7 @@ struct NotificaitonOptionsSheet: View {
 
             Picker("", selection: $settingsViewModel.selectedTimeOption) {
                 ForEach(NotificationTimeOption.allCases, id: \.self) { option in
-                    switch option {
-                    case .day:
-                        Text(option.rawValue + " (08:00 ~ 22:00)")
-                    case .morning:
-                        Text(option.rawValue + " (08:00 ~ 12:00)")
-                    case .afternoon:
-                        Text(option.rawValue + " (12:00 ~ 18:00)")
-                    case .night:
-                        Text(option.rawValue + " (18:00 ~ 22:00)")
-                    }
+                    Text(option.label)
                 }
             }
             .labelsHidden()
