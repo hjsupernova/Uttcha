@@ -10,10 +10,11 @@ import SwiftUI
 
 @main
 struct UttchaApp: App {
-    private var coreDataStack = CoreDataStack.shared
     @AppStorage(UserDefaultsKeys.isNotificationOn) var isNotificationOn = false
     @AppStorage(UserDefaultsKeys.selectedTimeOption) var selectedTimeOption = NotificationTimeOption.day
     @Environment(\.scenePhase) var scenePhase
+
+    private var coreDataStack = CoreDataStack.shared
 
     var body: some Scene {
         WindowGroup {
@@ -31,7 +32,7 @@ struct UttchaApp: App {
                 }
         }
         .onChange(of: scenePhase) { newScenePhase in
-            if newScenePhase == .active {
+            if newScenePhase == .active && isNotificationOn {
                 NotificationManager.scheduleNotificationsIfNeeded(notificationTimeOption: selectedTimeOption)
             }
         }
