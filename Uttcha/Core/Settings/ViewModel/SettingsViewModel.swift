@@ -68,7 +68,7 @@ final class SettingsViewModel: ObservableObject {
     }
 
     private func requestAuthorization() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, _ in
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { [weak self] granted, _ in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 if granted {
@@ -128,4 +128,5 @@ struct UserDefaultsKeys {
     static let isShowingNotificationOptionsSheet = "isShowingNotificationOptionsSheet"
     static let selectedTimeOption = "selectedTimeOption"
     static let firstLaunchDate = "firstLaunchDate"
+    static let hasTakenFirstPhoto = "hasTakenFirstPhoto"
 }

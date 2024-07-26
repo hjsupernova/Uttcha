@@ -55,12 +55,12 @@ final class HomeViewModel: ObservableObject {
             showMonthsSheet()
         case .photoTapped:
             showDetailView()
+            setupNotificationsIfFirstPhoto()
         case .photoRemoveButtonTapped(let photo):
             removePhoto(photo)
         case .saveButtonTapped:
             fetchTodayPhoto()
             NotificationManager.cancelNotificationFor(Date.now)
-            triggerFireworks()
         case .userScroll(let lowerBound, let upperBound):
             fetchPhotosOnScrollIfNeeded(lowerBound: yearMonthComponents(from: lowerBound),
                                          upperBound: yearMonthComponents(from: upperBound))
@@ -127,7 +127,7 @@ final class HomeViewModel: ObservableObject {
             visualizedMonths.insert(upperBound)
         }
     }
-    
+
     private func triggerFireworks() {
         fireworkTrigger += 1
     }
@@ -144,6 +144,13 @@ final class HomeViewModel: ObservableObject {
 
                 isCameraButtonDisabled = false
             }
+        }
+    }
+
+    private func setupNotificationsIfFirstPhoto() {
+        if !UserDefaults.standard.bool(forKey: UserDefaultsKeys.hasTakenFirstPhoto) {
+            NotificationManager.requestNotificationAuthorizationAndSchedule(for: .day)
+            UserDefaults.standard.set(true, forKey: UserDefaultsKeys.hasTakenFirstPhoto)
         }
     }
 }

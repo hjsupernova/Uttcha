@@ -76,6 +76,15 @@ struct NotificationManager {
         }
     }
 
+    static func requestNotificationAuthorizationAndSchedule(for option: NotificationTimeOption) {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert,.sound]) { granted, _ in
+            if granted {
+                scheduleNotifications(notificationTimeOption: option)
+                UserDefaults.standard.set(true, forKey: UserDefaultsKeys.isNotificationOn)
+            }
+        }
+    }
+
     /// Cancel all scheduled notifications
     static func cancelAllNotifications() {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
