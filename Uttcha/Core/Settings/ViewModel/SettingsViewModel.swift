@@ -11,7 +11,6 @@ import SwiftUI
 enum SettingsViewModelAction {
     case dismissOptionSheetWithoutTurningOn
     case scheduleNotifications
-    case onOptionSheetAppear
 }
 
 final class SettingsViewModel: ObservableObject {
@@ -22,7 +21,6 @@ final class SettingsViewModel: ObservableObject {
     }
     @AppStorage(UserDefaultsKeys.isShowingNotificationOptionsSheet) var isShowingNotificationOptionsSheet = false
     @AppStorage(UserDefaultsKeys.selectedTimeOption) var selectedTimeOption = NotificationTimeOption.day
-
     @Published var isShowingNotificationAuthorizationSettingAlert = false
 
     // MARK: - Actions
@@ -32,8 +30,6 @@ final class SettingsViewModel: ObservableObject {
             turnOffNotificationToggle()
         case .scheduleNotifications:
             schduleNotifications()
-        case .onOptionSheetAppear:
-            break
         }
     }
 
@@ -44,23 +40,44 @@ final class SettingsViewModel: ObservableObject {
 
     private func schduleNotifications() {
         NotificationManager.scheduleNotifications(notificationTimeOption: selectedTimeOption)
-        isNotificationOn = true
     }
 
-    private func requestNotificationAuthorization() {
-        NotificationManager.requestNotificationAuthorization { success in
-            if !success {
-                self.isShowingNotificationAuthorizationSettingAlert = true
-            }
-        }
-
-    }
     // MARK: - Private instance methods
     private func handleNotificationToggle() {
         if isNotificationOn {
-            showNotificationOptions()
+            UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    switch settings.authorizationStatus {
+                    case .notDetermined:
+                        self.requestAuthorization()
+                    case .denied:
+                        self.isShowingNotificationAuthorizationSettingAlert = true
+                        self.isNotificationOn = false
+                    case .authorized, .provisional:
+                        self.showNotificationOptions()
+                    default:
+                        break
+                    }
+                }
+            }
         } else {
-            resetNotificationSettings()
+            resetNotificationOptions()
+            NotificationManager.cancelAllNotifications()
+        }
+    }
+
+    private func requestAuthorization() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { [weak self] granted, _ in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                if granted {
+                    self.showNotificationOptions()
+                } else {
+                    self.isShowingNotificationAuthorizationSettingAlert = true
+                    self.isNotificationOn = false
+                }
+            }
         }
     }
 
@@ -68,11 +85,9 @@ final class SettingsViewModel: ObservableObject {
         isShowingNotificationOptionsSheet = true
     }
 
-    private func resetNotificationSettings() {
+    private func resetNotificationOptions() {
         selectedTimeOption = .day
-        NotificationManager.cancelAllNotifications()
     }
-
 }
 
 enum NotificationTimeOption: String, CaseIterable {
@@ -80,6 +95,32 @@ enum NotificationTimeOption: String, CaseIterable {
     case morning = "오전"
     case afternoon = "오후"
     case night = "저녁"
+
+    var label: String {
+        switch self {
+        case .day:
+            "하루 (08:00 ~ 22:00)"
+        case .morning:
+            "오전 (08:00 ~ 12:00)"
+        case .afternoon:
+            "오후 (12:00 ~ 18:00)"
+        case .night:
+            "저녁 (18:00 ~ 22:00)"
+        }
+    }
+
+    var timeRange: (start: Int, end: Int) {
+        switch self {
+        case .day:
+            (8, 22)
+        case .morning:
+            (8, 12)
+        case .afternoon:
+            (12, 18)
+        case .night:
+            (18, 22)
+        }
+    }
 }
 
 struct UserDefaultsKeys {
@@ -87,4 +128,5 @@ struct UserDefaultsKeys {
     static let isShowingNotificationOptionsSheet = "isShowingNotificationOptionsSheet"
     static let selectedTimeOption = "selectedTimeOption"
     static let firstLaunchDate = "firstLaunchDate"
+    static let hasTakenFirstPhoto = "hasTakenFirstPhoto"
 }

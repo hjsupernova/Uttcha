@@ -4,5 +4,7 @@
 <dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>하루에 한 번 웃음 알림을 보내드릴게요. 캘린더 우측 상단 설정에서 끌 수 있어요.</string>
 </dict>
 </plist>

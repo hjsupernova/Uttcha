@@ -7,37 +7,38 @@
 
 import UserNotifications
 
-// MARK: - 이거 클래스? struct? 
 struct NotificationManager {
     static let smileIdentifier = "SmileIdentifier"
 
-    static func requestNotificationAuthorization(completion: @escaping ((Bool) -> Void)) {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { success, error in
-            notificationLogger.debug("Request Notification Authorization")
-            if success {
-                completion(true)
-                notificationLogger.debug("Notification authorization granted.")
-            } else {
-                completion(false)
-            }
-        }
-    }
-
     /// Schedule notifications for the next 64 days if less than 30 notifications are scheduled
     static func scheduleNotificationsIfNeeded(notificationTimeOption: NotificationTimeOption) {
-        for dayOffset in 1..<64 {
-            let randomTime = generateRandomTime(for: notificationTimeOption, dayOffset: dayOffset)
-            scheduleNotification(for: randomTime)
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            let pendingCount = requests.count
+            let currentDate = Date()
+            let newNotificationsNeeded = max(0, 64 - pendingCount)
+            notificationLogger.debug("Notification Pending Count: \(pendingCount)")
+
+            guard newNotificationsNeeded != 0 else { return }
+
+            let lastScheduledDate = requests.compactMap { $0.trigger as? UNCalendarNotificationTrigger }
+                .compactMap { $0.nextTriggerDate() }
+                .max() ?? currentDate
+
+            for dayOffset in 1...newNotificationsNeeded {
+                guard let notificationDate = Calendar.current.date(byAdding: .day, value: dayOffset, to: lastScheduledDate) else { return }
+                let randomTime = generateRandomTime(for: notificationTimeOption, date: notificationDate)
+                scheduleNotification(for: randomTime)
+            }
         }
     }
 
     /// Schedule notifications for the next 64 days
     static func scheduleNotifications(notificationTimeOption: NotificationTimeOption) {
         for dayOffset in 0..<64 {
-            let randomMoment = generateRandomTime(for: notificationTimeOption, dayOffset: dayOffset)
-            scheduleNotification(for: randomMoment)
+            guard let notificationDate = Calendar.current.date(byAdding: .day, value: dayOffset, to: Date()) else { return }
+            let randomTime = generateRandomTime(for: notificationTimeOption, date: notificationDate)
+            scheduleNotification(for: randomTime)
         }
-
     }
 
     /// Schedule a notification at the specified date and time
@@ -75,6 +76,15 @@ struct NotificationManager {
         }
     }
 
+    static func requestNotificationAuthorizationAndSchedule(for option: NotificationTimeOption) {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert,.sound]) { granted, _ in
+            if granted {
+                scheduleNotifications(notificationTimeOption: option)
+                UserDefaults.standard.set(true, forKey: UserDefaultsKeys.isNotificationOn)
+            }
+        }
+    }
+
     /// Cancel all scheduled notifications
     static func cancelAllNotifications() {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
@@ -93,53 +103,16 @@ struct NotificationManager {
             }
         }
     }
-
-//    static func printAllNotifications() {
-//        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
-//            for request in requests {
-//                print(request.identifier)
-//            }
-//        }
-//    }
-
-    static func generateRandomTime(for option: NotificationTimeOption, dayOffset: Int) -> DateComponents {
+    
+    private static func generateRandomTime(for option: NotificationTimeOption, date: Date) -> DateComponents {
         let calendar = Calendar.current
-        var startHour = 0
-        var endHour = 0
-
-        switch option {
-        case .day:
-            startHour = 8
-            endHour = 22
-        case .morning:
-            startHour = 8
-            endHour = 12
-
-        case .afternoon:
-            startHour = 12
-            endHour = 18
-
-        case .night:
-            startHour = 18
-            endHour = 22
-
-        }
-
+        var components = calendar.dateComponents([.year, .month, .day], from: date)
+        let (startHour, endHour) = option.timeRange
         let randomHour = Int.random(in: startHour..<endHour)
         let randomMinute = Int.random(in: 0..<60)
-        let randomSecond = Int.random(in: 0..<60)
+        components.hour = randomHour
+        components.minute = randomMinute
 
-        var dateComponents = DateComponents()
-        dateComponents.hour = randomHour
-        dateComponents.minute = randomMinute
-        dateComponents.second = randomSecond
-
-        if let futureDate = calendar.date(byAdding: .day, value: dayOffset, to: Date()) {
-            dateComponents.year = calendar.component(.year, from: futureDate)
-            dateComponents.month = calendar.component(.month, from: futureDate)
-            dateComponents.day = calendar.component(.day, from: futureDate)
-        }
-
-        return dateComponents
+        return components
     }
 }

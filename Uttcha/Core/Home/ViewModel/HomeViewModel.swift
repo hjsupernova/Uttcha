@@ -55,12 +55,12 @@ final class HomeViewModel: ObservableObject {
             showMonthsSheet()
         case .photoTapped:
             showDetailView()
+            setupNotificationsIfFirstPhoto()
         case .photoRemoveButtonTapped(let photo):
             removePhoto(photo)
         case .saveButtonTapped:
             fetchTodayPhoto()
             NotificationManager.cancelNotificationFor(Date.now)
-            triggerFireworks()
         case .userScroll(let lowerBound, let upperBound):
             fetchPhotosOnScrollIfNeeded(lowerBound: yearMonthComponents(from: lowerBound),
                                          upperBound: yearMonthComponents(from: upperBound))
@@ -90,23 +90,9 @@ final class HomeViewModel: ObservableObject {
     }
 
     private func fetchTodayPhoto() {
-        CoreDataStack.shared.fetchTodayPhoto { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
+        guard let todayPhoto = CoreDataStack.shared.fetchTodayPhoto() else { return }
 
-                switch result {
-                case .success(let newPhoto):
-                    guard let newPhoto = newPhoto else {
-                        print("No photo found for today")
-                        return
-                    }
-                    self.photos.insert(newPhoto)
-                case .failure(let error):
-                    print("Error fetching today's photo: \(error)")
-                    // Handle error (e.g., show an alert to the user)
-                }
-            }
-        }
+        self.photos.insert(todayPhoto)
     }
 
     private func fetchPhotos(in month: DateComponents) {
@@ -127,7 +113,7 @@ final class HomeViewModel: ObservableObject {
             visualizedMonths.insert(upperBound)
         }
     }
-    
+
     private func triggerFireworks() {
         fireworkTrigger += 1
     }
@@ -144,6 +130,13 @@ final class HomeViewModel: ObservableObject {
 
                 isCameraButtonDisabled = false
             }
+        }
+    }
+
+    private func setupNotificationsIfFirstPhoto() {
+        if !UserDefaults.standard.bool(forKey: UserDefaultsKeys.hasTakenFirstPhoto) {
+            NotificationManager.requestNotificationAuthorizationAndSchedule(for: .day)
+            UserDefaults.standard.set(true, forKey: UserDefaultsKeys.hasTakenFirstPhoto)
         }
     }
 }
