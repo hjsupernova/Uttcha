@@ -12,7 +12,9 @@ struct SettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 16) {
+                SmileRecordSection(settingsViewModel: settingsViewModel)
+
                 NotificationSettingsSection(settingsViewModel: settingsViewModel)
 
                 AppInfoSection()
@@ -21,6 +23,31 @@ struct SettingsView: View {
         .padding()
         .navigationTitle("설정")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            settingsViewModel.perform(action: .onAppear)
+        }
+    }
+}
+
+struct SmileRecordSection: View {
+    @ObservedObject var settingsViewModel: SettingsViewModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("기록")
+                .font(.callout)
+
+            GroupBox {
+                VStack {
+                    Text("웃차와 함께 웃은 날 😍")
+
+                    Text("\(settingsViewModel.photoCount)일")
+                        .font(.title3)
+                        .bold()
+
+                }.frame(maxWidth: .infinity)
+            }
+        }
     }
 }
 
@@ -28,17 +55,20 @@ struct NotificationSettingsSection: View {
     @ObservedObject var settingsViewModel: SettingsViewModel
 
     var body: some View {
-        Text("설정")
+        VStack(alignment: .leading, spacing: 4) {
+            Text("설정")
+                .font(.callout)
 
-        GroupBox {
-            Toggle("알림 \(settingsViewModel.isNotificationOn ? "ON" : "OFF")", isOn: $settingsViewModel.isNotificationOn)
-                .tint(.green)
+            GroupBox {
+                Toggle("알림 \(settingsViewModel.isNotificationOn ? "ON" : "OFF")", isOn: $settingsViewModel.isNotificationOn)
+                    .tint(.green)
 
-            HStack {
-                Text(
-                    settingsViewModel.isNotificationOn ? "\(settingsViewModel.selectedTimeOption.rawValue)중 알림을 무작위로 보내드릴게요!" : "알림 시간대를 설정할 수 있어요"
-                )
-                Spacer()
+                HStack {
+                    Text(
+                        settingsViewModel.isNotificationOn ? "\(settingsViewModel.selectedTimeOption.rawValue)중 알림을 무작위로 보내드릴게요!" : "알림 시간대를 설정할 수 있어요"
+                    )
+                    Spacer()
+                }
             }
         }
         .sheet(isPresented: $settingsViewModel.isShowingNotificationOptionsSheet) {
@@ -110,13 +140,16 @@ struct NotificaitonOptionsSheet: View {
 
 struct AppInfoSection: View {
     var body: some View {
-        Text("앱 정보")
+        VStack(alignment: .leading, spacing: 4) {
+            Text("앱 정보")
+                .font(.callout)
 
-        GroupBox {
-            HStack {
-                Text("웃차에 대해서")
+            GroupBox {
+                HStack {
+                    Text("웃차에 대해서")
 
-                Spacer()
+                    Spacer()
+                }
             }
         }
     }

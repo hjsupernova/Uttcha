@@ -11,6 +11,7 @@ import SwiftUI
 enum SettingsViewModelAction {
     case dismissOptionSheetWithoutTurningOn
     case scheduleNotifications
+    case onAppear
 }
 
 final class SettingsViewModel: ObservableObject {
@@ -22,6 +23,7 @@ final class SettingsViewModel: ObservableObject {
     @AppStorage(UserDefaultsKeys.isShowingNotificationOptionsSheet) var isShowingNotificationOptionsSheet = false
     @AppStorage(UserDefaultsKeys.selectedTimeOption) var selectedTimeOption = NotificationTimeOption.day
     @Published var isShowingNotificationAuthorizationSettingAlert = false
+    @Published private(set) var photoCount = 0
 
     // MARK: - Actions
     func perform(action: SettingsViewModelAction) {
@@ -30,6 +32,8 @@ final class SettingsViewModel: ObservableObject {
             turnOffNotificationToggle()
         case .scheduleNotifications:
             schduleNotifications()
+        case .onAppear:
+            fetchPhotoCount()
         }
     }
 
@@ -40,6 +44,10 @@ final class SettingsViewModel: ObservableObject {
 
     private func schduleNotifications() {
         NotificationManager.scheduleNotifications(notificationTimeOption: selectedTimeOption)
+    }
+
+    private func fetchPhotoCount() {
+        photoCount = CoreDataStack.shared.fetchPhotoCount()
     }
 
     // MARK: - Private instance methods

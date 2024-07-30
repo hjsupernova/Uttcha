@@ -124,6 +124,17 @@ extension CoreDataStack {
             print("Failed to fetch contact to remove : \(error)")
         }
     }
+
+    func fetchPhotoCount() -> Int {
+        let request = NSFetchRequest<Photo>(entityName: "Photo")
+
+        do {
+            let count = try persistentContainer.viewContext.count(for: request)
+            return count
+        } catch {
+            return 0
+        }
+    }
 }
 
 // MARK: - Contact
