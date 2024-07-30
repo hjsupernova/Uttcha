@@ -90,23 +90,9 @@ final class HomeViewModel: ObservableObject {
     }
 
     private func fetchTodayPhoto() {
-        CoreDataStack.shared.fetchTodayPhoto { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
+        guard let todayPhoto = CoreDataStack.shared.fetchTodayPhoto() else { return }
 
-                switch result {
-                case .success(let newPhoto):
-                    guard let newPhoto = newPhoto else {
-                        print("No photo found for today")
-                        return
-                    }
-                    self.photos.insert(newPhoto)
-                case .failure(let error):
-                    print("Error fetching today's photo: \(error)")
-                    // Handle error (e.g., show an alert to the user)
-                }
-            }
-        }
+        self.photos.insert(todayPhoto)
     }
 
     private func fetchPhotos(in month: DateComponents) {
