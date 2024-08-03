@@ -17,7 +17,7 @@ struct SettingsView: View {
 
                 NotificationSettingsSection(settingsViewModel: settingsViewModel)
 
-                AppInfoSection()
+//                AppInfoSection()
             }
         }
         .padding()
