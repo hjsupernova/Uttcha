@@ -12,7 +12,7 @@ import SwiftUI
 struct SupportsLongPress: PrimitiveButtonStyle {
 
     /// An action to execute on long press
-    let longPressAction: () -> ()
+    let longPressAction: () -> Void
 
     /// Whether the button is being pressed
     @State var isPressed: Bool = false
@@ -58,7 +58,7 @@ struct SupportsLongPress: PrimitiveButtonStyle {
 }
 /// A modifier that applies the `SupportsLongPress` style to buttons
 struct SupportsLongPressModifier: ViewModifier {
-    let longPressAction: () -> ()
+    let longPressAction: () -> Void
     func body(content: Content) -> some View {
         content.buttonStyle(SupportsLongPress(longPressAction: self.longPressAction))
     }
@@ -66,7 +66,7 @@ struct SupportsLongPressModifier: ViewModifier {
 
 /// Extend the View protocol for a SwiftUI-like shorthand version
 extension View {
-    func supportsLongPress(longPressAction: @escaping () -> ()) -> some View {
+    func supportsLongPress(longPressAction: @escaping () -> Void) -> some View {
         modifier(SupportsLongPressModifier(longPressAction: longPressAction))
     }
 }

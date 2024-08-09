@@ -203,7 +203,6 @@ struct MonthsAvailable: View {
         }
     }
 
-    // TODO: Extension으로 빼기
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy년 M월"

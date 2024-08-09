@@ -30,7 +30,7 @@ class CameraViewController: UIViewController {
         default:
             setupResult = .notAuthorized
         }
-        
+
         /*
          Setup the capture session.
          In general, it's not safe to mutate an AVCaptureSession or any of its
@@ -121,7 +121,7 @@ class CameraViewController: UIViewController {
     private let sessionQueue = DispatchQueue(label: "session queue")
 
     private var setupResult: SessionSetupResult = .success
-    
+
     private var previewLayer: AVCaptureVideoPreviewLayer?
 
     // Call this on the session queue.

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CameraOverlayView: View {
     @ObservedObject var cameraViewModel: CameraViewModel
-    
+
     var body: some View {
         GeometryReader { geo in
             VStack {

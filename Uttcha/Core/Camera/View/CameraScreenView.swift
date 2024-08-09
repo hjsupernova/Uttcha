@@ -13,7 +13,7 @@ struct CameraScreenView: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        GeometryReader { geo in
+        GeometryReader { _ in
             NavigationStack {
                 ZStack {
                     CameraView(cameraViewModel: cameraViewModel)

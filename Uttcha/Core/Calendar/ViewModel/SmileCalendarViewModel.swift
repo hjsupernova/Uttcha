@@ -12,5 +12,5 @@ enum SmileCalendarViewModelAction {
 }
 
 final class SmileCalendarViewModel: ObservableObject {
-    
+
 }

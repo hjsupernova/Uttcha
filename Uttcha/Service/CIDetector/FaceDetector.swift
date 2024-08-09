@@ -27,7 +27,7 @@ class FaceDetector: NSObject {
         }
     }
 
-    var options: [String : AnyObject]?
+    var options: [String: AnyObject]?
     var isCapturingPhoto = false
     var subscriptions = Set<AnyCancellable>()
 
