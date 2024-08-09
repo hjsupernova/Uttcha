@@ -208,9 +208,9 @@ struct UIImagePicker: UIViewControllerRepresentable {
             self.parent = parent
         }
 
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        func imagePickerController(_ picker: UIImagePickerController,
+                                   didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
             picker.dismiss(animated: true) {
-
                 if let uiImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
                     withAnimation {
                         self.parent.smileViewModel.perform(action: .selectImage(uiImage))

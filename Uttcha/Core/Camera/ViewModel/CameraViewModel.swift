@@ -177,7 +177,7 @@ extension CameraViewModel {
         timer?.cancel()
         timer = nil
         isTimerRunning = false
-        
+
         // reset flags
         hasTriggeredStartSmileHaptic = false
         hasTriggeredCompleteSmileHaptic = false

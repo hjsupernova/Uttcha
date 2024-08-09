@@ -25,7 +25,8 @@ struct NotificationManager {
                 .max() ?? currentDate
 
             for dayOffset in 1...newNotificationsNeeded {
-                guard let notificationDate = Calendar.current.date(byAdding: .day, value: dayOffset, to: lastScheduledDate) else { return }
+                guard let notificationDate =
+                        Calendar.current.date(byAdding: .day, value: dayOffset, to: lastScheduledDate) else { return }
                 let randomTime = generateRandomTime(for: notificationTimeOption, date: notificationDate)
                 scheduleNotification(for: randomTime)
             }
@@ -77,7 +78,7 @@ struct NotificationManager {
     }
 
     static func requestNotificationAuthorizationAndSchedule(for option: NotificationTimeOption) {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert,.sound]) { granted, _ in
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, _ in
             if granted {
                 scheduleNotifications(notificationTimeOption: option)
                 UserDefaults.standard.set(true, forKey: UserDefaultsKeys.isNotificationOn)
@@ -97,13 +98,14 @@ struct NotificationManager {
                    let triggerDate = Calendar.current.date(from: calendarTrigger.dateComponents) {
 
                     if Calendar.current.isDate(triggerDate, inSameDayAs: date) {
-                        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [request.identifier])
+                        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers:
+                                                                                                [request.identifier])
                     }
                 }
             }
         }
     }
-    
+
     private static func generateRandomTime(for option: NotificationTimeOption, date: Date) -> DateComponents {
         let calendar = Calendar.current
         var components = calendar.dateComponents([.year, .month, .day], from: date)

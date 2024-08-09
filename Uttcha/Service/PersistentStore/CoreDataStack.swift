@@ -199,7 +199,6 @@ extension CoreDataStack {
 
         let memory = Memory(context: persistentContainer.viewContext)
 
-        // TODO: 여기서 image.dateCreated 등이 생략될 수 있다는 게 문제.. 이걸 컴파일단에서 막아야함..
         memory.imageData = jpegData
         memory.dateCreated = Date()
         memory.memoryId = UUID()
@@ -257,8 +256,8 @@ func createMockDates() -> [Date] {
     mockDates.append(contentsOf: createRandomDates(for: now, count: 10))
 
     // Create dates for the past 4 months
-    for i in 1...4 {
-        guard let pastDate = calendar.date(byAdding: .month, value: -i, to: now) else { continue }
+    for month in 1...4 {
+        guard let pastDate = calendar.date(byAdding: .month, value: -month, to: now) else { continue }
         mockDates.append(contentsOf: createRandomDates(for: pastDate, count: 10))
     }
 

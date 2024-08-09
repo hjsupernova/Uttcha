@@ -107,7 +107,8 @@ class SmileViewModel: ObservableObject {
 
         switch CNContactStore.authorizationStatus(for: .contacts) {
         case .authorized:
-            DispatchQueue.global(qos: .userInteractive).async {
+            DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+                guard let self = self else { return }
                 do {
                     let keys = [
                         CNContactGivenNameKey as CNKeyDescriptor,
@@ -129,27 +130,9 @@ class SmileViewModel: ObservableObject {
 
                         fetchedContacts.append(contact)
                     }
-                    
-                    fetchedContacts.sort { contact1, contact2 in
-                        let name1 = (contact1.familyName) + (contact1.givenName)
-                        let name2 = (contact2.familyName) + (contact2.givenName)
 
-                        guard let firstChar1 = name1.first, let firstChar2 = name2.first else {
-                            // If one or both names are empty, handle the comparison (e.g., empty names come first)
-                            return name1 < name2
-                        }
+                    fetchedContacts.sort(by: self.sortContacts)
 
-                        if firstChar1 >= "가" && firstChar1 <= "힣" && firstChar2 >= "가" && firstChar2 <= "힣" {
-                            return name1 < name2 // Korean sort
-                        } else if (firstChar1 >= "a" && firstChar1 <= "z" || firstChar1 >= "A" && firstChar1 <= "Z") &&
-                                    (firstChar2 >= "a" && firstChar2 <= "z" || firstChar2 >= "A" && firstChar2 <= "Z") {
-                            return name1.localizedCaseInsensitiveCompare(name2) == .orderedAscending // English sort
-                        } else {
-                            // Korean comes before English
-                            return firstChar1 >= "가" && firstChar1 <= "힣"
-                        }
-                    }
-                    
                     DispatchQueue.main.async {
                         self.contacts = fetchedContacts
                     }
@@ -231,5 +214,25 @@ extension SmileViewModel {
 
     private func showContactAuthorizationAlert() {
         isShowingContactAuthorizationAlert = true
+    }
+
+    private func sortContacts(contact1: ContactModel, contact2: ContactModel) -> Bool {
+        let name1 = (contact1.familyName) + (contact1.givenName)
+        let name2 = (contact2.familyName) + (contact2.givenName)
+
+        guard let firstChar1 = name1.first, let firstChar2 = name2.first else {
+            // If one or both names are empty, handle the comparison (e.g., empty names come first)
+            return name1 < name2
+        }
+
+        if firstChar1 >= "가" && firstChar1 <= "힣" && firstChar2 >= "가" && firstChar2 <= "힣" {
+            return name1 < name2 // Korean sort
+        } else if (firstChar1 >= "a" && firstChar1 <= "z" || firstChar1 >= "A" && firstChar1 <= "Z") &&
+                    (firstChar2 >= "a" && firstChar2 <= "z" || firstChar2 >= "A" && firstChar2 <= "Z") {
+            return name1.localizedCaseInsensitiveCompare(name2) == .orderedAscending // English sort
+        } else {
+            // Korean comes before English
+            return firstChar1 >= "가" && firstChar1 <= "힣"
+        }
     }
 }
