@@ -25,6 +25,7 @@ final class SettingsViewModel: ObservableObject {
     @Published var isShowingNotificationAuthorizationSettingAlert = false
     @Published private(set) var photoCount = 0
 
+    let reviewURL: URL? = URL(string: "https://itunes.apple.com/app/id6572299284?action=write-review")
     // MARK: - Actions
     func perform(action: SettingsViewModelAction) {
         switch action {
