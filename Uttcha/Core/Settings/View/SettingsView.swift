@@ -17,6 +17,7 @@ struct SettingsView: View {
 
                 NotificationSettingsSection(settingsViewModel: settingsViewModel)
 
+                ReviewSection(settingsViewModel: settingsViewModel)
 //                AppInfoSection()
             }
         }
@@ -135,6 +136,31 @@ struct NotificaitonOptionsSheet: View {
         }
         .padding()
         .interactiveDismissDisabled()
+    }
+}
+
+struct ReviewSection: View {
+    @ObservedObject var settingsViewModel: SettingsViewModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("정보")
+                .font(.callout)
+
+            GroupBox {
+                VStack {
+                    if let reviewURL = settingsViewModel.reviewURL {
+                        Link(destination: reviewURL) {
+                            HStack {
+                                Label("웃자 평가하기", systemImage: "star")
+
+                                Spacer()
+                            }
+                        }
+                    }
+                }.frame(maxWidth: .infinity)
+            }
+        }
     }
 }
 
