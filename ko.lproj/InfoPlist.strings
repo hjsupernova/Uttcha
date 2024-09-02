@@ -1,0 +1,11 @@
+/* 
+  InfoPlist.strings
+  Uttcha
+
+  Created by KHJ on 9/2/24.
+  
+*/
+"CFBundleDisplayName" = "웃자";
+"NSUserNotificationsUsageDescription" = "하루 한 번 웃음 알림을 받기 위해 알림 권한이 필요해요";
+"NSCameraUsageDescription" = "웃음 사진 촬영을 위해 카메라 접근 권한이 필요해요.";
+"NSContactsUsageDescription" = "웃자에 연락처를 등록하기 위해 연락처 접근 권한이 필요해요.";

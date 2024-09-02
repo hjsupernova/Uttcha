@@ -32,6 +32,7 @@
 		CEA239812BE8C91D00F157A7 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA239802BE8C91D00F157A7 /* Date.swift */; };
 		CEAEB4512BE8A5F300C522C1 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = CEAEB4502BE8A5F300C522C1 /* .swiftlint.yml */; };
 		CEAEB4612BE8B93E00C522C1 /* SmileCalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAEB4602BE8B93E00C522C1 /* SmileCalendarViewModel.swift */; };
+		CEB7279C2C85AA1F00489C2C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CEB7279B2C85AA1F00489C2C /* InfoPlist.strings */; };
 		CEB940302BC27CB4003D9F7F /* Shutter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB9402F2BC27CB4003D9F7F /* Shutter.swift */; };
 		CEB940442BC413A4003D9F7F /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB940432BC413A4003D9F7F /* CameraViewModel.swift */; };
 		CEB940832BC552B6003D9F7F /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CEB940812BC552B6003D9F7F /* Model.xcdatamodeld */; };
@@ -70,6 +71,7 @@
 		CEA239802BE8C91D00F157A7 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		CEAEB4502BE8A5F300C522C1 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		CEAEB4602BE8B93E00C522C1 /* SmileCalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmileCalendarViewModel.swift; sourceTree = "<group>"; };
+		CEB7279A2C85AA1F00489C2C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CEB9402F2BC27CB4003D9F7F /* Shutter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shutter.swift; sourceTree = "<group>"; };
 		CEB940432BC413A4003D9F7F /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		CEB940822BC552B6003D9F7F /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 		CE7C985D2BC12B1C00FA9646 = {
 			isa = PBXGroup;
 			children = (
+				CEB7279B2C85AA1F00489C2C /* InfoPlist.strings */,
 				CEAEB4502BE8A5F300C522C1 /* .swiftlint.yml */,
 				CE7C98682BC12B1C00FA9646 /* Uttcha */,
 				CE7C98672BC12B1C00FA9646 /* Products */,
@@ -420,6 +423,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ko,
 			);
 			mainGroup = CE7C985D2BC12B1C00FA9646;
 			packageReferences = (
@@ -445,6 +449,7 @@
 				CEAEB4512BE8A5F300C522C1 /* .swiftlint.yml in Resources */,
 				CEDEDA0C2BCD3EED00707EA1 /* smile.json in Resources */,
 				CE7C986E2BC12B1E00FA9646 /* Assets.xcassets in Resources */,
+				CEB7279C2C85AA1F00489C2C /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -510,6 +515,17 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		CEB7279B2C85AA1F00489C2C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEB7279A2C85AA1F00489C2C /* ko */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		CE7C98722BC12B1E00FA9646 /* Debug */ = {
@@ -643,10 +659,10 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Uttcha/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "웃자";
+				INFOPLIST_KEY_CFBundleDisplayName = Uttcha;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
-				INFOPLIST_KEY_NSCameraUsageDescription = "웃음 사진 촬영을 위해 카메라 접근 권한이 필요해요.";
-				INFOPLIST_KEY_NSContactsUsageDescription = "웃자에 연락처를 등록하기 위해 연락처 접근 권한이 필요해요.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Uttcha needs camera access to take a smile photo";
+				INFOPLIST_KEY_NSContactsUsageDescription = "Uttcha needs access to your contacts to add them in the app";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -680,10 +696,10 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Uttcha/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "웃자";
+				INFOPLIST_KEY_CFBundleDisplayName = Uttcha;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
-				INFOPLIST_KEY_NSCameraUsageDescription = "웃음 사진 촬영을 위해 카메라 접근 권한이 필요해요.";
-				INFOPLIST_KEY_NSContactsUsageDescription = "웃자에 연락처를 등록하기 위해 연락처 접근 권한이 필요해요.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Uttcha needs camera access to take a smile photo";
+				INFOPLIST_KEY_NSContactsUsageDescription = "Uttcha needs access to your contacts to add them in the app";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
