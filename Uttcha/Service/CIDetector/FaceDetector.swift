@@ -11,7 +11,7 @@ import CoreImage.CIFilterBuiltins
 import UIKit
 
 class FaceDetector: NSObject {
-    public weak var model: CameraViewModel? {
+    weak var model: CameraViewModel? {
         didSet {
             model?.shutterReleased.sink { completion in
                 switch completion {
@@ -31,6 +31,7 @@ class FaceDetector: NSObject {
     var isCapturingPhoto = false
     var subscriptions = Set<AnyCancellable>()
 
+    // 우선순위 확인
     let imageProcessingQueue = DispatchQueue(
         label: "ImageProcessingQueue",
         qos: .userInitiated,
@@ -78,13 +79,11 @@ extension FaceDetector: AVCaptureVideoDataOutputSampleBufferDelegate {
 extension FaceDetector {
     private func savePhoto(from pixelBuffer: CVPixelBuffer) {
         guard let model = model else { return }
-        imageProcessingQueue.async { [self] in
+        imageProcessingQueue.async {
             let originalImage = CIImage(cvPixelBuffer: pixelBuffer)
 
-            var outputImage = originalImage
-
-            let coreImageWidth = outputImage.extent.width
-            let coreImageHeight = outputImage.extent.height
+            let coreImageWidth = originalImage.extent.width
+            let coreImageHeight = originalImage.extent.height
 
             let desiredImageHeight = coreImageWidth * 4 / 3
 
@@ -98,12 +97,10 @@ extension FaceDetector {
             )
 
             let context = CIContext()
-            if let cgImage = context.createCGImage(outputImage, from: photoRect) {
+            if let cgImage = context.createCGImage(originalImage, from: photoRect) {
                 let photo = UIImage(cgImage: cgImage, scale: 1, orientation: .upMirrored)
 
-                DispatchQueue.main.async {
-                    model.perform(action: .updatePreviewPhoto(photo))
-                }
+                model.perform(action: .updatePreviewPhoto(photo))
             }
         }
     }
