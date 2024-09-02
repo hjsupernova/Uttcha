@@ -141,7 +141,9 @@ class SmileViewModel: ObservableObject {
                 }
             }
         case .notDetermined:
-            CNStore.requestAccess(for: .contacts) { granted, error in
+            CNStore.requestAccess(for: .contacts) { [weak self] granted, error in
+                guard let self = self else { return }
+
                 if granted {
                     self.fetchContacts()
                 } else if let error = error {
