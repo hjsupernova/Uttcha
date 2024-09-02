@@ -11,7 +11,7 @@ import CoreImage.CIFilterBuiltins
 import UIKit
 
 class FaceDetector: NSObject {
-    public weak var model: CameraViewModel? {
+    weak var model: CameraViewModel? {
         didSet {
             model?.shutterReleased.sink { completion in
                 switch completion {
