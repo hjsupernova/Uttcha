@@ -336,7 +336,8 @@ struct ContactListSheet: View {
                 }
             }
         }
-        .searchable(text: $smileViewModel.contactSearchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search")
+        .searchable(text: $smileViewModel.contactSearchText,
+                    placement: .navigationBarDrawer(displayMode: .always), prompt: "Search")
         .alert("Uttcha", isPresented: $smileViewModel.isShowingContactAuthorizationAlert) {
             Button("Cancel", role: .cancel) { }
 

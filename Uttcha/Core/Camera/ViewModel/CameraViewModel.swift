@@ -40,7 +40,7 @@ final class CameraViewModel: ObservableObject {
 
     // MARK: - Pirvate Properties
     private var hasDetectedEnoughFaces: Bool = false
-    private(set) var cameraInstructionText: String = String(localized: "Smile! 😊") 
+    private(set) var cameraInstructionText: String = String(localized: "Smile! 😊")
     private(set) var facePhoto: UIImage?
     private var timer: AnyCancellable?
     private var isTimerRunning: Bool = false
