@@ -5,6 +5,6 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSUserNotificationsUsageDescription</key>
-	<string>하루 한 번 웃음 알림을 받기 위해 알림 권한이 필요해요</string>
+	<string>Uttcha needs notification permission to send you a daily reminder to smile</string>
 </dict>
 </plist>

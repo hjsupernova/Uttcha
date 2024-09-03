@@ -19,8 +19,6 @@ struct SmileCalendar: View {
     private let calendar: Calendar
     private let monthsLayout: MonthsLayout
     private let visibleDateRange: ClosedRange<Date>
-    private let monthDateFormatter: DateFormatter
-    private let dayNames = ["일", "월", "화", "수", "목", "금", "토"]
 
     @Binding var isShowingCamera: Bool
 
@@ -34,10 +32,6 @@ struct SmileCalendar: View {
         let endDate = Date()
         visibleDateRange = startDate...endDate
 
-        monthDateFormatter = DateFormatter()
-        monthDateFormatter.calendar = calendar
-        monthDateFormatter.locale = Locale(identifier: "ko_KR")
-        monthDateFormatter.dateFormat = "yyyy년 M월"
         _isShowingCamera = isShowingCamera
     }
 
@@ -52,7 +46,7 @@ struct SmileCalendar: View {
         .horizontalDayMargin(8)
         .verticalDayMargin(20)
         .monthHeaders { month in
-            let monthHeaderText = monthDateFormatter.string(from: calendar.date(from: month.components)!)
+            let monthHeaderText = calendar.date(from: month.components)!.toStringFromTemplate("yMMM")
             Button {
                 homeViewModel.perform(action: .showMonthsSheet)
             } label: {
@@ -69,7 +63,7 @@ struct SmileCalendar: View {
             }
         }
         .dayOfWeekHeaders { month, weekdayIndex in
-            Text(dayNames[weekdayIndex]).bold()
+            Text(DateFormatter().shortWeekdaySymbols[weekdayIndex]).bold()
         }
         .days { day in
             if let date = calendar.date(from: day.components) {
@@ -163,7 +157,7 @@ struct MonthsAvailable: View {
     var body: some View {
         VStack {
             HStack {
-                Text("월 선택하기")
+                Text("Select Month")
                     .font(.title).bold()
 
                 Spacer()
@@ -180,7 +174,7 @@ struct MonthsAvailable: View {
             ScrollView {
                 ForEach(monthsBetween(start: Date(), end: startDate), id: \.self) { date in
                     HStack {
-                        Text(formatDate(date))
+                        Text(date.toStringFromTemplate("yMMM"))
                             .font(.body)
                             .onTapGesture {
                                 calendarViewProxy.scrollToMonth(
@@ -201,12 +195,6 @@ struct MonthsAvailable: View {
                 }
             }
         }
-    }
-
-    private func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy년 M월"
-        return formatter.string(from: date)
     }
 
     private func monthsBetween(start: Date, end: Date) -> [Date] {

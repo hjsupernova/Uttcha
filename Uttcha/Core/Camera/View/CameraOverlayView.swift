@@ -43,7 +43,7 @@ struct CameraOverlayView: View {
                         Button {
                             cameraViewModel.perform(action: .dismissCamera)
                         } label: {
-                            Text("취소")
+                            Text("Cancel")
                                 .foregroundStyle(.white)
                                 .font(.title2)
                         }
@@ -51,9 +51,9 @@ struct CameraOverlayView: View {
                         Spacer()
 
                         Menu {
-                            Picker("함께 웃기", selection: $cameraViewModel.neededFaceCount) {
+                            Picker("Smile Together", selection: $cameraViewModel.neededFaceCount) {
                                 ForEach(1..<6) {
-                                    Text("\($0)명과 함께 웃기").tag($0)
+                                    Text("Smile with \($0) people").tag($0)
                                 }
                             }
                         } label: {

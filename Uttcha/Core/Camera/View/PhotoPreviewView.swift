@@ -30,7 +30,7 @@ struct PhotoPreviewView: View {
                                 cameraViewModel.perform(action: .savePhoto(photo))
                                 homeViewModel.perform(action: .saveButtonTapped)
                             } label: {
-                                Text("저장 하기")
+                                Text("Save")
                             }
                         }
                     }

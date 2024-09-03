@@ -40,7 +40,7 @@ final class CameraViewModel: ObservableObject {
 
     // MARK: - Pirvate Properties
     private var hasDetectedEnoughFaces: Bool = false
-    private(set) var cameraInstructionText: String = "웃어봐요 😊"
+    private(set) var cameraInstructionText: String = String(localized: "Smile! 😊")
     private(set) var facePhoto: UIImage?
     private var timer: AnyCancellable?
     private var isTimerRunning: Bool = false
@@ -147,7 +147,7 @@ extension CameraViewModel {
     private func updateInstructionText(faceCount: Int) {
         hasDetectedEnoughFaces = faceCount >= neededFaceCount
 
-        cameraInstructionText = hasDetectedEnoughFaces ? "웃어봐요 😊" : "\(neededFaceCount - faceCount) 명이 부족해요! 🥲"
+        cameraInstructionText = hasDetectedEnoughFaces ? String(localized: "Smile! 😊") : String(localized: "\(neededFaceCount - faceCount) more people needed! 🥲")
     }
 
     private func startSmileTimer() {
