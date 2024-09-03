@@ -40,6 +40,7 @@
 		CEB940882BC66041003D9F7F /* UttchaTapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB940872BC66041003D9F7F /* UttchaTapView.swift */; };
 		CEB9408A2BC660BE003D9F7F /* SmileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB940892BC660BE003D9F7F /* SmileView.swift */; };
 		CEB9409F2BC77DCE003D9F7F /* SmileCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB9409E2BC77DCE003D9F7F /* SmileCalendar.swift */; };
+		CED666E62C86D3D800EA7D55 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = CED666E52C86D3D800EA7D55 /* Localizable.xcstrings */; };
 		CEDEDA0A2BCD3C0000707EA1 /* LottieSmile.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDEDA092BCD3C0000707EA1 /* LottieSmile.swift */; };
 		CEDEDA0C2BCD3EED00707EA1 /* smile.json in Resources */ = {isa = PBXBuildFile; fileRef = CEDEDA0B2BCD3EED00707EA1 /* smile.json */; };
 		CEF239AC2C292EAF00739EAC /* ContactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF239AB2C292EAF00739EAC /* ContactModel.swift */; };
@@ -79,6 +80,7 @@
 		CEB940872BC66041003D9F7F /* UttchaTapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UttchaTapView.swift; sourceTree = "<group>"; };
 		CEB940892BC660BE003D9F7F /* SmileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmileView.swift; sourceTree = "<group>"; };
 		CEB9409E2BC77DCE003D9F7F /* SmileCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmileCalendar.swift; sourceTree = "<group>"; };
+		CED666E52C86D3D800EA7D55 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		CEDEDA092BCD3C0000707EA1 /* LottieSmile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieSmile.swift; sourceTree = "<group>"; };
 		CEDEDA0B2BCD3EED00707EA1 /* smile.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = smile.json; sourceTree = "<group>"; };
 		CEF239AB2C292EAF00739EAC /* ContactModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactModel.swift; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				CEB7279B2C85AA1F00489C2C /* InfoPlist.strings */,
+				CED666E52C86D3D800EA7D55 /* Localizable.xcstrings */,
 				CEAEB4502BE8A5F300C522C1 /* .swiftlint.yml */,
 				CE7C98682BC12B1C00FA9646 /* Uttcha */,
 				CE7C98672BC12B1C00FA9646 /* Products */,
@@ -447,6 +450,7 @@
 			files = (
 				CE2F317B2C26C18D00260D7B /* Preview Assets.xcassets in Resources */,
 				CEAEB4512BE8A5F300C522C1 /* .swiftlint.yml in Resources */,
+				CED666E62C86D3D800EA7D55 /* Localizable.xcstrings in Resources */,
 				CEDEDA0C2BCD3EED00707EA1 /* smile.json in Resources */,
 				CE7C986E2BC12B1E00FA9646 /* Assets.xcassets in Resources */,
 				CEB7279C2C85AA1F00489C2C /* InfoPlist.strings in Resources */,

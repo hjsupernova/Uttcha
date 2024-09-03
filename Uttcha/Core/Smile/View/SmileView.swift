@@ -17,13 +17,13 @@ struct SmileView: View {
             ScrollView {
                 VStack(spacing: 12) {
                     VStack(alignment: .leading, spacing: 4) {
-                        HeaderView(label: "연락하기")
+                        HeaderView(label: String(localized: "Contacts") )
 
                         ContactListView(smileViewModel: smileViewModel)
                     }
 
                     VStack(alignment: .leading, spacing: 4) {
-                        HeaderView(label: "추억보기")
+                        HeaderView(label: String(localized: "Memories"))
 
                         MemoryListView(smileViewModel: smileViewModel)
                     }
@@ -31,7 +31,7 @@ struct SmileView: View {
                 .padding(.horizontal)
 
             }
-            .navigationTitle("웃자")
+            .navigationTitle("Uttcha")
             .navigationBarTitleDisplayMode(.inline)
             .sheet(item: $smileViewModel.presentedSheet) { sheet in
                 switch sheet {
@@ -41,15 +41,15 @@ struct SmileView: View {
                     UIImagePicker(smileViewModel: smileViewModel)
                 }
             }
-            .confirmationDialog("삭제하기", isPresented: $smileViewModel.isShowingContactRemoveConfirmationDialog) {
-                Button("연락처 삭제", role: .destructive) {
+            .confirmationDialog("Delete", isPresented: $smileViewModel.isShowingContactRemoveConfirmationDialog) {
+                Button("Delete Contact", role: .destructive) {
                     withAnimation {
                         smileViewModel.perform(action: .contactRemoveButtonTapped)
                     }
                 }
             }
-            .confirmationDialog("삭제하기", isPresented: $smileViewModel.isShowingMemoryRemoveConfirmationDialog) {
-                Button("이미지 삭제", role: .destructive) {
+            .confirmationDialog("Delete", isPresented: $smileViewModel.isShowingMemoryRemoveConfirmationDialog) {
+                Button("Delete Memory", role: .destructive) {
                     withAnimation {
                         smileViewModel.perform(action: .memoryRemoveButtonTapped)
                     }
@@ -326,28 +326,28 @@ struct ContactListSheet: View {
                     ContactRow(contact: contact)
                 }
             }
-            .navigationTitle("연락처 추가")
+            .navigationTitle("Add Contact")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItemGroup(placement: .topBarLeading) {
-                    Button("취소") {
+                    Button("Cancel") {
                         dismiss()
                     }
                 }
             }
         }
-        .searchable(text: $smileViewModel.contactSearchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "검색")
+        .searchable(text: $smileViewModel.contactSearchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search")
         .alert("Uttcha", isPresented: $smileViewModel.isShowingContactAuthorizationAlert) {
-            Button("취소", role: .cancel) { }
+            Button("Cancel", role: .cancel) { }
 
-            Button("설정으로 이동") {
+            Button("Go to Settings") {
                 UIApplication.shared.open(
                     URL(string: UIApplication.openSettingsURLString)!,
                     options: [:],
                     completionHandler: nil)
             }
         } message: {
-            Text("앱에 연락처 권한이 없습니다. 설정을 변경해주세요.")
+            Text("The app doesn't have contacts access. Please update your settings.")
         }
         .onAppear {
             smileViewModel.perform(action: .contactListViewAppeared)

@@ -100,21 +100,30 @@ final class SettingsViewModel: ObservableObject {
 }
 
 enum NotificationTimeOption: String, CaseIterable {
-    case day = "하루"
-    case morning = "오전"
-    case afternoon = "오후"
-    case night = "저녁"
+    case day
+    case morning
+    case afternoon
+    case night
 
-    var label: String {
+    var localizedTimeOption: String {
+        switch self {
+        case .day: NSLocalizedString("Day", comment: "")
+        case .morning: NSLocalizedString("Morning", comment: "")
+        case .afternoon: NSLocalizedString("Afternoon", comment: "")
+        case .night: NSLocalizedString("Night", comment: "")
+        }
+    }
+
+    var label: LocalizedStringKey {
         switch self {
         case .day:
-            "하루 (08:00 ~ 22:00)"
+            "Day (08:00 ~ 22:00)"
         case .morning:
-            "오전 (08:00 ~ 12:00)"
+            "Morning (08:00 ~ 12:00)"
         case .afternoon:
-            "오후 (12:00 ~ 18:00)"
+            "Afternoon (12:00 ~ 18:00)"
         case .night:
-            "저녁 (18:00 ~ 22:00)"
+            "Night (18:00 ~ 22:00)"
         }
     }
 

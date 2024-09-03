@@ -8,10 +8,9 @@
 import Foundation
 
 extension Date {
-    func string(withFormat format: String, locale: Locale = Locale(identifier: "ko_KR")) -> String {
+    func toStringFromTemplate(_ template: String) -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.locale = locale
-        dateFormatter.dateFormat = format
+        dateFormatter.setLocalizedDateFormatFromTemplate(template)
         return dateFormatter.string(from: self)
     }
 }

@@ -18,13 +18,13 @@ struct UttchaTapView: View {
         TabView(selection: $selectedTap) {
             HomeView()
                 .tabItem {
-                    Label("달력", systemImage: "calendar")
+                    Label("Calendar", systemImage: "calendar")
                 }
                 .tag(Views.calendar)
 
             SmileView()
                 .tabItem {
-                    Label("웃자", systemImage: "smiley")
+                    Label("Smile", systemImage: "smiley")
                 }
                 .tag(Views.smile)
         }

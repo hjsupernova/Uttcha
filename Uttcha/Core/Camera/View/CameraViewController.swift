@@ -57,18 +57,18 @@ class CameraViewController: UIViewController {
                 self.isSessionRunning = self.session.isRunning
             case .notAuthorized:
                 DispatchQueue.main.async {
-                    let changePrivacySetting = "앱에 카메라 사용 권한이 없습니다. 설정을 변경해주세요."
+                    let changePrivacySetting = "The app doesn't have camera access. Please update your settings."
                     let message = NSLocalizedString(
                         changePrivacySetting,
                         comment: "Alert message when the user has denied access to the camera"
                     )
-                    let alertController = UIAlertController(title: "웃자", message: message, preferredStyle: .alert)
+                    let alertController = UIAlertController(title: "Uttcha", message: message, preferredStyle: .alert)
 
-                    alertController.addAction(UIAlertAction(title: NSLocalizedString("취소", comment: "Alert OK button"),
+                    alertController.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Alert OK button"),
                                                             style: .cancel,
                                                             handler: nil))
 
-                    alertController.addAction(UIAlertAction(title: NSLocalizedString("설정으로 이동",
+                    alertController.addAction(UIAlertAction(title: NSLocalizedString("Go to Settings",
                                                                                      comment: "Alert button to open Settings"),
                                                             style: .`default`,
                                                             handler: { _ in
@@ -83,8 +83,8 @@ class CameraViewController: UIViewController {
             case .configurationFailed:
                 DispatchQueue.main.async {
                     let alertMsg = "Alert message when something goes wrong during capture session configuration"
-                    let message = NSLocalizedString("카메라 사용이 불가능합니다.", comment: alertMsg)
-                    let alertController = UIAlertController(title: "웃자", message: message, preferredStyle: .alert)
+                    let message = NSLocalizedString("Camera access is unavailable", comment: alertMsg)
+                    let alertController = UIAlertController(title: "Uttcha", message: message, preferredStyle: .alert)
 
                     alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"),
                                                             style: .cancel,

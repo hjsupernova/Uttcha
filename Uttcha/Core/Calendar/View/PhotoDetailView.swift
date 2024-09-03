@@ -35,7 +35,7 @@ struct PhotoDetailView: View {
                                     .focused($inFocus, equals: 0)
 
                                 if text.isEmpty {
-                                    Text("오늘 하루를 기록해보세요.")
+                                    Text("Record your day here.")
                                         .foregroundColor(Color(UIColor.placeholderText))
                                         .padding(.horizontal, 4)
                                         .padding(.vertical, 8)
@@ -69,7 +69,7 @@ struct PhotoDetailView: View {
 
                         } label: {
                             HStack {
-                                Text("삭제")
+                                Text("Delete")
                                 Spacer()
                                 Image(systemName: "trash")
                             }
@@ -80,7 +80,7 @@ struct PhotoDetailView: View {
                 }
 
                 ToolbarItem(placement: .principal) {
-                    Text(homeViewModel.selectedPhoto?.dateCreated?.string(withFormat: "M월 d일 HH:mm") ?? "")
+                    Text(homeViewModel.selectedPhoto?.dateCreated?.toStringFromTemplate("MMMd HH:mm") ?? "")
                 }
             }
         }

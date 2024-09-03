@@ -18,11 +18,10 @@ struct SettingsView: View {
                 NotificationSettingsSection(settingsViewModel: settingsViewModel)
 
                 ReviewSection(settingsViewModel: settingsViewModel)
-//                AppInfoSection()
             }
         }
         .padding()
-        .navigationTitle("설정")
+        .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             settingsViewModel.perform(action: .onAppear)
@@ -35,14 +34,14 @@ struct SmileRecordSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("기록")
+            Text("Record")
                 .font(.callout)
 
             GroupBox {
                 VStack {
-                    Text("웃차와 함께 웃은 날 😍")
+                    Text("Days you smiled with Uttcha 😍")
 
-                    Text("\(settingsViewModel.photoCount)일")
+                    Text("\(settingsViewModel.photoCount) day(s)")
                         .font(.title3)
                         .bold()
 
@@ -57,16 +56,18 @@ struct NotificationSettingsSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("설정")
+            Text("Settings")
                 .font(.callout)
 
             GroupBox {
-                Toggle("알림 \(settingsViewModel.isNotificationOn ? "ON" : "OFF")", isOn: $settingsViewModel.isNotificationOn)
+                Toggle("Notifications \(settingsViewModel.isNotificationOn ? "ON" : "OFF")", isOn: $settingsViewModel.isNotificationOn)
                     .tint(.green)
 
                 HStack {
                     Text(
-                        settingsViewModel.isNotificationOn ? "\(settingsViewModel.selectedTimeOption.rawValue)중 알림을 무작위로 보내드릴게요!" : "알림 시간대를 설정할 수 있어요"
+                        settingsViewModel.isNotificationOn
+                        ? "We'll send notifications randomly during \(settingsViewModel.selectedTimeOption.localizedTimeOption)"
+                        : "You can set a notification time"
                     )
                     Spacer()
                 }
@@ -76,16 +77,16 @@ struct NotificationSettingsSection: View {
             NotificaitonOptionsSheet(settingsViewModel: settingsViewModel)
                 .presentationDetents([.medium])
         }
-        .alert("웃자", isPresented: $settingsViewModel.isShowingNotificationAuthorizationSettingAlert) {
-            Button("취소", role: .cancel) { }
-            Button("설정으로 이동") {
+        .alert("Uttcha", isPresented: $settingsViewModel.isShowingNotificationAuthorizationSettingAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Go to Settings") {
                 UIApplication.shared.open(
                     URL(string: UIApplication.openSettingsURLString)!,
                     options: [:],
                     completionHandler: nil)
             }
         } message: {
-            Text("앱에 알림 권한이 없습니다. 설정을 변경해주세요.")
+            Text("The app doesn't have notification permission. Please update your settings.")
         }
     }
 }
@@ -98,7 +99,7 @@ struct NotificaitonOptionsSheet: View {
     var body: some View {
         VStack {
             HStack {
-                Text("알림 설정하기")
+                Text("Set Notifications")
                     .font(.title).bold()
 
                 Spacer()
@@ -128,7 +129,7 @@ struct NotificaitonOptionsSheet: View {
                 settingsViewModel.perform(action: .scheduleNotifications)
                 dismiss()
             } label: {
-                Text("저장")
+                Text("Save")
                     .frame(maxWidth: .infinity)
                     .font(.title2)
             }
@@ -144,7 +145,7 @@ struct ReviewSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("정보")
+            Text("About")
                 .font(.callout)
 
             GroupBox {
@@ -152,7 +153,7 @@ struct ReviewSection: View {
                     if let reviewURL = settingsViewModel.reviewURL {
                         Link(destination: reviewURL) {
                             HStack {
-                                Label("웃자 평가하기", systemImage: "star")
+                                Label("Rate Uttcha", systemImage: "star")
 
                                 Spacer()
                             }
@@ -164,22 +165,23 @@ struct ReviewSection: View {
     }
 }
 
-struct AppInfoSection: View {
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("앱 정보")
-                .font(.callout)
+//struct AppInfoSection: View {
+//    var body: some View {
+//        VStack(alignment: .leading, spacing: 4) {
+//            Text("앱 정보")
+//                .font(.callout)
+//
+//            GroupBox {
+//                HStack {
+//                    Text("웃차에 대해서")
+//
+//                    Spacer()
+//                }
+//            }
+//        }
+//    }
+//}
 
-            GroupBox {
-                HStack {
-                    Text("웃차에 대해서")
-
-                    Spacer()
-                }
-            }
-        }
-    }
-}
 #Preview {
     NavigationStack {
         SettingsView()

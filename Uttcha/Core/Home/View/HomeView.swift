@@ -58,7 +58,7 @@ struct CameraButton: View {
                     cameraViewModel.perform(action: .showCamera)
                 } label: {
                     VStack {
-                        Text(homeViewModel.isCameraButtonDisabled ? "내일봐요" : "웃어봐요")
+                        Text(homeViewModel.isCameraButtonDisabled ? "Tomorrow!" : "Smile!")
                             .fontWeight(.bold)
 
                         Text(homeViewModel.isCameraButtonDisabled ? "🥳" : "😊")
